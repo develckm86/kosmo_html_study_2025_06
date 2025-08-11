@@ -125,7 +125,7 @@
     <section>
         <h2>justify-content 예시</h2>
 
-        <h3>justify-content: flex-start (기본값)</h3>
+        <h3>justify-content: flex-start(start==left) (기본값)</h3>
         <div class="container" style="width:100%; justify-content: flex-start;">
             <div class="item">1</div><div class="item">2</div><div class="item">3</div>
         </div>
@@ -135,7 +135,7 @@
             <div class="item">1</div><div class="item">2</div><div class="item">3</div>
         </div>
 
-        <h3>justify-content: flex-end</h3>
+        <h3>justify-content: flex-end(end==right)</h3>
         <div class="container" style="width:100%; justify-content: flex-end;">
             <div class="item">1</div><div class="item">2</div><div class="item">3</div>
         </div>
@@ -165,6 +165,12 @@
             <div class="item" style="height: 30px;">2</div>
             <div class="item" style="height: 50px;">3</div>
         </div>
+        <h3>align-items: baseline</h3>
+        <div class="container" style="align-items: baseline;">
+            <div class="item" style="height: auto; font-size: 24px;">1</div>
+            <div class="item" style="height: 30px; font-size: 12px;">2</div>
+            <div class="item" style="height: 50px; font-size: 18px;">3</div>
+        </div>
 
         <h3>align-items: flex-start</h3>
         <div class="container" style="align-items: flex-start;">
@@ -187,12 +193,6 @@
             <div class="item" style="height: 50px;">3</div>
         </div>
 
-        <h3>align-items: baseline</h3>
-        <div class="container" style="align-items: baseline;">
-            <div class="item" style="height: auto; font-size: 24px;">1</div>
-            <div class="item" style="height: 30px; font-size: 12px;">2</div>
-            <div class="item" style="height: 50px; font-size: 18px;">3</div>
-        </div>
     </section>
 
     <section>
@@ -226,6 +226,11 @@
         <div class="container" style="flex-wrap: nowrap;">
             <div class="item">1</div><div class="item">2</div><div class="item">3</div><div class="item">4</div><div class="item">5</div>
         </div>
+        <h3>flex-wrap: wrap </h3>
+
+        <div class="container" style="flex-wrap: wrap;">
+            <div class="item">1</div><div class="item">2</div><div class="item">3</div><div class="item">4</div><div class="item">5</div>
+        </div>
 
         <h3>flex-wrap: wrap</h3>
         <div class="container" style="flex-wrap: wrap; width: 180px; height: auto;">
@@ -238,10 +243,15 @@
         </div>
     </section>
     <section>
+        <h2>align-content 는 flex-wrap:wrap 으로 여러줄 아이템일 때 사용</h2>
         <h3>align-content: stretch (기본값)</h3>
         <div class="container" style="align-content: stretch;">
-            <div class="item">1</div><div class="item">2</div><div class="item">3</div>
-            <div class="item">4</div><div class="item">5</div><div class="item">6</div>
+            <div class="item" style="height: auto">1</div>
+            <div class="item" style="height: auto">2</div>
+            <div class="item" style="height: auto">3</div>
+            <div class="item" style="height: auto">4</div>
+            <div class="item" style="height: auto">5</div>
+            <div class="item" style="height: auto">6</div>
         </div>
 
         <h3>align-content: flex-start</h3>
@@ -280,13 +290,13 @@
             <div class="item">4</div><div class="item">5</div><div class="item">6</div>
         </div>
     </section>
-
+    <h2>flex item 속성들</h2>
     <section>
-        <h2>order 예시</h2>
+        <h3>order 예시</h3>
         <div class="container">
-            <div class="item" style="order: 3; width: 80px;">order:3</div>
-            <div class="item" style="order: 1; width: 80px;">order:1</div>
-            <div class="item" style="order: 2; width: 80px;">order:2</div>
+            <div class="item" style="order: 3; width: 80px;">1 order:3</div>
+            <div class="item" style="order: 1; width: 80px;">2 order:1</div>
+            <div class="item" style="order: 2; width: 80px;">3 order:2</div>
         </div>
     </section>
 
@@ -302,10 +312,18 @@
 
     <section>
         <h2>flex-basis 예시</h2>
-        <div class="container">
+        <div class="container" style="flex-wrap: nowrap">
             <div class="item" style="flex-basis: 100px;">basis:100px</div>
             <div class="item" style="flex-basis: 200px;">basis:200px</div>
             <div class="item" style="flex-basis: auto;">basis:auto</div>
+        </div>
+    </section>
+    <section>
+        <h2>flex-shrink 예시</h2>
+        <div class="container" style="flex-wrap: nowrap">
+            <div class="item" style="flex-basis: 200px; flex-shrink: 1">flex-shrink: 1</div>
+            <div class="item" style="flex-basis: 200px; flex-shrink: 2">flex-shrink: 2</div>
+            <div class="item" style="flex-basis: 200px; flex-shrink: 1">flex-shrink: 1</div>
         </div>
     </section>
 
@@ -326,7 +344,22 @@
             <div class="item" style="height: 40px; align-self: flex-end;">flex-end</div>
         </div>
     </section>
-
+    <section>
+        <h2>flex 과제</h2>
+        <ul>
+            <li>https://www.apple.com/ 상단메뉴와 동일하게 만들어보세요</li>
+            <li>이미지 갤러리 만들기
+                <ul>
+                    <li>갤러리에 이미지 8개를 가로로 정렬하세요</li>
+                    <li>이미지간의 간격은 even 하게 하주세요</li>
+                    <li>이미지 8개 중에 앞에 3개만 보이게 하세요.</li>
+                    <li>이미지 갤러리를 전체에 중앙에 정렬하세요</li>
+                </ul>
+            </li>
+        </ul>
+        
+        
+    </section>
 
 </body>
 </html>
