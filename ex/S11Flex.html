@@ -5,6 +5,10 @@
     <title>Title</title>
     <link rel="stylesheet" href="/src/css/study.css">
     <style>
+        body{
+            margin: 0;
+            padding: 0;
+        }
         .container {
             display: flex;
             flex-wrap: wrap;           /* 여러 줄 가능 */
@@ -32,332 +36,334 @@
 
 </head>
 <body>
-    <h2>한줄 레이아웃을 구성하는 Flex </h2>
-    <section>
-        <h2>Flexbox (Flexible Box Layout)</h2>
-        <ul>
-            <li><strong>개념</strong>
-                CSS 레이아웃 방식으로, 요소들을 한 방향(가로 또는 세로)으로 배치하고 정렬하기 쉽게 만들어줍니다.
-            </li>
-            <li><strong>장점</strong>
-                <ul>
-                    <li>간단한 코드로 가로/세로 중앙 정렬 가능</li>
-                    <li>요소 간 간격 조절 및 균등 배치 용이</li>
-                    <li>반응형 레이아웃 구현에 최적화</li>
-                    <li>float나 inline-block 사용 시 발생하는 문제점 해결 가능</li>
-                </ul>
-            </li>
+    <div class="main">
+        <h2>한줄 레이아웃을 구성하는 Flex </h2>
+        <section>
+            <h2>Flexbox (Flexible Box Layout)</h2>
+            <ul>
+                <li><strong>개념</strong>
+                    CSS 레이아웃 방식으로, 요소들을 한 방향(가로 또는 세로)으로 배치하고 정렬하기 쉽게 만들어줍니다.
+                </li>
+                <li><strong>장점</strong>
+                    <ul>
+                        <li>간단한 코드로 가로/세로 중앙 정렬 가능</li>
+                        <li>요소 간 간격 조절 및 균등 배치 용이</li>
+                        <li>반응형 레이아웃 구현에 최적화</li>
+                        <li>float나 inline-block 사용 시 발생하는 문제점 해결 가능</li>
+                    </ul>
+                </li>
 
-            <li><strong>주요 개념</strong>
-                <ul>
-                    <li><strong>flex-direction</strong>이 주축 방향을 결정</li>
-                    <li><strong>justify-content</strong>는 주축 정렬, <strong>align-items</strong>는 교차축 정렬 담당</li>
-                    <li><strong>주축(main axis)</strong>과 <strong>교차축(cross axis)</strong> 개념 이해가 중요</li>
-                </ul>
-            </li>
+                <li><strong>주요 개념</strong>
+                    <ul>
+                        <li><strong>flex-direction</strong>이 주축 방향을 결정</li>
+                        <li><strong>justify-content</strong>는 주축 정렬, <strong>align-items</strong>는 교차축 정렬 담당</li>
+                        <li><strong>주축(main axis)</strong>과 <strong>교차축(cross axis)</strong> 개념 이해가 중요</li>
+                    </ul>
+                </li>
 
-            <li><strong> Flex Container - 주요 속성 </strong>
-                <ul>
-                    <li><strong>display: flex;</strong> 또는 <strong>inline-flex;</strong>를 선언하면 해당 요소가 Flex Container가 됩니다.</li>
-                    <li><strong>flex-direction</strong>: 주축 방향 설정
-                        <ul>
-                            <li>row (기본값): 가로 방향</li>
-                            <li>row-reverse: 가로 반대 방향</li>
-                            <li>column: 세로 방향</li>
-                            <li>column-reverse: 세로 반대 방향</li>
-                        </ul>
-                    </li>
-                    <li><strong>flex-wrap</strong>: 줄바꿈 여부
-                        <ul>
-                            <li>nowrap (기본값): 한 줄에 배치</li>
-                            <li>wrap: 공간 부족 시 줄바꿈</li>
-                            <li>wrap-reverse: 줄바꿈 + 반대 방향</li>
-                        </ul>
-                    </li>
-                    <li><strong>justify-content</strong>: 주축 정렬
-                        <ul>
-                            <li>flex-start (기본값)</li>
-                            <li>flex-end</li>
-                            <li>center</li>
-                            <li>space-between</li>
-                            <li>space-around</li>
-                            <li>space-evenly</li>
-                        </ul>
-                    </li>
-                    <li><strong>align-items</strong>: 교차축 정렬
-                        <ul>
-                            <li>stretch (기본값)</li>
-                            <li>flex-start</li>
-                            <li>flex-end</li>
-                            <li>center</li>
-                            <li>baseline</li>
-                        </ul>
-                    </li>
-                    <li><strong>align-content</strong>: 여러 줄 교차축 정렬(flex-wrap: nowrap)
-                        <ul>
-                            <li>stretch (기본값)</li>
-                            <li>flex-start</li>
-                            <li>flex-end</li>
-                            <li>center</li>
-                            <li>space-between</li>
-                            <li>space-around</li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
+                <li><strong> Flex Container - 주요 속성 </strong>
+                    <ul>
+                        <li><strong>display: flex;</strong> 또는 <strong>inline-flex;</strong>를 선언하면 해당 요소가 Flex Container가 됩니다.</li>
+                        <li><strong>flex-direction</strong>: 주축 방향 설정
+                            <ul>
+                                <li>row (기본값): 가로 방향</li>
+                                <li>row-reverse: 가로 반대 방향</li>
+                                <li>column: 세로 방향</li>
+                                <li>column-reverse: 세로 반대 방향</li>
+                            </ul>
+                        </li>
+                        <li><strong>flex-wrap</strong>: 줄바꿈 여부
+                            <ul>
+                                <li>nowrap (기본값): 한 줄에 배치</li>
+                                <li>wrap: 공간 부족 시 줄바꿈</li>
+                                <li>wrap-reverse: 줄바꿈 + 반대 방향</li>
+                            </ul>
+                        </li>
+                        <li><strong>justify-content</strong>: 주축 정렬
+                            <ul>
+                                <li>flex-start (기본값)</li>
+                                <li>flex-end</li>
+                                <li>center</li>
+                                <li>space-between</li>
+                                <li>space-around</li>
+                                <li>space-evenly</li>
+                            </ul>
+                        </li>
+                        <li><strong>align-items</strong>: 교차축 정렬
+                            <ul>
+                                <li>stretch (기본값)</li>
+                                <li>flex-start</li>
+                                <li>flex-end</li>
+                                <li>center</li>
+                                <li>baseline</li>
+                            </ul>
+                        </li>
+                        <li><strong>align-content</strong>: 여러 줄 교차축 정렬(flex-wrap: nowrap)
+                            <ul>
+                                <li>stretch (기본값)</li>
+                                <li>flex-start</li>
+                                <li>flex-end</li>
+                                <li>center</li>
+                                <li>space-between</li>
+                                <li>space-around</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
 
-            <li><strong> Flex Item - 주요 속성</strong>
-                <ul>
-                    <li><strong>flex container</strong>
-                         의 자식요소는 모두 <strong>flex item</strong>으로 취급됩니다.</li>
-                    <li><strong>order</strong>: 아이템 순서 변경</li>
-                    <li><strong>flex-grow</strong>: 남는 공간을 얼마나 차지할지 비율 지정</li>
-                    <li><strong>flex-shrink</strong>: 공간 부족 시 축소 비율 지정</li>
-                    <li><strong>flex-basis</strong>: 기본 크기 지정</li>
-                    <li><strong>flex</strong>: grow, shrink, basis를 한번에 설정하는 축약 속성</li>
-                    <li><strong>align-self</strong>: 개별 아이템 교차축 정렬 조절</li>
-                </ul>
-            </li>
+                <li><strong> Flex Item - 주요 속성</strong>
+                    <ul>
+                        <li><strong>flex container</strong>
+                             의 자식요소는 모두 <strong>flex item</strong>으로 취급됩니다.</li>
+                        <li><strong>order</strong>: 아이템 순서 변경</li>
+                        <li><strong>flex-grow</strong>: 남는 공간을 얼마나 차지할지 비율 지정</li>
+                        <li><strong>flex-shrink</strong>: 공간 부족 시 축소 비율 지정</li>
+                        <li><strong>flex-basis</strong>: 기본 크기 지정</li>
+                        <li><strong>flex</strong>: grow, shrink, basis를 한번에 설정하는 축약 속성</li>
+                        <li><strong>align-self</strong>: 개별 아이템 교차축 정렬 조절</li>
+                    </ul>
+                </li>
 
-        </ul>
-    </section>
+            </ul>
+        </section>
 
-    <section>
-        <h2>justify-content 예시</h2>
+        <section>
+            <h2>justify-content 예시</h2>
 
-        <h3>justify-content: flex-start(start==left) (기본값)</h3>
-        <div class="container" style="width:100%; justify-content: flex-start;">
-            <div class="item">1</div><div class="item">2</div><div class="item">3</div>
-        </div>
+            <h3>justify-content: flex-start(start==left) (기본값)</h3>
+            <div class="container" style="width:100%; justify-content: flex-start;">
+                <div class="item">1</div><div class="item">2</div><div class="item">3</div>
+            </div>
 
-        <h3>justify-content: center</h3>
-        <div class="container" style="width:100%; justify-content: center;">
-            <div class="item">1</div><div class="item">2</div><div class="item">3</div>
-        </div>
+            <h3>justify-content: center</h3>
+            <div class="container" style="width:100%; justify-content: center;">
+                <div class="item">1</div><div class="item">2</div><div class="item">3</div>
+            </div>
 
-        <h3>justify-content: flex-end(end==right)</h3>
-        <div class="container" style="width:100%; justify-content: flex-end;">
-            <div class="item">1</div><div class="item">2</div><div class="item">3</div>
-        </div>
+            <h3>justify-content: flex-end(end==right)</h3>
+            <div class="container" style="width:100%; justify-content: flex-end;">
+                <div class="item">1</div><div class="item">2</div><div class="item">3</div>
+            </div>
 
-        <h3>justify-content: space-between</h3>
-        <div class="container" style="width:100%; justify-content: space-between;">
-            <div class="item">1</div><div class="item">2</div><div class="item">3</div>
-        </div>
+            <h3>justify-content: space-between</h3>
+            <div class="container" style="width:100%; justify-content: space-between;">
+                <div class="item">1</div><div class="item">2</div><div class="item">3</div>
+            </div>
 
-        <h3>justify-content: space-around</h3>
-        <div class="container" style="width:100%; justify-content: space-around;">
-            <div class="item">1</div><div class="item">2</div><div class="item">3</div>
-        </div>
+            <h3>justify-content: space-around</h3>
+            <div class="container" style="width:100%; justify-content: space-around;">
+                <div class="item">1</div><div class="item">2</div><div class="item">3</div>
+            </div>
 
-        <h3>justify-content: space-evenly</h3>
-        <div class="container" style="width:100%; justify-content: space-evenly;">
-            <div class="item">1</div><div class="item">2</div><div class="item">3</div>
-        </div>
-    </section>
+            <h3>justify-content: space-evenly</h3>
+            <div class="container" style="width:100%; justify-content: space-evenly;">
+                <div class="item">1</div><div class="item">2</div><div class="item">3</div>
+            </div>
+        </section>
 
-    <section>
-        <h2>align-items 예시</h2>
+        <section>
+            <h2>align-items 예시</h2>
 
-        <h3>align-items: stretch (기본값)</h3>
-        <div class="container" style="align-items: stretch;">
-            <div class="item" style="height: auto;">1</div>
-            <div class="item" style="height: 30px;">2</div>
-            <div class="item" style="height: 50px;">3</div>
-        </div>
-        <h3>align-items: baseline</h3>
-        <div class="container" style="align-items: baseline;">
-            <div class="item" style="height: auto; font-size: 24px;">1</div>
-            <div class="item" style="height: 30px; font-size: 12px;">2</div>
-            <div class="item" style="height: 50px; font-size: 18px;">3</div>
-        </div>
+            <h3>align-items: stretch (기본값)</h3>
+            <div class="container" style="align-items: stretch;">
+                <div class="item" style="height: auto;">1</div>
+                <div class="item" style="height: 30px;">2</div>
+                <div class="item" style="height: 50px;">3</div>
+            </div>
+            <h3>align-items: baseline</h3>
+            <div class="container" style="align-items: baseline;">
+                <div class="item" style="height: auto; font-size: 24px;">1</div>
+                <div class="item" style="height: 30px; font-size: 12px;">2</div>
+                <div class="item" style="height: 50px; font-size: 18px;">3</div>
+            </div>
 
-        <h3>align-items: flex-start</h3>
-        <div class="container" style="align-items: flex-start;">
-            <div class="item" style="height: auto;">1</div>
-            <div class="item" style="height: 30px;">2</div>
-            <div class="item" style="height: 50px;">3</div>
-        </div>
+            <h3>align-items: flex-start</h3>
+            <div class="container" style="align-items: flex-start;">
+                <div class="item" style="height: auto;">1</div>
+                <div class="item" style="height: 30px;">2</div>
+                <div class="item" style="height: 50px;">3</div>
+            </div>
 
-        <h3>align-items: flex-end</h3>
-        <div class="container" style="align-items: flex-end;">
-            <div class="item" style="height: auto;">1</div>
-            <div class="item" style="height: 30px;">2</div>
-            <div class="item" style="height: 50px;">3</div>
-        </div>
+            <h3>align-items: flex-end</h3>
+            <div class="container" style="align-items: flex-end;">
+                <div class="item" style="height: auto;">1</div>
+                <div class="item" style="height: 30px;">2</div>
+                <div class="item" style="height: 50px;">3</div>
+            </div>
 
-        <h3>align-items: center</h3>
-        <div class="container" style="align-items: center;">
-            <div class="item" style="height: auto;">1</div>
-            <div class="item" style="height: 30px;">2</div>
-            <div class="item" style="height: 50px;">3</div>
-        </div>
+            <h3>align-items: center</h3>
+            <div class="container" style="align-items: center;">
+                <div class="item" style="height: auto;">1</div>
+                <div class="item" style="height: 30px;">2</div>
+                <div class="item" style="height: 50px;">3</div>
+            </div>
 
-    </section>
+        </section>
 
-    <section>
-        <h2>flex-direction 예시</h2>
+        <section>
+            <h2>flex-direction 예시</h2>
 
-        <h3>flex-direction: row (기본값)</h3>
-        <div class="container" style="flex-direction: row;">
-            <div class="item">1</div><div class="item">2</div><div class="item">3</div>
-        </div>
+            <h3>flex-direction: row (기본값)</h3>
+            <div class="container" style="flex-direction: row;">
+                <div class="item">1</div><div class="item">2</div><div class="item">3</div>
+            </div>
 
-        <h3>flex-direction: row-reverse</h3>
-        <div class="container" style="flex-direction: row-reverse;">
-            <div class="item">1</div><div class="item">2</div><div class="item">3</div>
-        </div>
+            <h3>flex-direction: row-reverse</h3>
+            <div class="container" style="flex-direction: row-reverse;">
+                <div class="item">1</div><div class="item">2</div><div class="item">3</div>
+            </div>
 
-        <h3>flex-direction: column</h3>
-        <div class="container" style="flex-direction: column; height: auto;">
-            <div class="item">1</div><div class="item">2</div><div class="item">3</div>
-        </div>
+            <h3>flex-direction: column</h3>
+            <div class="container" style="flex-direction: column; height: auto;">
+                <div class="item">1</div><div class="item">2</div><div class="item">3</div>
+            </div>
 
-        <h3>flex-direction: column-reverse</h3>
-        <div class="container" style="flex-direction: column-reverse; height: auto;">
-            <div class="item">1</div><div class="item">2</div><div class="item">3</div>
-        </div>
-    </section>
+            <h3>flex-direction: column-reverse</h3>
+            <div class="container" style="flex-direction: column-reverse; height: auto;">
+                <div class="item">1</div><div class="item">2</div><div class="item">3</div>
+            </div>
+        </section>
 
-    <section>
-        <h2>flex-wrap 예시</h2>
+        <section>
+            <h2>flex-wrap 예시</h2>
 
-        <h3>flex-wrap: nowrap (기본값)</h3>
-        <div class="container" style="flex-wrap: nowrap;">
-            <div class="item">1</div><div class="item">2</div><div class="item">3</div><div class="item">4</div><div class="item">5</div>
-        </div>
-        <h3>flex-wrap: wrap </h3>
+            <h3>flex-wrap: nowrap (기본값)</h3>
+            <div class="container" style="flex-wrap: nowrap;">
+                <div class="item">1</div><div class="item">2</div><div class="item">3</div><div class="item">4</div><div class="item">5</div>
+            </div>
+            <h3>flex-wrap: wrap </h3>
 
-        <div class="container" style="flex-wrap: wrap;">
-            <div class="item">1</div><div class="item">2</div><div class="item">3</div><div class="item">4</div><div class="item">5</div>
-        </div>
+            <div class="container" style="flex-wrap: wrap;">
+                <div class="item">1</div><div class="item">2</div><div class="item">3</div><div class="item">4</div><div class="item">5</div>
+            </div>
 
-        <h3>flex-wrap: wrap</h3>
-        <div class="container" style="flex-wrap: wrap; width: 180px; height: auto;">
-            <div class="item">1</div><div class="item">2</div><div class="item">3</div><div class="item">4</div><div class="item">5</div>
-        </div>
+            <h3>flex-wrap: wrap</h3>
+            <div class="container" style="flex-wrap: wrap; width: 180px; height: auto;">
+                <div class="item">1</div><div class="item">2</div><div class="item">3</div><div class="item">4</div><div class="item">5</div>
+            </div>
 
-        <h3>flex-wrap: wrap-reverse</h3>
-        <div class="container" style="flex-wrap: wrap-reverse; width: 180px; height: auto">
-            <div class="item">1</div><div class="item">2</div><div class="item">3</div><div class="item">4</div><div class="item">5</div>
-        </div>
-    </section>
-    <section>
-        <h2>align-content 는 flex-wrap:wrap 으로 여러줄 아이템일 때 사용</h2>
-        <h3>align-content: stretch (기본값)</h3>
-        <div class="container" style="align-content: stretch;">
-            <div class="item" style="height: auto">1</div>
-            <div class="item" style="height: auto">2</div>
-            <div class="item" style="height: auto">3</div>
-            <div class="item" style="height: auto">4</div>
-            <div class="item" style="height: auto">5</div>
-            <div class="item" style="height: auto">6</div>
-        </div>
+            <h3>flex-wrap: wrap-reverse</h3>
+            <div class="container" style="flex-wrap: wrap-reverse; width: 180px; height: auto">
+                <div class="item">1</div><div class="item">2</div><div class="item">3</div><div class="item">4</div><div class="item">5</div>
+            </div>
+        </section>
+        <section>
+            <h2>align-content 는 flex-wrap:wrap 으로 여러줄 아이템일 때 사용</h2>
+            <h3>align-content: stretch (기본값)</h3>
+            <div class="container" style="align-content: stretch;">
+                <div class="item" style="height: auto">1</div>
+                <div class="item" style="height: auto">2</div>
+                <div class="item" style="height: auto">3</div>
+                <div class="item" style="height: auto">4</div>
+                <div class="item" style="height: auto">5</div>
+                <div class="item" style="height: auto">6</div>
+            </div>
 
-        <h3>align-content: flex-start</h3>
-        <div class="container" style="align-content: flex-start;">
-            <div class="item">1</div><div class="item">2</div><div class="item">3</div>
-            <div class="item">4</div><div class="item">5</div><div class="item">6</div>
-        </div>
+            <h3>align-content: flex-start</h3>
+            <div class="container" style="align-content: flex-start;">
+                <div class="item">1</div><div class="item">2</div><div class="item">3</div>
+                <div class="item">4</div><div class="item">5</div><div class="item">6</div>
+            </div>
 
-        <h3>align-content: flex-end</h3>
-        <div class="container" style="align-content: flex-end;">
-            <div class="item">1</div><div class="item">2</div><div class="item">3</div>
-            <div class="item">4</div><div class="item">5</div><div class="item">6</div>
-        </div>
+            <h3>align-content: flex-end</h3>
+            <div class="container" style="align-content: flex-end;">
+                <div class="item">1</div><div class="item">2</div><div class="item">3</div>
+                <div class="item">4</div><div class="item">5</div><div class="item">6</div>
+            </div>
 
-        <h3>align-content: center</h3>
-        <div class="container" style="align-content: center;">
-            <div class="item">1</div><div class="item">2</div><div class="item">3</div>
-            <div class="item">4</div><div class="item">5</div><div class="item">6</div>
-        </div>
+            <h3>align-content: center</h3>
+            <div class="container" style="align-content: center;">
+                <div class="item">1</div><div class="item">2</div><div class="item">3</div>
+                <div class="item">4</div><div class="item">5</div><div class="item">6</div>
+            </div>
 
-        <h3>align-content: space-between</h3>
-        <div class="container" style="align-content: space-between;">
-            <div class="item">1</div><div class="item">2</div><div class="item">3</div>
-            <div class="item">4</div><div class="item">5</div><div class="item">6</div>
-        </div>
+            <h3>align-content: space-between</h3>
+            <div class="container" style="align-content: space-between;">
+                <div class="item">1</div><div class="item">2</div><div class="item">3</div>
+                <div class="item">4</div><div class="item">5</div><div class="item">6</div>
+            </div>
 
-        <h3>align-content: space-around</h3>
-        <div class="container" style="align-content: space-around;">
-            <div class="item">1</div><div class="item">2</div><div class="item">3</div>
-            <div class="item">4</div><div class="item">5</div><div class="item">6</div>
-        </div>
+            <h3>align-content: space-around</h3>
+            <div class="container" style="align-content: space-around;">
+                <div class="item">1</div><div class="item">2</div><div class="item">3</div>
+                <div class="item">4</div><div class="item">5</div><div class="item">6</div>
+            </div>
 
-        <h3>align-content: space-evenly</h3>
-        <div class="container" style="align-content: space-evenly;">
-            <div class="item">1</div><div class="item">2</div><div class="item">3</div>
-            <div class="item">4</div><div class="item">5</div><div class="item">6</div>
-        </div>
-    </section>
-    <h2>flex item 속성들</h2>
-    <section>
-        <h3>order 예시</h3>
-        <div class="container">
-            <div class="item" style="order: 3; width: 80px;">1 order:3</div>
-            <div class="item" style="order: 1; width: 80px;">2 order:1</div>
-            <div class="item" style="order: 2; width: 80px;">3 order:2</div>
-        </div>
-    </section>
+            <h3>align-content: space-evenly</h3>
+            <div class="container" style="align-content: space-evenly;">
+                <div class="item">1</div><div class="item">2</div><div class="item">3</div>
+                <div class="item">4</div><div class="item">5</div><div class="item">6</div>
+            </div>
+        </section>
+        <h2>flex item 속성들</h2>
+        <section>
+            <h3>order 예시</h3>
+            <div class="container">
+                <div class="item" style="order: 3; width: 80px;">1 order:3</div>
+                <div class="item" style="order: 1; width: 80px;">2 order:1</div>
+                <div class="item" style="order: 2; width: 80px;">3 order:2</div>
+            </div>
+        </section>
 
-    <section>
-        <h2>flex-grow 예시</h2>
-        <div class="container" style="width: 500px;">
-            <div class="item" style="flex-grow: 1; width: 80px;">grow:1</div>
-            <div class="item" style="flex-grow: 2; width: 80px;">grow:2</div>
-            <div class="item" style="flex-grow: 1; width: 80px;">grow:1</div>
-        </div>
-    </section>
+        <section>
+            <h2>flex-grow 예시</h2>
+            <div class="container" style="width: 500px;">
+                <div class="item" style="flex-grow: 1; width: 80px;">grow:1</div>
+                <div class="item" style="flex-grow: 2; width: 80px;">grow:2</div>
+                <div class="item" style="flex-grow: 1; width: 80px;">grow:1</div>
+            </div>
+        </section>
 
 
-    <section>
-        <h2>flex-basis 예시</h2>
-        <div class="container" style="flex-wrap: nowrap">
-            <div class="item" style="flex-basis: 100px;">basis:100px</div>
-            <div class="item" style="flex-basis: 200px;">basis:200px</div>
-            <div class="item" style="flex-basis: auto;">basis:auto</div>
-        </div>
-    </section>
-    <section>
-        <h2>flex-shrink 예시</h2>
-        <div class="container" style="flex-wrap: nowrap">
-            <div class="item" style="flex-basis: 200px; flex-shrink: 1">flex-shrink: 1</div>
-            <div class="item" style="flex-basis: 200px; flex-shrink: 2">flex-shrink: 2</div>
-            <div class="item" style="flex-basis: 200px; flex-shrink: 1">flex-shrink: 1</div>
-        </div>
-    </section>
+        <section>
+            <h2>flex-basis 예시</h2>
+            <div class="container" style="flex-wrap: nowrap">
+                <div class="item" style="flex-basis: 100px;">basis:100px</div>
+                <div class="item" style="flex-basis: 200px;">basis:200px</div>
+                <div class="item" style="flex-basis: auto;">basis:auto</div>
+            </div>
+        </section>
+        <section>
+            <h2>flex-shrink 예시</h2>
+            <div class="container" style="flex-wrap: nowrap">
+                <div class="item" style="flex-basis: 200px; flex-shrink: 1">flex-shrink: 1</div>
+                <div class="item" style="flex-basis: 200px; flex-shrink: 2">flex-shrink: 2</div>
+                <div class="item" style="flex-basis: 200px; flex-shrink: 1">flex-shrink: 1</div>
+            </div>
+        </section>
 
-    <section>
-        <h2>flex (축약형) 예시</h2>
-        <div class="container" style="width: 500px;">
-            <div class="item" style="flex: 1 1 100px;">flex:1 1 100px</div>
-            <div class="item" style="flex: 2 0 150px;">flex:2 0 150px</div>
-            <div class="item" style="flex: 1 1 50px;">flex:1 1 50px</div>
-        </div>
-    </section>
+        <section>
+            <h2>flex (축약형) 예시</h2>
+            <div class="container" style="width: 500px;">
+                <div class="item" style="flex: 1 1 100px;">flex:1 1 100px</div>
+                <div class="item" style="flex: 2 0 150px;">flex:2 0 150px</div>
+                <div class="item" style="flex: 1 1 50px;">flex:1 1 50px</div>
+            </div>
+        </section>
 
-    <section>
-        <h2>align-self 예시</h2>
-        <div class="container" style="height: 120px; align-items: center;">
-            <div class="item" style="height: 50px; align-self: flex-start;">flex-start</div>
-            <div class="item" style="height: 80px;">기본 (center)</div>
-            <div class="item" style="height: 40px; align-self: flex-end;">flex-end</div>
-        </div>
-    </section>
-    <section>
-        <h2>flex 과제</h2>
-        <ul>
-            <li>https://www.apple.com/ 상단메뉴와 동일하게 만들어보세요</li>
-            <li>이미지 갤러리 만들기
-                <ul>
-                    <li>갤러리에 이미지 8개를 가로로 정렬하세요</li>
-                    <li>이미지간의 간격은 even 하게 하주세요</li>
-                    <li>이미지 8개 중에 앞에 3개만 보이게 하세요.</li>
-                    <li>이미지 갤러리를 전체에 중앙에 정렬하세요</li>
-                </ul>
-            </li>
-        </ul>
-    </section>
+        <section>
+            <h2>align-self 예시</h2>
+            <div class="container" style="height: 120px; align-items: center;">
+                <div class="item" style="height: 50px; align-self: flex-start;">flex-start</div>
+                <div class="item" style="height: 80px;">기본 (center)</div>
+                <div class="item" style="height: 40px; align-self: flex-end;">flex-end</div>
+            </div>
+        </section>
+        <section>
+            <h2>flex 과제</h2>
+            <ul>
+                <li>https://www.apple.com/ 상단메뉴와 동일하게 만들어보세요</li>
+                <li>이미지 갤러리 만들기
+                    <ul>
+                        <li>갤러리에 이미지 8개를 가로로 정렬하세요</li>
+                        <li>이미지간의 간격은 even 하게 하주세요</li>
+                        <li>이미지 8개 중에 앞에 3개만 보이게 하세요.</li>
+                        <li>이미지 갤러리를 전체에 중앙에 정렬하세요</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+    </div>
 
     <style>
         #apple-nav{
@@ -425,8 +431,213 @@
             <li><img src="/src/img/유럽8.jpeg" alt="유럽여행이미지"></li>
         </ul>
     </div>
-    
-    
+
+    <style>
+        #apple-home{
+            position: relative;
+        }
+        #drop-down-nav{
+            display: flex;
+            justify-content: center;
+        }
+        #drop-down-nav>.nav{
+            width: 500px;
+            display: flex;
+            justify-content: space-between;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        #drop-down-nav>.nav>li{
+            height: 3em;
+            line-height: 3em;
+        }
+        #drop-down-nav>.nav>li>.sub-navs-wrap {
+            position: absolute;
+            height: 20em;
+            width: 100%;
+            top: 3em;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            line-height: 2em;
+            padding-top: 2em;
+        }
+        #drop-down-nav>.nav>li>.sub-navs-wrap>.sub-navs-back{
+            height: 20em;
+            background-color: #e0e0e0;
+            width: 100%;
+            position: absolute;
+            transform-origin: top; /* 변형 기준을 위쪽으로 설정 */
+            transform: scaleY(0);
+            transition: transform .5s;
+
+        }
+        #drop-down-nav>.nav>li:hover>.sub-navs-wrap>.sub-navs-back {
+            transform: scaleY(1);
+        }
+
+        #drop-down-nav>.nav>li>.sub-navs-wrap>.sub-navs{
+            overflow: hidden;
+            width: 500px;
+            display: flex;
+            justify-content: start;
+            visibility: hidden;
+            opacity: 0;
+            transform: translateY(-5em);
+            transition: transform 0.5s ease, opacity 1s ease;            z-index: -999;
+
+        }
+        #drop-down-nav>.nav>li:hover>.sub-navs-wrap>.sub-navs {
+            transform: translateY(0);
+            visibility: visible;
+            opacity: 1;
+            z-index: 999;
+
+        }
+        .sub-navs>.sub-nav{
+            padding-right: 3em;
+        }
+        .sub-navs>.sub-nav>ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        .sub-navs>.sub-nav>h2{
+            font-size: .9em;
+            color: #4c4343;
+        }
+        .sub-navs>.sub-nav>ul>li{
+            font-size: .8em;
+        }
+        .sub-navs>.sub-nav:first-child>ul>li{
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+    </style>
+    <h2>애플 스토어 드롭다운 네비게이션바 2</h2>
+    <div id="apple-home">
+        <nav id="drop-down-nav">
+            <ul class="nav">
+                <li>🍏</li>
+                <li>Store
+                    <div class="sub-navs-wrap">
+                        <div class="sub-navs-back"></div>
+                        <div class="sub-navs">
+                            <div class="sub-nav">
+                                <h2>store</h2>
+                                <ul>
+                                    <li>Shop the Latest</li>
+                                    <li>Mac</li>
+                                    <li>iPad</li>
+                                    <li>iPhone</li>
+                                    <li>Apple Watch</li>
+                                </ul>
+                            </div>
+                            <div class="sub-nav">
+                                <h2>Quick Links</h2>
+                                <ul>
+                                    <li>Find a Store</li>
+                                    <li>Order Status</li>
+                                    <li>Apple Trade In</li>
+                                    <li>Financing</li>
+                                    <li>Personal Setup</li>
+                                    <li>College Student Offer</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li>iPad
+                    <div class="sub-navs-wrap">
+                        <div class="sub-navs-back"></div>
+
+                        <div class="sub-navs">
+                            <div class="sub-nav">
+                                <h2>iPad</h2>
+                                <ul>
+                                    <li>01</li>
+                                    <li>02</li>
+                                    <li>03</li>
+                                    <li>04</li>
+                                </ul>
+                            </div>
+                            <div class="sub-nav">
+                                <h2>iPhone App</h2>
+                                <ul>
+                                    <li>01</li>
+                                    <li>02</li>
+                                    <li>03</li>
+                                    <li>04</li>
+                                    <li>05</li>
+                                    <li>06</li>
+                                </ul>
+                            </div>
+                            <div class="sub-nav">
+                                <h2>iPhone</h2>
+                                <ul>
+                                    <li>01</li>
+                                    <li>02</li>
+                                    <li>03</li>
+                                    <li>04</li>
+                                    <li>05</li>
+                                    <li>06</li>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+                </li>
+                <li>iPone
+                    <div class="sub-navs-wrap">
+                        <div class="sub-navs-back"></div>
+
+                        <div class="sub-navs">
+                            <div class="sub-nav">
+                                <h2>iPad</h2>
+                                <ul>
+                                    <li>01</li>
+                                    <li>02</li>
+                                    <li>03</li>
+                                    <li>04</li>
+                                </ul>
+                            </div>
+                            <div class="sub-nav">
+                                <h2>iPhone App</h2>
+                                <ul>
+                                    <li>01</li>
+                                    <li>02</li>
+                                    <li>03</li>
+                                    <li>04</li>
+                                    <li>05</li>
+                                    <li>06</li>
+                                </ul>
+                            </div>
+                            <div class="sub-nav">
+                                <h2>iPhone</h2>
+                                <ul>
+                                    <li>01</li>
+                                    <li>02</li>
+                                    <li>03</li>
+                                    <li>04</li>
+                                    <li>05</li>
+                                    <li>06</li>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+                </li>
+                <li>Watch</li>
+                <li>Vision</li>
+            </ul>
+
+        </nav>
+
+    </div>
+
+
     <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 </body>
 </html>
