@@ -45,6 +45,20 @@
 <section>
     <h2>실습 예제</h2>
     <style>
+        /*의사 Pseudo 클래스 선택자(css로 찾는 방법)
+        실제로 존재하지 않는 상태를 나타내는 선택자
+
+        p div table tr :요소선택자
+        .class , #id
+        p div : p의 자손 div
+        p>div : p의 자식 div
+
+        */
+        p:hover{}
+        p:active{}
+        p:first-child{}
+
+
         p::before {
             content: "★ ";
             color: gold;
@@ -69,6 +83,7 @@
             font-size: 1.2em;
         }
     </style>
+
     <p>이것은 예시 문단입니다. CSS 의사 요소를 사용하여 스타일을 적용하는 방법을 보여줍니다. 첫 번째 글자와 첫 번째 줄에 특별한 스타일이 적용됩니다.</p>
     <ul>
         <li>첫 번째 항목입니다.</li>
