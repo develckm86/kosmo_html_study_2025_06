@@ -18,7 +18,7 @@
         /* 1) background-color */
         .chip{
             padding:10px 14px; border-radius:999px; background:#eef2ff; color:#3730a3;
-            transition: background-color .25s ease, color .25s ease;
+            transition: background-color 1s ease, color 2s ease;
         }
         .chip:hover{ background:#3730a3; color:#eef2ff }
 
@@ -63,16 +63,19 @@
         /* 6) border-radius */
         .pill{
             width:140px; height:64px; background:#fff; border-radius:12px;
-            transition: border-radius .35s ease-in-out;
+            transition: all 2s ease-in-out;
         }
-        .pill:hover{ border-radius:999px }
+        .pill:hover{
+            border-radius:100px;
+            border-color: black;
+        }
 
         /* 7) opacity */
         .fade{
             width:140px; height:64px; background:#111; color:#fff; opacity:1;
             transition: opacity .35s ease;
         }
-        .fade:hover{ opacity:.45 }
+        .fade:hover{ opacity: 0 }
 
         /* 8) transition-timing-function */
         .timing{
@@ -88,8 +91,12 @@
 
         /* 9) transition-delay */
         .card.delay{
-            width:160px; height:110px; background:#fff;
-            transition: transform .35s ease .15s, background-color .35s ease .05s;
+            width:160px;
+            height:110px;
+            background:#fff;
+            transition: transform .35s ease 300ms,
+            background-color .35s ease 500ms;
+            /*transition-delay: 500ms;*/
         }
         .card.delay:hover{ transform: translateY(-8px); background:#eef2ff }
 
@@ -119,6 +126,7 @@
         <li>스타일 값이 바뀔 때, 변화가 즉시 “뚝” 바뀌지 않고 지정한 시간과 속도 곡선에 따라 부드럽게 변하도록 만드는 CSS 기능</li>
         <li>상태 전환(예: :hover, :focus, 클래스 토글 등) 사이의 “중간값”을 브라우저가 자동 계산하여 프레임 단위로 그려줌</li>
         <li>JavaScript가 없어도 동작하며, 시작·끝 상태만 선언하면 됨</li>
+        <li>수치가 없는 속성은 트랜지션을 적용할 수 없다.(display:none,hidden)</li>
     </ul>
 </section>
 <section>

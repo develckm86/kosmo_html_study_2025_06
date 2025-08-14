@@ -311,6 +311,35 @@
             <li>키워드: display: grid, grid-template-columns, gap</li>
             <li>주의 포인트: gap과 margin을 혼동하지 않기</li>
         </ul>
+        <style>
+            .ex1-container{
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                /*grid-template-rows: repeat(2, 80px);*/
+                grid-auto-rows: 4em;
+                background-color: #3498db;
+                gap: 12px;
+                padding: 12px;
+            }
+            .ex1-container>div{
+                background-color: lightgray;
+                text-align: center;
+                /*margin: 6px;*/
+            }
+        </style>
+        <div class="ex1-container">
+            <div>01</div>
+            <div>02</div>
+            <div>03</div>
+            <div>04</div>
+            <div>05</div>
+            <div>06</div>
+            <div>07</div>
+            <div>08</div>
+            <div>09</div>
+        </div>
+
+
     </section>
 
     <section>
@@ -321,6 +350,29 @@
             <li>키워드: grid-column, grid-row, span</li>
             <li>주의 포인트: grid-column: 1 / span 2 와 1 / 3 차이 이해</li>
         </ul>
+        <style>
+            .ex2-container{
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 6px;
+                background-color: #3498db;
+            }
+            .ex2-container>div{
+                background-color: lightgray;
+            }
+
+        </style>
+        <div class="ex2-container">
+            <div style="grid-column: 1/span 2">01</div>
+            <div>02</div>
+            <div style="grid-row: 1/span 2; grid-column: 4/5">03</div>
+
+            <div>04</div>
+            <div style="grid-row: 2/span 2; grid-column: 2/3">05</div>
+            <div>06</div>
+            <div>07</div>
+            <div>08</div>
+        </div>
     </section>
 
     <section>
@@ -331,6 +383,32 @@
             <li>키워드: repeat(), fr</li>
             <li>주의 포인트: px 고정과 fr 비율 차이 이해</li>
         </ul>
+        <style>
+            .ex3-container{
+                display: grid;
+                grid-template-columns: 1fr 1fr 2fr 1fr 1fr ;
+                /*grid-template-rows: repeat(3, 150px);*/
+                grid-auto-rows: 150px;
+            }
+        </style>
+        <div class="ex3-container">
+            <div>01</div>
+            <div>02</div>
+            <div>03</div>
+            <div>04</div>
+            <div>05</div>
+            <div>06</div>
+            <div>07</div>
+            <div>08</div>
+            <div>09</div>
+            <div>10</div>
+            <div>11</div>
+            <div>12</div>
+            <div>13</div>
+            <div>14</div>
+            <div>15</div>
+        </div>
+
     </section>
 
     <section>
@@ -341,6 +419,40 @@
             <li>키워드: repeat(auto-fit, minmax())</li>
             <li>주의 포인트: auto-fit과 auto-fill 차이 비교</li>
         </ul>
+        <style>
+            .ex4-container{
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(100px,auto));
+            }
+            .ex4-container>div{
+                background-color: lightgray;
+                border: 1px solid;
+            }
+        </style>
+        <div class="ex4-container">
+            <div>01</div>
+            <div>02</div>
+            <div>03</div>
+            <div>04</div>
+            <div>05</div>
+            <div>06</div>
+            <div>07</div>
+            <div>08</div>
+            <div>09</div>
+            <div>10</div>
+            <div>11</div>
+            <div>12</div>
+            <div>13</div>
+            <div>14</div>
+            <div>15</div>
+            <div>16</div>
+            <div>17</div>
+            <div>18</div>
+            <div>19</div>
+            <div>20</div>
+        </div>
+
+
     </section>
 
     <section>
@@ -368,6 +480,65 @@ Footer
             <li>주의 포인트: 영역 이름과 HTML 구조를 정확히 매칭</li>
         </ul>
     </section>
+    <style>
+        .ex5-container{
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            grid-template-areas:
+                    "Header  Header"
+                    "Sidebar Content"
+                    "Sidebar Widget"
+                    "Footer  Footer";
+        }
+        @media (max-width: 600px) {
+            .ex5-container{
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                        "Header"
+                        "Sidebar"
+                        "Content"
+                        "Widget"
+                        "Footer";
+            }
+        }
+        .ex5-container>header{
+            background-color: lightgray;
+            text-align: center;
+            grid-area: Header;
+        }
+        .ex5-container>aside{
+            background-color: lightgoldenrodyellow;
+            grid-area: Sidebar;
+        }
+        .ex5-container>main{
+            background-color: lightblue;
+            grid-area: Content;
+            margin: 0;
+        }
+        .ex5-container>article{
+            background-color: lightgreen;
+            grid-area: Widget;
+        }
+        .ex5-container>footer{
+            background-color: lightsalmon;
+            grid-area: Footer;
+        }
+    </style>
+    <div class="ex5-container">
+        <header>Header</header>
+        <aside>Sidebar</aside>
+        <main>Content</main>
+        <article>Widget</article>
+        <footer>Footer</footer>
+    </div>
+
+
+
+
+
+
+
+
 </main>
 </body>
 </html>
