@@ -23,13 +23,11 @@
         .scene {
             width: 200px;
             height: 120px;
-            perspective: 800px;
         }
         .card-flip {
             width: 100%;
             height: 100%;
             position: relative;
-            transform-style: preserve-3d;
             transition: transform 0.8s;
         }
         .scene:hover .card-flip {
@@ -129,7 +127,7 @@
     <h2>과제 2: 카드 플립(2D 전용)</h2>
     <ul>
         <li>앞면·뒷면이 있는 카드를 hover 시 rotateY로 뒤집는다.</li>
-        <li>각 면은 backface-visibility: hidden 설정, 부모에는 perspective 적용.</li>
+        <li>각 면은 backface-visibility: hidden 설정.</li>
     </ul>
 </section>
 
