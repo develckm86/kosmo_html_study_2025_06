@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>keyframe으로 복잡한 애니매이션을 만들어보자</title>
+</head>
+<style>
+    .wrap{
+        border: 1px solid;
+        background-color: #f9c2c2;
+    }
+    .box {
+        border: 1px solid;
+        width: 100px;
+        height: 100px;
+    }
+    .container:hover .box{
+        box-sizing: border-box;
+        transition: all 1s ease;
+        background-color: red;
+        transform: translateX( calc(100vw - 100%));
+    }
+    .move-color .box{
+        animation-name: move-change-color;
+        animation-duration: 1s;
+        animation-timing-function: ease;
+        animation-iteration-count: 3;
+    }
+
+    @keyframes move-change-color {
+        /*0%{}*/
+        50%{
+            transform: translateX(40vw) translateY(5vh);
+            background-color: green;
+        }
+        100%{
+            transform: translateX(100vw) translateY(0vh);
+            background-color: red;
+        }
+    }
+    .move-box{
+        animation: move-box 1s ease 2 1s;
+        background-color: #6c767b;
+        transform: translateX(0);
+    }
+    @keyframes move-box {
+        0%{
+            background-color: white;
+            transform: translateX(100px);
+        }
+        50%{
+            transform: translateX(50vw);
+        }
+        100%{
+            transform: translateX(100vw);
+        }
+    }
+</style>
+<body>
+    <h1>keyframe으로 복잡한 애니매이션을 만들어보자</h1>
+    <h2>transition과 keyframe 차이점</h2>
+    <p>기본상태에서 이벤트에 의해 상태가 바껴야 transition적용가능</p>
+    <div class="container">
+        <div class="box"></div>
+    </div>
+    <hr>
+    <div class="wrap move-color">
+        <div class="box"></div>
+    </div>
+
+
+    <h2>animation-direction으로 동작의 방향 정의</h2>
+    <div class="wrap">
+        <div class="box move-box"
+        style="animation-direction: normal">normal</div>
+        <div class="box move-box"
+        style="animation-direction: reverse"
+        >reverse</div>
+        <div class="box move-box"
+        style="animation-direction: alternate"
+        >alternate</div>
+        <div class="box move-box"
+        style="animation-direction: alternate-reverse">
+            alternate-reverse
+        </div>
+    </div>
+
+    <h2>animation fill mode로 애니매이션의 시작과 끝을 지정하기</h2>
+    <div class="wrap">
+        <div class="box move-box"></div>
+        <div class="box move-box"
+             style="animation-fill-mode: forwards"
+        >forwards</div>
+        <div class="box move-box"
+            style="animation-fill-mode: backwards">backwards</div>
+        <div class="box move-box"
+            style="animation-fill-mode: both">both</div>
+
+    </div>
+
+
+
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+</body>
+</html>
