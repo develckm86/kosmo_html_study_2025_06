@@ -328,6 +328,17 @@
     <section>
         <h2> 타자기 효과</h2>
         <p><code>steps()</code>로 글자가 “한 글자씩” 나타나는 효과 + 커서 깜빡임.</p>
+        <h3>폰토 크기와 관련된 단위</h3>
+        <ul>
+            <li>em	해당 요소의 폰트 크기(px)</li>
+            <li>ex	해당 요소의 폰트의 x높이 </li>
+            <li>cap 해당 요소의 폰트의 대문자 높이(대문자의 공칭 높이)</li>
+            <li>ch 해당 요소의 폰트의 좁은 문자가 평균적으로 나아가는 길이, "0" (ZERO, U+0030) 문자로 대표됨.
+            </li>
+            <li>ic 해당 요소의 폰트의 전각 문자가 평균적으로 나아가는 길이, "水" (CJK 물 표의 문자, U+6C34) 문자로 대표됨.
+            </li>
+            <li>rem	루트 요소의 폰트 크기</li>
+        </ul>
         <div class="demo">
             <div class="typing-wrap">
                 <span class="typing">Hello, CSS Animation!</span>
@@ -368,6 +379,84 @@
     <section>
         <h2> 스프라이트 느낌의 steps 애니메이션</h2>
         <p>가로로 이어진 5프레임 시트를 <code>steps(5)</code>로 프레임 점프. 실제 스프라이트 이미지로 교체 가능.</p>
+        <h3>선형 그라디언트로 배경색 지정하기</h3>
+        <ul>
+            <li><strong>기본 문법</strong>
+                <code>linear-gradient(direction, color-stop1, color-stop2, ...)</code>
+            </li>
+
+            <li><strong>방향 지정</strong>
+                - 각도: <code>90deg</code>, <code>45deg</code>
+                - 키워드: <code>to right</code>, <code>to bottom</code>, <code>to top left</code>
+            </li>
+
+            <li><strong>색상 지정</strong>
+                - 여러 색상 나열 가능
+                - 특정 지점 지정: <code>red 0%</code>, <code>blue 100%</code>
+            </li>
+
+            <li><strong>예시</strong>
+                - <code>linear-gradient(to right, red, blue)</code>
+                - <code>linear-gradient(45deg, #ff0000, #0000ff)</code>
+                - <code>linear-gradient(to bottom, #f00 0%, #0f0 50%, #00f 100%)</code>
+            </li>
+        </ul>
+        <style>
+            .container{
+                display: flex;
+            }
+            .box1 {
+                background: linear-gradient(to right, red, blue);
+            }
+
+            /* 2. 위에서 아래로 빨강 → 초록 → 파랑 */
+            .box2 {
+                background: linear-gradient(to bottom, #f00, #0f0, #00f);
+            }
+
+            /* 3. 45도 대각선 방향 빨강 → 파랑 */
+            .box3 {
+                background: linear-gradient(45deg, red, blue);
+            }
+
+            /* 4. 색상 위치 지정 (중간에 분리) */
+            .box4 {
+                background: linear-gradient(to right, red 0%, yellow 50%, green 100%);
+            }
+
+            /* 5. 투명도 활용 (겹쳐서 효과 만들기) */
+            .box5 {
+                background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
+            }
+
+            /* 6. 반복되는 선형 그라디언트 (줄무늬) */
+            .box6 {
+                background: repeating-linear-gradient(
+                        45deg,
+                        #3498db,
+                        #3498db 10px,
+                        #2ecc71 10px,
+                        #2ecc71 20px
+                );
+            }
+        </style>
+        <div class="container">
+                <div class="box box1"></div>
+
+                <div class="box box2"></div>
+
+                <div class="box box3"></div>
+
+                <div class="box box4"></div>
+
+                <div class="box box5"></div>
+
+                <div class="box box6"></div>
+            </li>
+        </div>
+
+        <hr>
+        <h3>과제 정답</h3>
         <div class="demo">
             <div class="sprite" role="img" aria-label="sprite running"></div>
         </div>
