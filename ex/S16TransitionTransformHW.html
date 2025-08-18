@@ -121,6 +121,18 @@
         <li>마우스를 카드에 올리면 살짝 위로 떠오르고 그림자가 깊어진다.</li>
         <li>transform: translateY(-8px)와 box-shadow를 transition으로 부드럽게 전환.</li>
     </ul>
+    <style>
+        .container{
+            border: 1px solid #ddd;
+        }
+        .box{
+            width: 5em;
+            height: 8em;
+        }
+    </style>
+    <div class="container">
+        <div class="box"></div>
+    </div>
 </section>
 
 <section>
@@ -129,6 +141,39 @@
         <li>앞면·뒷면이 있는 카드를 hover 시 rotateY로 뒤집는다.</li>
         <li>각 면은 backface-visibility: hidden 설정.</li>
     </ul>
+    <style>
+        .box{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #ddd;
+            transition: transform 1s ease;
+            backface-visibility: hidden
+        }
+        .box-wrap:hover .box {
+            transform: rotateY(180deg);
+        }
+        .box-wrap{
+            display: flex;
+            position: relative;
+        }
+        .back-box{
+            background: #ea6969;
+            transform: rotateY(180deg);
+            position: absolute;
+        }
+        .box-wrap:hover .back-box{
+            transform: rotateY(0deg);
+        }
+    </style>
+    <div class="container">
+        <div class="box-wrap">
+            <div class="box">플립 박스</div>
+            <div class="box back-box">뒤집힌 박스</div>
+        </div>
+
+    </div>
+
 </section>
 
 <section>
@@ -137,6 +182,42 @@
         <li>hover 시 밑줄이 왼쪽에서 오른쪽으로 확장되는 애니메이션.</li>
         <li>transform: scaleX(0) → scaleX(1), transform-origin: left 사용.</li>
     </ul>
+    <style>
+        .underline-nav{
+            display: flex;
+            list-style: none;
+            justify-content: space-between;
+        }
+        .underline-nav li {
+            position: relative;
+        }
+        .underline-nav li::after{
+            /*position: absolute;*/
+            content: "";
+            height: 1em;
+            width: 100%;
+            transform-origin: 0% 100%;
+            transform: scaleX(0);
+            background: #000000;
+            display: block;
+            transition: transform .3s ease;
+        }
+        .underline-nav li:hover::after{
+            transform: scaleX(1);
+        }
+        .underline-nav a{
+            text-decoration: none;
+            color: #616161;
+        }
+    </style>
+    <div>
+        <ul class="underline-nav">
+            <li><a href="">01홈</a></li>
+            <li><a href="">02고객센터</a></li>
+            <li><a href="">03주문</a></li>
+            <li><a href="">04장바구니</a></li>
+        </ul>
+    </div>
 </section>
 
 <section>
@@ -145,6 +226,30 @@
         <li>이미지를 hover하면 안쪽으로 확대되며 자연스럽게 보인다.</li>
         <li>래퍼에 overflow: hidden, 내부 img는 scale(1.15)로 확대.</li>
     </ul>
+    <style>
+        .img-wrap{
+            width: 10em;
+            height: 10em;
+            overflow: hidden;
+        }
+        .img-wrap>img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .3s ease;
+            transform: scale(1);
+        }
+        .img-wrap:hover>img{
+            transform: scale(1.15);
+        }
+    </style>
+
+
+    <div class="img-wrap">
+        <img src="/src/img/유럽3.jpeg" alt="유럽여행">
+    </div>
+
+
 </section>
 
 <section>
@@ -153,7 +258,135 @@
         <li>아이콘 hover 시 툴팁이 커지면서 나타난다.</li>
         <li>transform: scale(0.9) + opacity: 0 → scale(1) + opacity: 1로 전환.</li>
     </ul>
+    <hr>
+    <style>
+        [data-tip]::after{
+            /*attr : 속성값을 가져오는 함수 content에서 사용*/
+            content: attr(data-tip);
+            position: absolute;
+            /*  보모요소가 relative 지정이 어려울때 => translateX,Y  */
+            transform: translateY(-1.5em) scale(0);
+            display: inline-block;
+            /* inline scale이 동작하지 않음   */
+            background: #000;
+            color: #fff;
+            padding: .2em .4em;
+            border-radius: 0.2em;
+            font-size: .8em;
+            transition: all .3s ease;
+            transform-origin: left bottom;
+        }
+        [data-tip]:hover::after {
+            transform: translateY(-1.5em) scale(1);
+        }
+
+    </style>
+    <span data-tip="하트">❤️</span>
+    <b>다른요소</b>
 </section>
+
+<section>
+    <h2>애플 드롭다운 네비바 만들기</h2>
+    <style>
+        #drop-down-nav>.nav{
+            display: flex;
+            justify-content: space-evenly;
+            background-color: black;
+            color: white;
+            list-style: none;
+            width: 500px;
+        }
+        #drop-down-nav-wrap{
+            position: relative;
+        }
+        #drop-down-nav-wrap>#drop-down-nav{
+            display: flex;
+            justify-content: center;
+        }
+        #drop-down-nav>.nav>li:hover .sub-nav-wrap{
+            transform: scaleY(1);
+        }
+        #drop-down-nav .sub-nav-wrap{
+            position: absolute;
+            background-color: #6c767b;
+            left: 0;
+            width: 100%;
+            transform: scaleY(0);
+            transition: transform .3s ease;
+            transform-origin: top left;
+            display: flex;
+            justify-content: center;
+        }
+        #drop-down-nav .sub-nav-wrap>ul{
+            width: 500px;
+        }
+    </style>
+
+    <header id="drop-down-nav-wrap">
+        <nav id="drop-down-nav">
+<!--            ul.nav>(li{$$}>div.sub-nav-wrap>ul>li{$$}*5)*5-->
+            <ul class="nav">
+                <li>01
+                    <div class="sub-nav-wrap">
+                        <ul>
+                            <li>01</li>
+                            <li>02</li>
+                            <li>03</li>
+                            <li>04</li>
+                            <li>05</li>
+                        </ul>
+                    </div>
+                </li>
+                <li>02
+                    <div class="sub-nav-wrap">
+                        <ul>
+                            <li>01</li>
+                            <li>02</li>
+                            <li>03</li>
+                            <li>04</li>
+                            <li>05</li>
+                        </ul>
+                    </div>
+                </li>
+                <li>03
+                    <div class="sub-nav-wrap">
+                        <ul>
+                            <li>01</li>
+                            <li>02</li>
+                            <li>03</li>
+                            <li>04</li>
+                            <li>05</li>
+                        </ul>
+                    </div>
+                </li>
+                <li>04
+                    <div class="sub-nav-wrap">
+                        <ul>
+                            <li>01</li>
+                            <li>02</li>
+                            <li>03</li>
+                            <li>04</li>
+                            <li>05</li>
+                        </ul>
+                    </div>
+                </li>
+                <li>05
+                    <div class="sub-nav-wrap">
+                        <ul>
+                            <li>01</li>
+                            <li>02</li>
+                            <li>03</li>
+                            <li>04</li>
+                            <li>05</li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+</section>
+
 <h3>1. 카드 리프트</h3>
 <!-- 1. 카드 리프트 -->
 <div class="card">카드</div>
