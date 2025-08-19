@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 브라우저의 크기가 디바이스의 크기고 비유을 1로 하겠다.   -->
+    <title>미디어 쿼리로 반응형 웹 구현</title>
+    <style>
+        body{
+            background: #6c767b;
+        }
+        nav>ul{
+            display: flex;
+            flex-direction: row;
+            width: 700px;
+            justify-content: space-between;
+        }
+        /*미디어쿼리 max-width 는 큰해상도를 먼저 작성*/
+        @media (max-width: 700px) {
+            body{
+                background: #f9c2c2;
+            }
+            nav>ul{
+                flex-direction: column;
+            };
+        }
+        @media (max-width: 400px) {
+            body{
+                background: #3498db;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <h1>미디어 쿼리로 반응형 웹 구현</h1>
+    <header>
+        <nav>
+            <ul>
+                <li>01HOME</li>
+                <li>02가방상품</li>
+                <li>03상의</li>
+                <li>04하의</li>
+                <li>05회원가입</li>
+            </ul>
+        </nav>
+    </header>
+
+
+
+</body>
+</html>
