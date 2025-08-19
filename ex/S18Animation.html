@@ -162,26 +162,30 @@
             /* 1. 무한 회전 (transition으로 불가: 이벤트 없어도 계속 반복) */
             .spin {
                 background: #3498db;
-                animation: spin 2s linear 10;
+                /*animation: spin 2s linear 10;*/
+                animation-name: spin;
+                animation-duration: 2s;
+                animation-timing-function: linear;
+                animation-iteration-count: infinite;
 
             }
             .spin:hover {
                 animation-play-state: paused;
             }
             @keyframes spin {
-                to { transform: rotate(360deg); }
+                100% { transform: rotate(360deg); }
             }
 
             /* 2. 여러 단계 색상 변화 (transition은 시작-끝만 가능) */
             .color-cycle {
                 background: red;
-                animation: cycle 4s infinite;
+                animation: cycle 4s infinite alternate;
             }
             @keyframes cycle {
                 0%   { background: red; }
                 33%  { background: orange; }
                 66%  { background: limegreen; }
-                100% { background: red; }
+                100% { background: blue; }
             }
 
             /* 3. 타자 효과 (steps, transition은 불가) */
