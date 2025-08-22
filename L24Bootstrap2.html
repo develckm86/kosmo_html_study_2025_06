@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>부트스트랩</title>
+    <link rel="stylesheet" href="/src/bootstrap-5.3.7/dist/css/bootstrap.css">
+    <script src="/src/bootstrap-5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+<!--   화면에 렌더링 된 요소(node 개체)를 제어     -->
+        document.addEventListener('DOMContentLoaded', function(){
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-3">부트스트랩</h1>
+        <p>source 를 추가하면 자동완성 제공</p>
+        <h2>
+            <button>버튼</button>
+            <button class="btn btn-outline-warning">버튼</button>
+        </h2>
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item">01</li>
+            <li class="breadcrumb-item active">02</li>
+            <li class="breadcrumb-item">03</li>
+            <li class="breadcrumb-item">04</li>
+            <li class="breadcrumb-item">05</li>
+        </ul>
+<!--    xs(작은핸드폰 se), sm(핸드폰), md(큰핸드폰 or 작은테블릿), lg(작은모니터), xl (모니터) xxl     -->
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between justify-content-lg-start">
+                최경민
+                <span class="badge text-bg-secondary">
+                    01
+                </span>
+            </li>
+            <li class="list-group-item active">02</li>
+            <li class="list-group-item disabled">03</li>
+            <li class="list-group-item">04</li>
+            <li class="list-group-item">05</li>
+        </ul>
+        <h3>툴팁</h3>
+        <button title="기본제공툴팁">툴팁</button>
+        <button data-bs-title="커트텀툴팁"
+                data-bs-toggle="tooltip"
+        >부트스트랩 툴팁</button>
+<!--        <script>-->
+<!--            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')-->
+<!--            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))-->
+<!--        </script>-->
+        <p>
+            <button id="toast1-btn" class="btn btn-primary">1번 토스트 열기</button>
+            <button id="toast-all-btn" class="btn btn-danger">모든 토스트 열기</button>
+        </p>
+       <div class="toast-container">
+           <div id="toast1" class="toast">
+               <div class="toast-header">
+                   <strong class="me-auto">제목입니다.</strong>
+                   <small>20 분전 </small>
+                   <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+               </div>
+               <div class="toast-body">
+                   일어나~~~~
+               </div>
+           </div>
+           <div id="toast2" class="toast">
+               <div class="toast-header">
+                   <strong class="me-auto">제목입니다.</strong>
+                   <small>30 분전 </small>
+                   <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+               </div>
+               <div class="toast-body">
+                   일어나~~~~ 제발
+               </div>
+           </div>
+       </div>
+        <script>
+<!--     document.getElementById : 노드개체를 id로 찾기       -->
+            const toast1Btn=document.getElementById('toast1-btn');
+            const toast1=document.getElementById('toast1');
+            const toasts=document.getElementsByClassName('toast');
+            const toastAllBtn=document.getElementById('toast-all-btn');
+            //[toast1,toast2]
+            toastAllBtn.addEventListener("click",function(){
+                for(let toast of toasts){
+                    toast=new bootstrap.Toast(toast);
+                    toast.show();
+                }
+            });
+            toast1Btn.onclick=function(){
+                // console.log("안녕!!")
+                // toast1.classList.toggle('show');
+                const toast=new bootstrap.Toast(toast1);
+                toast.show();
+            }
+
+        </script>
+
+
+
+
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+    </div>
+</body>
+</html>
