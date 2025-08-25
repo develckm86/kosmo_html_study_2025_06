@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>경로와 iframe</title>
+    <link rel="stylesheet" href="/src/css/study.css"/>
+</head>
+<body>
+    <h1>경로와 iframe</h1>
+    <section>
+        <h2>1. 외부 스타일시트 (External CSS)</h2>
+        <ul>
+            <li><code>&lt;link&gt;</code> 태그로 CSS 파일을 연결</li>
+            <li>작성 위치: 보통 <code>&lt;head&gt;</code> 안</li>
+            <li>여러 HTML 문서에서 재사용 가능, 유지보수 용이</li>
+            <li>예시:
+                <pre><code>&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;link rel="stylesheet" href="style.css"&gt;
+&lt;/head&gt;</code></pre>
+            </li>
+        </ul>
+        <h2>2. 내부 스타일시트 (Internal CSS)</h2>
+        <ul>
+            <li><code>&lt;style&gt;</code> 태그 안에 CSS 작성</li>
+            <li>작성 위치: 보통 <code>&lt;head&gt;</code> 안, 외부 스타일 및</li>
+            <li>해당 HTML 문서에만 적용</li>
+            <li>예시:
+                <pre><code>&lt;head&gt;
+  &lt;style&gt;
+    body { background: lightblue; }
+  &lt;/style&gt;
+&lt;/head&gt;</code></pre>
+            </li>
+        </ul>
+        <h2>3. 인라인 스타일 (Inline CSS)</h2>
+        <ul>
+            <li>요소의 <code>style</code> 속성에 직접 작성</li>
+            <li>작성 위치: 해당 태그 내부 속성</li>
+            <li>특정 요소 하나에만 적용, 유지보수 불편</li>
+            <li>예시:
+                <pre><code>&lt;p style="color: red; font-size: 20px;"&gt;인라인 예시&lt;/p&gt;</code></pre>
+            </li>
+        </ul>
+        <h2>4. 적용 우선순위</h2>
+        <ul>
+            <li>인라인 &gt; 내부 &gt; 외부</li>
+            <li>같은 속성이 충돌하면 더 가까운(우선순위 높은) 선언이 적용</li>
+        </ul>
+    </section>
+    <section>
+        <h2>1. 절대경로 (Absolute Path)</h2>
+        <ul>
+            <li>루트(최상위)에서 시작하는 전체 경로</li>
+            <li>운영체제 경로나 프로토콜(http/https)까지 포함된 전체 URL</li>
+            <li>예시:
+                <pre><code>
+/home/user/project/index.html        (Linux)
+/Users/경민/Documents/file.txt       (Mac)
+C:\Users\경민\Desktop\test.html      (Windows)
+http://localhost:63342/html_study/L26Resource.html
+https://example.com/assets/css/style.css
+      </code></pre>
+            </li>
+        </ul>
+
+        <h2>2. 상대경로 (Relative Path)</h2>
+        <ul>
+            <li>현재 문서가 있는 위치를 기준으로 리소스를 찾는 경로</li>
+            <li>종류:
+                <ul>
+                    <li><strong>./</strong> : 현재 폴더 기준
+                        예) <code>./style.css</code> → 현재 폴더의 style.css</li>
+                    <li><strong>../</strong> : 상위 폴더 기준
+                        예) <code>../img/cat.png</code> → 상위 폴더의 img/cat.png</li>
+                    <li><strong>파일명</strong> : 같은 폴더 안의 파일
+                        예) <code>script.js</code> → 현재 폴더의 script.js</li>
+                    <li><strong>/</strong> : 루트 상대경로 (서버 최상위 기준)
+                        예) <code>/src/img/cat.png</code> → 서버 루트(/) 기준으로 src/img/cat.png</li>
+                </ul>
+            </li>
+        </ul>
+        <h2>3. 비교</h2>
+        <ul>
+            <li><strong>절대경로</strong>: 언제나 같은 위치를 가리킴 (주소 고정)</li>
+            <li><strong>상대경로</strong>: 현재 문서 위치에 따라 달라짐 (유연하지만 이동에 취약)</li>
+            <li><strong>루트 상대경로(/)</strong>: 서버 루트 기준으로 찾기 때문에 프로젝트 최상단 구조를 기준으로 일정함</li>
+        </ul>
+    </section>
+    <h2>CORP (Cross-Origin Resource Policy)</h2>
+    <section>
+        <h2>1. 개념</h2>
+        <ul>
+            <li><strong>CORP</strong>는 다른 출처(origin)에서 불러오는 리소스를 브라우저가 어떻게 다룰지 결정하는 보안 정책</li>
+            <li>기본 보안 정책인 SOP(Same-Origin Policy)를 보완하는 역할</li>
+            <li>리소스 제공자가 “이 리소스는 어디서 불러 쓸 수 있는가?”를 명시</li>
+        </ul>
+        <h2>2. 설정 방법</h2>
+        <ul>
+            <li>서버가 응답 헤더에 다음과 같이 추가</li>
+            <pre><code>Cross-Origin-Resource-Policy: same-origin</code></pre>
+        </ul>
+        <h2>3. 주요 옵션</h2>
+        <ul>
+            <li><strong>same-origin</strong> : 같은 출처에서만 리소스 사용 가능</li>
+            <li><strong>same-site</strong> : 동일 사이트 내 (예: example.com 과 sub.example.com) 허용</li>
+            <li><strong>cross-origin</strong> : 어떤 출처에서든 사용 가능</li>
+        </ul>
+        <h2>4. 동작 예시</h2>
+        <ul>
+            <li>이미지가 <code>https://example.com/img.png</code>에 있을 때</li>
+            <li>헤더: <code>Cross-Origin-Resource-Policy: same-origin</code></li>
+            <li><code>https://example.com/page.html</code> → 정상 표시</li>
+            <li><code>https://other.com/page.html</code> → 차단됨</li>
+        </ul>
+        <h2>5. 필요성</h2>
+        <ul>
+            <li>민감한 리소스가 다른 사이트에 무단으로 포함되는 것 방지</li>
+            <li>데이터 유출 차단</li>
+            <li>COEP, CORS 등 다른 정책과 함께 사용하여 보안을 강화</li>
+        </ul>
+    </section>
+    <h1>페이지 안의 작은 브라우저 창 iframe</h1>
+    <section>
+        <h2>1. 개념</h2>
+        <ul>
+            <li><strong>&lt;iframe&gt;</strong>은 HTML 문서 안에 또 다른 HTML 문서나 외부 웹페이지를 삽입할 때 사용하는 태그</li>
+            <li>“페이지 안의 작은 브라우저 창” 역할을 함</li>
+        </ul>
+        <h2>2. 기본 문법</h2>
+        <ul>
+            <li>형식:
+                <pre><code>&lt;iframe src="주소" width="가로크기" height="세로크기"&gt;&lt;/iframe&gt;</code></pre>
+            </li>
+            <li><strong>src</strong>: 불러올 문서(URL 또는 경로)</li>
+            <li><strong>width, height</strong>: 프레임 크기 지정 (px 또는 %)</li>
+        </ul>
+        <h2>3. 주요 속성</h2>
+        <ul>
+            <li><strong>src</strong> : 불러올 문서의 경로</li>
+            <li><strong>title</strong> : 프레임 제목 (접근성 향상용)</li>
+            <li><strong>frameborder</strong> : 테두리 표시 여부 (0: 없음, 1: 있음)</li>
+            <li><strong>allowfullscreen</strong> : 전체 화면 허용</li>
+            <li><strong>loading="lazy"</strong> : 화면에 보일 때만 로드 (성능 최적화)</li>
+            <li><strong>referrerpolicy</strong> : 참조 정보 전달 정책</li>
+            <li><strong>sandbox</strong> : 보안 옵션 (스크립트 실행, 폼 제출, 팝업 등 제한)</li>
+        </ul>
+        <h2>4. 경로 사용 예시</h2>
+        <ul>
+            <li><strong>상대경로</strong>
+                <pre><code>&lt;iframe src="./L01Hello.html"&gt;&lt;/iframe&gt;</code></pre>
+            </li>
+            <li><strong>루트 상대경로</strong>
+                <pre><code>&lt;iframe src="/L01Hello.html"&gt;&lt;/iframe&gt;</code></pre>
+            </li>
+            <li><strong>절대경로(URL)</strong>
+                <pre><code>&lt;iframe src="http://localhost:63342/html_study/L01Hello.html"&gt;&lt;/iframe&gt;</code></pre>
+            </li>
+            <li><strong>외부 사이트</strong>
+                <pre><code>&lt;iframe src="https://www.naver.com"&gt;&lt;/iframe&gt;</code></pre>
+            </li>
+        </ul>
+        <h2>5. 활용 예시</h2>
+        <ul>
+            <li>내부 문서 포함하기</li>
+            <pre><code>&lt;iframe src="sub/page.html" width="400" height="300"&gt;&lt;/iframe&gt;</code></pre>
+            <li>외부 사이트 포함하기</li>
+            <pre><code>&lt;iframe src="https://example.com" width="600" height="400"&gt;&lt;/iframe&gt;</code></pre>
+            <li>YouTube 영상 임베드</li>
+            <pre><code>&lt;iframe width="560" height="315"
+  src="https://www.youtube.com/embed/동영상ID"
+  title="YouTube video player"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen&gt;&lt;/iframe&gt;</code></pre>
+        </ul>
+    </section>
+
+</body>
+</html>
