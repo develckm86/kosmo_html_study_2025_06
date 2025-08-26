@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>영역 scope</title>
+</head>
+<body>
+    <h1>영역 scope {}</h1>
+    <script>
+        let a=10; //전체영역 global scope
+        {
+            let a=20; //지역 local scope
+            //a는 {}내부에서만 사용
+            console.log(a);
+        }
+        console.log(a);
+
+        //////////////////java == js
+        let b=30;
+        {
+            console.log(b); //전역 변수는 지역에서 사용가능
+            let c=30;
+        }
+        {
+            //console.log(c);
+            //형제간의 변수는 공유될 수 없다.
+        }
+
+        {
+            {
+                {
+                    {
+                        //중척스코프
+                        let a=100;
+                        //지역 변수는 전역변수와
+                        // 같은 이름을 선언할 수 있다.
+                        {
+                            console.log(a);
+                            //가장 가까운 역역(부모)의 a
+                        }
+                    }
+                }
+            }
+        }
+
+        function sum(){} //{}지역
+        function sum2(a,b){} //a,b 지역변수
+        if(a<20){let a=30;}
+
+
+        let d=200;
+        //let d=200;
+        // 같은 이름의 변수를 같은 영역에서 여러번 선언 불가 =>오류
+
+        //변수의 특징 (let, const)
+        //같은 이름을 두번 선언 못함
+        //부모영역의 변수를 자식 영역이 참조
+
+    </script>
+</body>
+</html>
