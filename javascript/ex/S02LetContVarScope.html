@@ -275,5 +275,84 @@ console.log(a);</code></pre>
             </li>
         </ol>
     </section>
+    <section>
+        <ol>
+            <li>
+            <pre><code>console.log(a);
+var a = 10;</code></pre>
+                정답: undefined
+                해설: var는 호이스팅되어 선언만 위로 올라가고 초기값은 undefined로 설정된다.
+            </li>
+
+            <li>
+            <pre><code>console.log(b);
+let b = 20;</code></pre>
+                정답: ReferenceError 발생
+                해설: let은 호이스팅되지만 TDZ(Temporal Dead Zone)에 걸려 초기화 전 참조가 불가능하다.
+            </li>
+
+            <li>
+            <pre><code>let x = 10;
+let x = 20;</code></pre>
+                정답: SyntaxError 발생
+                해설: 같은 스코프 내에서 let(또는 const)로 동일한 변수를 두 번 선언할 수 없다.
+            </li>
+
+            <li>
+            <pre><code>{
+    var y = 100;
+}
+console.log(y);</code></pre>
+                정답: 100
+                해설: var는 블록 스코프를 무시하고 실행 컨텍스트 전역에 등록된다.
+            </li>
+
+            <li>
+            <pre><code>const pi = 3.14;
+pi = 3.14159;</code></pre>
+                정답: TypeError 발생
+                해설: const는 상수로 재할당이 불가능하다.
+            </li>
+
+            <li>
+            <pre><code>var z = 1;
+var z = 2;
+console.log(z);</code></pre>
+                정답: 2
+                해설: var는 같은 스코프에서 여러 번 선언이 가능하고, 마지막 값으로 덮어쓴다.
+            </li>
+
+            <li>
+            <pre><code>{
+    let a = 50;
+    const b = 60;
+}
+console.log(a, b);</code></pre>
+                정답: ReferenceError 발생
+                해설: let과 const는 블록 스코프를 가지므로 블록 바깥에서 참조할 수 없다.
+            </li>
+
+            <li>
+                호이스팅 시 var와 let/const의 차이
+                정답: var는 선언이 호이스팅되어 undefined로 초기화되지만, let/const는 TDZ에 놓여 초기화 전 접근이 불가능하다.
+            </li>
+
+            <li>
+                왜 var보다 let/const를 권장하는가?
+                정답: var는 블록 스코프가 없어 의도치 않은 전역 변수 생성과 버그를 유발한다. let/const는 블록 스코프를 가지며 더 안전하다.
+            </li>
+
+            <li>
+            <pre><code>let a = 10;
+{
+    let a = 20;
+    console.log(a);
+}
+console.log(a);</code></pre>
+                정답: 20, 10
+                해설: 안쪽 블록에서는 새로운 지역 변수 a=20이 선언되어 출력되고, 바깥에서는 전역 a=10이 출력된다 (스코프 체인).
+            </li>
+        </ol>
+    </section>
 </body>
 </html>
