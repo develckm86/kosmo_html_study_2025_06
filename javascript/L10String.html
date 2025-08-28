@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>문자열 데이터</title>
+</head>
+<body>
+    <h1>문자열 데이터</h1>
+    <p id="userName"></p>
+    <script>
+        let str="안녕";
+        console.log(str);
+        str='잘가';
+        console.log(str)
+        str=`자바스크립트`;
+        console.log(str)
+
+        // str="안녕
+        //     경민";
+        str=`안녕
+             경민`;
+        console.log(str);
+        let name="지형";
+        str=`<b>
+                ${name}
+             </b>`;
+        userName.innerHTML=str;
+        console.log("name",name);
+        console.log("name.length",name.length);
+        console.log("name[0]",name[0]);
+        console.log("name[1]",name[1]);
+        //문자열은 순서와 길이가 있는 데이터
+    </script>
+
+
+</body>
+</html>
