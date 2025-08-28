@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>실수 데이터가 저장되는 방식</title>
+</head>
+<body>
+    <h1>실수 데이터가 저장되는 방식</h1>
+    <script>
+        let a=10;
+        //10=>2진수로 변환 후 저장
+        //2**3 + 2**1
+        //1010(2)
+        // 000000000000000000000000001010
+        //-10
+        a=-10;
+        console.log(a,a.toString(2));
+        // 00000  0
+        // 11111  -0 =>-1
+
+        // 000000000000000000000000001010
+        // 111111111111111111111111110110
+        //기본형을 변수가 참조하고 있다가 랩퍼클래스의 함수를 참조하면
+        //자동으로 자료형으로 형변환
+        //console.log(-10.toString(2));
+
+        //Number : 기본형을 지원하는 자료형 데이터??
+        console.log(Number(10).toString(2))
+        console.log(Number(10).toString(16))
+        console.log(Number(15).toString(16))
+        console.log(Number(16).toString(16))
+        console.log(Number(10.0).toString(2))
+        a=10.0;
+        //10.0 => 2진수로 변환 후
+        // 지수표기법으로 변환 후 지수부와 가수부로 저장
+        //java : float 4, double 8
+        //js : number 8 (== java.double)
+        // 0 1bit 00..11bit.00  000 ..52bit.. 000
+        // 1 1bit 00..11bit.00  000 ..52bit.. 000
+        // 실수는 0 ,-0이 존재합니다.
+        // 10.0 => 1010
+        // 10.0 => 1010 => 0.01 *2**3
+        // 00000....1010
+        // 0 00000000011 01000.....000
+
+        //소수점을 2진수로 변환!!
+        a=0.1;
+        console.log(a,a.toString(2))
+        //10진수중 2로 나누어 떨어지는 값을 2진수로 변환
+        //0.0001100110011001100110011001100110011001100110011001101
+        //1.10011001100110011001100110011001100*2**-4
+        //0 11100 10011001100110011001100110011001100
+        a=0.5;
+        console.log(a,a.toString(2))
+        a=0.25;
+        console.log(a,a.toString(2))
+        a=0.125
+        console.log(a,a.toString(2))
+        a=0.9;
+        console.log(a,a.toString(2))
+
+        console.log(10/3)
+        console.log("0.5+0.25=",0.5+0.25)
+        console.log("0.1+0.2=",0.1+0.2)
+        //0.30000000000000004
+    </script>
+</body>
+</html>
