@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>문자열의 유용한 메서드</title>
+</head>
+<body>
+    <h1>문자열의 유용한 메서드</h1>
+    <script>
+        //검색 메소드
+        let str="경민 안녕!"
+        console.log(str[0],str[1],str[2])
+        console.log(str.charAt(1));
+        console.log(str.charCodeAt(1));
+        //48124 utf-16에서 '민'의 코드
+        console.log("A".charCodeAt(0));
+        console.log("a".charCodeAt(0));
+        str="abfcdefg";
+        console.log(str.indexOf("bc"))
+        console.log("str.indexOf(\"f\")",str.indexOf("f"))
+        console.log(str.indexOf("h"))//-1 없을때
+        console.log(str.indexOf("c",1))
+        console.log(str.indexOf("c",3))
+        console.log(str.includes("cd"))
+        console.log(str.includes("dc"))
+        console.log(str.includes("c",1))
+        console.log(str.includes("c",3))
+        //***암기 X => 찾아서 사요!!
+        //lastIndexOf 뒤에서 부터 찾다가 먼저찾는 문자열
+        console.log(str.lastIndexOf("f"))
+        //match, matchAll 정규표현식!!
+        //추출
+        //substring,slice,substr(x)
+        console.log(str.substring(3,5))
+        console.log(str.substring(3))
+        console.log(str.slice(3,5))
+        console.log(str.slice(3))
+        console.log(str.slice(-3))
+        console.log(str.slice(-3,-1))
+        //slice는 뒤에서 부터 자를 수 있음
+
+        //변환!!=>바꾼 데이터를 반환
+        console.log(str.toUpperCase());
+        console.log(str);//문자열은 불변(기본형)이라 변형불가
+        str="HIJKL";
+        console.log(str.toLowerCase());
+        str=`
+        경민    `;
+        console.log(str.toUpperCase());
+        console.log(str)
+        console.log(str.trim())
+
+        str="경민"; //6자리 0000경민
+        console.log(str.padStart(6,'0'))
+        console.log(str.padEnd(6,'0'))
+
+        //결합,분할,반복
+        console.log(str+" "+"안녕!");
+        console.log(`${str}님 안녕하세요~`)
+        console.log(str.concat(" ", "안녕","!"))
+
+        str="010-1234-5678";
+        console.log(str.split("-"))
+        console.log(str.split(""))
+
+        str="JS";
+        console.log(str.repeat(10))
+
+        //교체 replace,replaceAll
+
+        str="책상 의자 모니터 의자";
+
+        console.log(str.replace("의자","키보드"))
+        console.log(str.replaceAll("의자","키보드"))
+
+    </script>
+</body>
+</html>

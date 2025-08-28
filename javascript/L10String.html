@@ -30,7 +30,95 @@
         console.log("name[0]",name[0]);
         console.log("name[1]",name[1]);
         //문자열은 순서와 길이가 있는 데이터
+
+        //문자열의 자동형변환
+        //+ 수학적 더하기연산
+        //+ 문자열 더하기연산(concat):숫자가 문자열로 형변환
+        console.log("1+1",1+1);
+        console.log("1+'1'",1+'1');
+        console.log("'1'+'1'",'1'+'1');
+        console.log(11*11);
+        //+를 제외한 수학적연산은 모두 수로형변환
+        console.log("11"*"11");
+        console.log("11"/"11");
+        console.log("11"%"11");
+        console.log("11"**"11");
+        let a="11";
+        console.log(++a);
+        a="11"
+        console.log(--a);
+
+        //비교연산!!
+        console.log(11==11);//true
+        console.log(11=="11"); //수
+        console.log(11>"10");
+        console.log(11<"20");
+
+        //문자열간의 비교연산!! => 수로형변환( == 제외! )
+        console.log("11"<"20")
+        //동등비교는 크기를 비교하는 것이 아니기 때문에 수로형변환X
+        console.log("11"=="20")
+
+        //수로형변환되지 않는 문자열간의 크기비교!!(양변이 문자열)
+        console.log("a"<"b");
+        console.log("azzz"<"bzzz");
+        //문자열에서 맨앞의 문자의 인코딩 번호를 비교
+        console.log(97<98);
+
+        //하는 수이고 하나는 문자열인데 수로형변환되지 않는것(NaN)
+        console.log(11<"20"); //11<20
+        console.log(11<"안녕!"); //11<Number("안녕")
+
+        //NaN 는 무엇과 비교해도 false 심지어 NaN조차도
+        console.log(NaN>0);
+        console.log(NaN<0);
+        console.log(NaN==NaN);
+
+        //Number.isNaN(NaN) : 문자열을 형변환 후 NaN지 확인
+        //isNaN(NaN될 문자열) : 문자열이 Number가 될 수 없는지 확인
+        console.log(isNaN("경민"))
+        console.log(isNaN("11"))
+        console.log(Number.isNaN("경민"));
+        console.log(Number.isNaN(+"경민"));
+        console.log(Number.isNaN(NaN));
+
+        //문자열을 수로 형변환 하는 함수
+        //Number
+        a="12.3" //parsing : 파싱=>강제형변환(형변환이 안될수도 있는)
+        console.log("Number(a)",Number(a))
+        console.log("Number.parseInt(a)",Number.parseInt(a));
+        console.log("Number.parseFloat(a)",Number.parseFloat(a));
+        // console.log(a.parseInt())
+        //Math.truc(12.3)=>12
+        //Number.parseInt("12.3") =>12
+        a="a12.3"
+        console.log("Number(a)",Number(a))
+        console.log("Number.parseInt(a)",Number.parseInt(a));
+        console.log("Number.parseFloat(a)",Number.parseFloat(a));
+        a="12.3rem"
+        console.log("Number(a)",Number(a))
+        console.log("Number.parseInt(a)",Number.parseInt(a));
+        console.log("Number.parseFloat(a)",Number.parseFloat(a));
     </script>
+    <p>
+        <label for="userAge">나이</label>
+        <input type="text" id="userAge" value="10">
+    </p>
+    <p>유저는 <b id="agePrint"> </b>입니다. </p>
+    <script>
+        //input 입력하고 밖으로 빠져나옴 => blur
+        //input 입력 =>input
+        //input 바껴서 + blur  =>change
+
+        userAge.onchange=function(){
+            console.log(isNaN(userAge.value));
+            console.log( Math.trunc((userAge.value)/10));
+        }
+    </script>
+
+
+
+
 
 
 </body>
