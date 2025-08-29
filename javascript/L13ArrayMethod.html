@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>배열 Array의 유요한 함수들</title>
+</head>
+<body>
+    <h1>배열 Array의 유요한 함수들</h1>
+    <script>
+        //추가 제거
+        //push pop shift unshift
+        const arr=[1,2,3];
+        // arr[3]=4;
+        arr[arr.length]=4;//==push
+        console.log(arr)
+        arr.push(50);
+        console.log(arr);
+        console.log(arr.pop(),arr)
+        console.log(arr.shift(),arr)
+        //shift와 unshift는 사용권장 x
+        //unshift<->push
+        arr.unshift(1);
+        console.log(arr)
+
+        //delete : 프로티를 지우는 연산자
+        //배열을 지우면 empty
+        delete arr[1];
+        console.log(arr)
+
+        //splice(시작,삭제할 수,[삽입할 배열])
+        arr[1]=2;
+        console.log(arr)
+        console.log(arr.splice(1,2,"2","3"))
+        // console.log(arr.splice(1,2,["2","3"]))
+        console.log(arr)
+        //splice(start,count,...args)
+        //slice(start,end)
+        const strArr=[..."012345678"];
+        console.log(strArr.slice(2,5))
+        //배열 더하기 함수
+        console.log([1,2,3].concat([4,5,6]))
+        console.log([...[1,2,3],...[4,5,6]])
+        console.log([1,2,3]+[4,5,6]);
+        //배열은 더하기가 안됨 => 문자열로 형변환 후 더함
+
+
+        //indexOf,lastIndexOf,includes
+
+        const chars=[..."사가나다라마바사"];
+        //['사','가', '나', '다', '라', '마', '바', '사']
+        console.log(chars.indexOf("라"));
+        console.log(chars.indexOf("자"));
+        console.log(chars.indexOf("사")); //0
+        console.log(chars.lastIndexOf("사")); //0
+        console.log(chars.includes("마"));//true
+        console.log(chars.includes("타"));//falase
+        //배열의 반복문 관련 함수는 반복문 배우고,iterator 배우고 다시..
+
+        //sort 정렬
+
+        const nums2=[99,-100,1,50,25];
+        nums2.sort();//정방향(x) 오름차순 ASC (a,b)=>a-b
+        console.log(nums2);
+        nums2.sort((a,b)=>b-a); //내림차순 DESC 정렬 == reverse()
+        console.log(nums2)
+
+        //Array.isArray();
+        let obj="";
+        console.log(typeof obj)
+        obj=13;
+        console.log(typeof obj)
+        obj=[]; //자료형
+        console.log(typeof obj);//Array => object
+        console.log(Array.isArray(obj));
+        console.log(Array.isArray("obj"));
+        console.log(Array.isArray(14));
+        console.log(Array.isArray(document.querySelector("div")));
+
+    </script>
+</body>
+</html>
