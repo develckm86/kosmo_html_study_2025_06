@@ -108,6 +108,44 @@
         </ul>
     </section>
     <section>
+        <ul>
+            <li>
+                <strong>스프레드 문법 (...)</strong><br>
+                배열이나 객체를 펼쳐서 새로운 배열/객체를 만들거나 함수의 인자로 전달할 때 사용<br>
+                예시:
+                <pre>
+const arr1 = [1, 2, 3];
+const arr2 = [0, ...arr1, 4];
+// [0, 1, 2, 3, 4]
+
+    </pre>
+            </li>
+
+            <li>
+                <strong>구조 분해 할당 (Destructuring)</strong><br>
+                배열이나 객체의 값을 변수에 쉽게 할당할 수 있는 문법<br>
+                예시:
+                <pre>
+const colors = ["red", "green", "blue"];
+const [first, second] = colors;
+console.log(first); // red
+console.log(second); // green
+    </pre>
+            </li>
+
+            <li>
+                <strong>나머지 문법 (Rest)</strong><br>
+                일부 요소를 변수로 받고, 나머지를 별도의 배열에 담을 때 사용<br>
+                예시:
+                <pre>
+const [first, ...rest] = [10, 20, 30, 40];
+console.log(first); // 10
+console.log(rest);  // [20, 30, 40]
+    </pre>
+            </li>
+        </ul>
+    </section>
+    <section>
         <h2>자바스크립트 배열 메서드 정리</h2>
 
         <h3>1. 요소 추가 / 제거</h3>
