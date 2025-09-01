@@ -191,5 +191,308 @@ let arr = ["경민", 39];
 console.log(arr[0]); // "경민"
     </pre>
     </section>
+    <section>
+        <h2>Object 문제</h2>
+        <h3>개념 확인</h3>
+        <ul>
+            <li>- <strong>문항 1</strong><br>자바스크립트 자료형을 큰 범주로 구분하라. 각 범주의 특징을 한 줄씩 요약하라.</li>
+            <li>- <strong>문항 2</strong><br>기본형(Primitive)이 “불변”이라는 말의 의미를 문자열 예시 하나로 설명하라.</li>
+            <li>- <strong>문항 3</strong><br>객체(Object)가 “가변”이라는 말의 의미를 간단한 코드로 설명하라. 프로퍼티 추가·수정 예시를 포함하라.</li>
+            <li>- <strong>문항 4</strong><br>null, undefined, symbol, bigint를 각각 한 줄로 정의하고, 사용 예를 1개씩 드시오.</li>
+            <li>- <strong>문항 5</strong><br>객체 리터럴과 Object 생성자 방식의 차이를 설명하고, 동일한 구조의 객체를 두 방식으로 각각 작성하라.</li>
+        </ul>
+        <h3>저장·비교·메모리</h3>
+        <ul>
+            <li>- <strong>문항 6</strong><br>기본형과 객체의 “저장 방식” 차이를 스택/힙 용어를 사용해 3문장 이내로 설명하라.</li>
+            <li>- <strong>문항 7</strong><br>아래 코드의 콘솔 출력 결과를 쓰고, 그 이유를 “값 비교 vs 참조 비교” 관점에서 설명하라.
+                <pre>
+const a = { x: 1 };
+const b = { x: 1 };
+console.log(a === b);
+      </pre>
+            </li>
+            <li>- <strong>문항 8</strong><br>다음 코드에서 c와 d의 비교 결과를 예측하고, 결과가 다른 이유를 설명하라.
+                <pre>
+let c = 10;
+let d = c;
+d = d + 5;
+console.log(c, d);
+      </pre>
+            </li>
+        </ul>
+        <h3>Object 유틸리티 메서드</h3>
+        <ul>
+            <li>- <strong>문항 9</strong><br>Object.keys, Object.values, Object.entries의 반환 형태 차이를 한 줄씩 설명하고, 같은 객체를 대상으로 세 메서드의 결과를 각각 쓰시오.</li>
+            <li>- <strong>문항 10</strong><br>Object.hasOwn(obj, key)의 목적을 설명하고, 프로토타입 체인에 같은 이름의 프로퍼티가 있을 때 동작을 확인하는 코드를 작성하라.</li>
+        </ul>
+        <h3>배열 vs 객체</h3>
+        <ul>
+            <li>- <strong>문항 11</strong><br>배열과 객체의 “키 형태”와 “length 관리” 관점 차이를 3문장 이내로 설명하라.</li>
+            <li>- <strong>문항 12</strong><br>아래 코드 실행 후 length 값과 실제 채워진 인덱스를 설명하라.
+                <pre>
+const arr = [];
+arr[3] = "A";
+console.log(arr.length);
+      </pre>
+            </li>
+            <li>- <strong>문항 13</strong><br>배열로 순서가 중요한 데이터를, 객체로 키-값 매핑이 중요한 데이터를 각각 예시로 1개씩 제시하고 이유를 설명하라.</li>
+            <li>- <strong>문항 14</strong><br>아래 user 객체를 배열로 바꾸는 것이 더 적합한 경우를 가정하고, 그 기준(판단 근거)을 2가지 제시하라.
+                <pre>
+const user = { 0: "Kim", 1: "39", 2: "Seoul" };
+      </pre>
+            </li>
+        </ul>
+        <h3>생성자 vs 클래스</h3>
+        <ul>
+            <li>- <strong>문항 15</strong><br>생성자 함수와 클래스 문법이 “문법적 설탕” 관계라는 말을, 프로토타입 관점에서 3문장 이내로 설명하라.</li>
+            <li>- <strong>문항 16</strong><br>생성자 함수 User와 ES6 클래스 User를 각각 작성하고, 인스턴스가 동일한 프로토타입 메서드 greet를 공유함을 보여주는 코드를 작성하라.</li>
+            <li>- <strong>문항 17</strong><br>new 없이 생성자 함수를 호출했을 때 발생할 수 있는 문제를 설명하고, 이를 방지하는 수단(예: 내부 검사)을 코드로 시연하라.</li>
+        </ul>
+        <h3>코드 동작 예측·디버깅</h3>
+        <ul>
+            <li>- <strong>문항 18</strong><br>다음 코드의 출력 결과를 모두 쓰고, 각 줄의 이유를 간단히 설명하라.
+                <pre>
+const obj = { a: 1 };
+const ref = obj;
+ref.a = 2;
+console.log(obj.a);
+console.log(ref === obj);
+      </pre>
+            </li>
+            <li>- <strong>문항 19</strong><br>아래 코드에서 주석의 의도를 만족하도록 한 줄만 수정하라. 수정 전·후 동작 차이를 설명하라.
+                <pre>
+// 의도: user2 변경이 user1에 영향을 주지 않아야 한다.
+const user1 = { name: "GM", info: { city: "Seoul" } };
+const user2 = user1; // &lt;-- 이 줄만 수정
+user2.name = "KM";
+console.log(user1.name); // "GM"이 출력되어야 함
+      </pre>
+            </li>
+        </ul>
+        <h3>미니 실습</h3>
+        <ul>
+            <li>- <strong>문항 20</strong><br>객체 리터럴을 사용하여 학생(student) 객체를 만들고, 이름(name)과 나이(age)를 속성으로 저장한 뒤 콘솔에 출력하라.</li>
+            <li>- <strong>문항 21</strong><br>생성자 함수 Student를 작성하여 name과 age 속성을 초기화하고, 새로운 인스턴스를 생성해보라.</li>
+            <li>- <strong>문항 22</strong><br>클래스 문법을 사용하여 User 클래스를 만들고, 생성자를 통해 name과 age를 설정한 후 인스턴스를 생성하라.</li>
+        </ul>
+    </section>
+    <section>
+        <h2>정답 및 해설</h2>
+        <ol>
+            <li>
+                <p><strong>문항 1</strong> — 자바스크립트 자료형 구분</p>
+                <ul>
+                    <li>기본형(Primitive): 단일 값, 불변, 값 자체 저장</li>
+                    <li>객체(Object): 키-값 구조, 가변, 참조(주소) 저장</li>
+                </ul>
+            </li>
+
+            <li>
+                <p><strong>문항 2</strong> — 문자열 불변성</p>
+                <pre><code>// 불변이므로 직접 수정 불가
+const s = "hello";
+s[0] = "H"; // 효과 없음
+const t = "H" + s.slice(1); // "Hello" (새 값 생성)</code></pre>
+            </li>
+
+            <li>
+                <p><strong>문항 3</strong> — 객체 가변성</p>
+                <pre><code>let user = { name: "Kim" };
+user.age = 30;     // 추가
+user.name = "Lee"; // 수정
+delete user.age;   // 삭제</code></pre>
+            </li>
+
+            <li>
+                <p><strong>문항 4</strong> — null/undefined/symbol/bigint</p>
+                <ul>
+                    <li>null: “의도적 무값” <code>let a = null;</code></li>
+                    <li>undefined: “미할당” <code>let b; // undefined</code></li>
+                    <li>symbol: 고유 키 <code>let s = Symbol("id");</code></li>
+                    <li>bigint: 큰 정수 <code>let n = 9007199254740993n;</code></li>
+                </ul>
+            </li>
+
+            <li>
+                <p><strong>문항 5</strong> — 객체 리터럴 vs Object 생성자</p>
+                <pre><code>// Object 생성자
+let u1 = new Object();
+u1.name = "Kim";
+u1.age = 30;
+
+// 객체 리터럴
+let u2 = { name: "Kim", age: 30 };
+
+// 차이: 리터럴이 더 간결하고 직관적</code></pre>
+            </li>
+
+            <li>
+                <p><strong>문항 6</strong> — 스택/힙 저장</p>
+                <ul>
+                    <li>기본형: 스택에 값 자체 저장</li>
+                    <li>객체: 스택에 참조(주소), 실제 데이터는 힙</li>
+                    <li>스택은 빠르고 작음, 힙은 넓고 관리 필요(GC)</li>
+                </ul>
+            </li>
+
+            <li>
+                <p><strong>문항 7</strong> — 참조 비교</p>
+                <pre><code>const a = { x: 1 };
+const b = { x: 1 };
+console.log(a === b); // false (서로 다른 주소)</code></pre>
+            </li>
+
+            <li>
+                <p><strong>문항 8</strong> — 값 복사</p>
+                <pre><code>let c = 10;
+let d = c;
+d = d + 5;
+console.log(c, d); // 10 15 (기본형은 값 복사)</code></pre>
+            </li>
+
+            <li>
+                <p><strong>문항 9</strong> — keys/values/entries</p>
+                <pre><code>const obj = { name: "Kim", age: 30 };
+Object.keys(obj);    // ["name", "age"]
+Object.values(obj);  // ["Kim", 30]
+Object.entries(obj); // [["name","Kim"], ["age",30]]</code></pre>
+                <ul>
+                    <li>keys: 키 배열</li>
+                    <li>values: 값 배열</li>
+                    <li>entries: [키,값] 쌍 배열</li>
+                </ul>
+            </li>
+
+            <li>
+                <p><strong>문항 10</strong> — Object.hasOwn</p>
+                <pre><code>// Object.create 대신 생성자/프로토타입 사용 (create 주제 제외 유지)
+function Person() {}
+Person.prototype.city = "Seoul";
+
+const user = new Person();
+user.name = "Kim";
+
+console.log(Object.hasOwn(user, "name")); // true (직접 소유)
+console.log(Object.hasOwn(user, "city")); // false (프로토타입 소유)</code></pre>
+                <p>직접 소유 프로퍼티에 대해서만 true를 반환한다.</p>
+            </li>
+
+            <li>
+                <p><strong>문항 11</strong> — 배열 vs 객체(키/length)</p>
+                <ul>
+                    <li>배열: 정수 인덱스 키, <code>length</code> 자동 관리, 순서 보장</li>
+                    <li>객체: 문자열/심볼 키, <code>length</code> 없음, 키-값 중심</li>
+                </ul>
+            </li>
+
+            <li>
+                <p><strong>문항 12</strong> — length 계산</p>
+                <pre><code>const arr = [];
+arr[3] = "A";
+console.log(arr.length); // 4 (가장 큰 인덱스 + 1)</code></pre>
+            </li>
+
+            <li>
+                <p><strong>문항 13</strong> — 쓰임 예시</p>
+                <ul>
+                    <li>배열: 예) 점수 목록 <code>[80, 90, 70]</code> — 순서/반복 중요</li>
+                    <li>객체: 예) ID→이름 <code>{ id1: "Kim", id2: "Lee" }</code> — 키 조회 중요</li>
+                </ul>
+            </li>
+
+            <li>
+                <p><strong>문항 14</strong> — “숫자 키 객체”를 배열로 바꾸는 기준</p>
+                <ul>
+                    <li>인덱스 순회/정렬 등 순서 연산이 주 용도라면 배열</li>
+                    <li><code>length</code> 자동 관리가 필요하면 배열</li>
+                </ul>
+                <pre><code>const user = { 0: "Kim", 1: "39", 2: "Seoul" }; // 배열이 더 적합한 형태</code></pre>
+            </li>
+
+            <li>
+                <p><strong>문항 15</strong> — “문법적 설탕” 설명</p>
+                <ul>
+                    <li>클래스는 프로토타입 기반을 더 직관적으로 표현한 문법</li>
+                    <li>내부적으로 생성자 함수 + 프로토타입과 유사하게 동작</li>
+                    <li>가독성과 선언적 구문을 제공할 뿐 본질은 동일</li>
+                </ul>
+            </li>
+
+            <li>
+                <p><strong>문항 16</strong> — 생성자 함수/클래스 + 프로토타입 메서드 공유</p>
+                <pre><code>// 생성자 함수
+function User(name){ this.name = name; }
+User.prototype.greet = function(){ return "Hi " + this.name; };
+const u1 = new User("Kim"), u2 = new User("Lee");
+console.log(u1.greet === u2.greet); // true
+
+// 클래스
+class UserC {
+  constructor(name){ this.name = name; }
+  greet(){ return "Hi " + this.name; }
+}
+const c1 = new UserC("Kim"), c2 = new UserC("Lee");
+console.log(c1.greet === c2.greet); // true</code></pre>
+            </li>
+
+            <li>
+                <p><strong>문항 17</strong> — new 없이 호출 방지</p>
+                <pre><code>function User(name){
+  if (!(this instanceof User)) return new User(name); // 방지
+  this.name = name;
+}
+const a = User("Kim");     // 자동 보정
+const b = new User("Lee"); // 정상
+console.log(a instanceof User, b instanceof User); // true true</code></pre>
+            </li>
+
+            <li>
+                <p><strong>문항 18</strong> — 참조 공유 확인</p>
+                <pre><code>const obj = { a: 1 };
+const ref = obj;
+ref.a = 2;
+console.log(obj.a);       // 2
+console.log(ref === obj); // true</code></pre>
+            </li>
+
+            <li>
+                <p><strong>문항 19</strong> — 한 줄 수정(얕은 복사로 분리)</p>
+                <pre><code>// 의도: user2 변경이 user1에 영향을 주지 않아야 한다.
+const user1 = { name: "GM", info: { city: "Seoul" } };
+const user2 = { ...user1 }; // &lt;-- 이 줄만 수정 (얕은 복사)
+user2.name = "KM";
+console.log(user1.name); // "GM"</code></pre>
+                <p>참고: 얕은 복사이므로 <code>info</code> 같은 중첩 객체는 여전히 공유된다(이번 문항의 변경 범위에는 영향 없음).</p>
+            </li>
+
+            <li>
+                <p><strong>문항 20</strong> — 객체 리터럴로 학생 만들기</p>
+                <pre><code>let student = { name: "Kim", age: 20 };
+console.log(student);</code></pre>
+            </li>
+
+            <li>
+                <p><strong>문항 21</strong> — 생성자 함수로 Student 만들기</p>
+                <pre><code>function Student(name, age){
+  this.name = name;
+  this.age = age;
+}
+const s = new Student("Lee", 22);
+console.log(s);</code></pre>
+            </li>
+
+            <li>
+                <p><strong>문항 22</strong> — 클래스 문법으로 User 만들기</p>
+                <pre><code>class User {
+  constructor(name, age){
+    this.name = name;
+    this.age = age;
+  }
+}
+const u = new User("Park", 30);
+console.log(u);</code></pre>
+            </li>
+        </ol>
+    </section>
 </body>
 </html>
