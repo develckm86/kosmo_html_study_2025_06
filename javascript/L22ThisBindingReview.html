@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>this 바이딩 복습</title>
+</head>
+<body>
+    <h1>this 바이딩 복습</h1>
+    <script>
+        function sum(a,b){
+            return a + b;
+        }
+        let a=sum(10,20);
+        console.log(a)
+        //타입 내부의 있는 함수
+        function Calc(a,b){
+            this.a=a;
+            this.b=b; //필드를 this로 정의
+            this.arrowSum=()=>{
+                console.log(this.a+this.b);
+            }//화살표함수 ==java 처럼
+            //선언된 위치의 new Calc()==this 가 절대 고정 (this 캡처)
+
+            this.sum=function(){ //바인딩
+                console.log(this.a+this.b);
+                //sum을 호출할때 this 머냐??
+                //=>this 바인딩
+                //자바 : 함수가 있는 위치가 this (new Calc()==this)
+                //js : 함수(function)를 실행하는 객체 누구든 this
+                // let user=new User()
+                // user.sum=calc.sum; //함수형 언어만 가능
+                // user.sum(); => this==new User()
+            }
+        }//생성자함수
+        let calc=new Calc(100,200);
+        console.log(calc);
+        calc.sum(); //300
+        calc=new Calc(1000,2000);
+        console.log(calc);
+        calc.sum();
+        //자료형을 찍어내듯 만들수 있는 것==type
+        ///window
+        window.a=88;
+        window.b=99;
+        // var a=55; //window.a=55
+        // var b=77;
+
+        let windowSum=calc.sum;
+        windowSum(); //undefined+(undefined=>NaN)
+
+        let windowArrowSum=calc.arrowSum;
+        windowArrowSum();
+
+
+
+
+
+
+    </script>
+
+
+
+
+
+
+</body>
+</html>

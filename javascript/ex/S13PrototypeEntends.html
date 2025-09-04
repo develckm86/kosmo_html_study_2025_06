@@ -103,30 +103,6 @@ console.log(Dog.prototype.__proto__ === Animal.prototype); // true
     </section>
 
     <section>
-        <h2>프로토타입을 다루는 표준 메서드</h2>
-        <ul>
-            <li><code>__proto__</code>는 이해용으로만 쓰고, 표준 메서드를 사용하는 것이 권장된다.</li>
-            <li><code>Object.create(proto)</code>: 지정한 객체를 프로토타입으로 하는 새 객체 생성</li>
-            <li><code>Object.getPrototypeOf(obj)</code>: 객체의 프로토타입 반환</li>
-            <li><code>Object.setPrototypeOf(obj, proto)</code>: 객체의 프로토타입 변경</li>
-        </ul>
-        <pre>
-const animal = { eats: true };
-
-// create: animal을 프로토타입으로 하는 rabbit 생성
-const rabbit = Object.create(animal);
-console.log(rabbit.eats); // true
-
-// getPrototypeOf
-console.log(Object.getPrototypeOf(rabbit) === animal); // true
-
-// setPrototypeOf
-const dog = {};
-Object.setPrototypeOf(dog, animal);
-console.log(dog.eats); // true
-  </pre>
-    </section>
-    <section>
             <h2>프로토타입을 다루는 표준 메서드</h2>
             <ul>
                 <li><code>__proto__</code>는 이해용으로만 쓰고, 표준 메서드를 사용하는 것이 권장된다.</li>
