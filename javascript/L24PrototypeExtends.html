@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>프로토타입의 상속</title>
+</head>
+<body>
+    <h1>프로토타입의 상속</h1>
+    <p>객체를 상속(권장), 프로토타입의 상속(고급 개발자)</p>
+    <script>
+        //js 상속 : __proto__ 객체간의 연결
+
+        let a={score:87 , a:()=>{console.log("a 입니다.")}}
+        let b={grade:"B+", b:()=>{console.log("b입니다.")}}
+        a.__proto__=b; //a가 b를 상속받겠다.
+        console.log(a.score,a.grade)
+        console.log(a)
+        a.a();
+        a.b();
+        //this => 객체의 필드를 정의하겠다.
+        function User(){
+            this.name="경민";
+            this.say=()=>{
+                console.log(this.name+"이 안녕!");
+            }
+        }
+        //객체.필드 : data =>객체에 명시
+        //객체.함수 : 현재는 data가 아닌데 호출될때 data로 생성
+        //=>함수를 프로토타입에 명시 => 함수상속은 가능
+        //User.prototype.name="지형";//(사용은 가능 but 권장하지 않음!)
+        User.prototype.protoSay=function(){
+            console.log(this.name+"이 프로토 안녕!!")
+        }
+
+        function Customer(){
+            this.id="1234";
+        }
+        Customer.prototype.__proto__=User.prototype;
+        console.log(User.prototype,Customer.prototype);
+        //타입(프로토타입)의 상속
+        // Customer name도 있고 say함수를 부모에게 요청가능!! =>둘다 없다!!
+        let user=new User();
+        console.log(user)
+        user.protoSay()
+        let customer=new Customer();
+        console.log(customer.name)
+        //customer.say()
+        customer.protoSay()
+
+        //class 문법
+        //자동으로 함수는 prototype에 명시됨 상속시 자동으로 함수가 상속됨
+        //prototype에 필드 명시하고 상속하는 것은 권장하지 않기 때문
+        //부모 필드를 자식과 결합
+
+
+        class Animal{
+            name="동물";
+            info(){
+                console.log("info 입니다.")
+            }
+        }
+        class Dog extends Animal{
+            tail="꼬리";
+            move(){
+                console.log("move 입니다.")
+            }
+        }
+        console.log(Animal.prototype);
+        let dog=new Dog();
+        console.log(dog)
+        //dog.move(); //dog.__proto==Dog.prototype :
+        //dog 객체가 Dog.prototype을 상속함
+        dog.info()
+
+
+
+
+
+
+
+
+    </script>
+
+
+
+</body>
+</html>
