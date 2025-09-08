@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>js event</title>
+    <style>
+        div.box{
+            width: 5em;
+            height: 5em;
+            border: 1px solid #000;
+            background: lightblue;
+            transition: all 1s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <h1>자바스크립트 이벤트로 요소에서 발생하는 이벤트를 재정의하자</h1>
+
+    <div id="ex1">
+        <div class="box"></div>
+    </div>
+    <script>
+        let box=document.querySelector("#ex1>.box");
+        box.onclick=function (){
+            this.innerText="click";
+            this.style.backgroundColor="red";
+        }
+        box.onclick=function (){
+            this.style.borderWidth="1em";
+        }
+    </script>
+    <hr>
+    <div id="ex2">
+        <div class="box"></div>
+    </div>
+    <script>
+        box=document.querySelector("#ex2>.box");
+        //간접적 이벤트 재정의
+        //box.onclick=function(){
+        //      a();
+        //      b();
+        // }
+        box.addEventListener("click",function (){
+            this.innerText+="클릭";
+            this.style.backgroundColor="purple";
+        }); //a
+        box.addEventListener("click",function (){
+            this.style.borderWidth="1em";
+        }); //b
+        //기존의 이벤트를 모두 1개로 바꾸는 경우가 아니면 
+        //addEventListener 사용을 권장합니다!!
+    </script>
+    <hr>
+    <div id="ex3" style="display: flex">
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+    </div>
+    <script>
+        let boxs=document.querySelectorAll("#ex3>.box");
+        //NodeList [ .box,.box,.box ]
+        //NodeList[index]
+        //NodeList.length
+        //NodeList.foreach()
+        // .  :필드접근자는 자신의 필드만 접근 가능
+        //LodeList.click=()=>{}
+        //안됨!! : 배열의 모든 노드를(index) 찾아서 onclick 정의
+        // jQuery 는 자동으로 반복자로 모든 아이템의 click을 재정의해줌
+        //jQuery : 비개발자(배열을 모르는 사람)를 위한 언어
+        // boxs[0].onclick=function (){
+        //     alert("안녕");
+        // }
+        // boxs[1].onclick=function (){
+        //     alert("안녕2");
+        // }
+
+        const boxsClickHandler=function (){
+            this.style.borderColor="red";
+            this.style.borderWidth="1em";
+            return 0;
+        };
+        for(let b of boxs){
+            b.addEventListener("click",boxsClickHandler);
+        }
+    </script>
+    <hr>
+<!--    div[style="display:flex"]#ex4>(div.box)*3-->
+    <div style="display:flex" id="ex4">
+        <div class="box" style="border-width: 1px;"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+    </div>
+    <script>
+        // <element style="" : 인라인 스타일 => js로 찾을 수 있음, js로 주는 스타일
+        //<style> div { red } .box,div.a.b.c.d.e.f.g.h.i.j{ blue} #box{purple}  : inter style => js로 찾을 수 없음
+        //js 요소에 최종적으로 적용된 스타일 window.getComputedStyle(요소)[style]
+        boxs=ex4.children;
+        for(let b of boxs){
+            b.addEventListener("click",function (){
+                // let borderWidth=this.style.borderWidth;
+                let borderWidth=window.getComputedStyle(this).borderWidth;
+                console.log(borderWidth);
+                //1px => null
+                //this.style : 요소(인라인)스타일
+                //this.style.borderWidth="1em";
+                if(borderWidth==="1px"){
+                    this.style.borderWidth="1em";
+                }else{
+                    this.style.borderWidth="1px";
+                }
+            })
+        }
+    </script>
+    <style>
+        /*.box 10 =>.box.selected 10*/
+        .box.selected{
+            border-width: 1em;
+            border-color: blue;
+        }
+    </style>
+    <hr>
+    <div style="display:flex" id="ex5">
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+    </div>
+    <script>
+        //class를 스타일의 변수처럼 사용 :부트스트랩,프론트엔드프레임워크..
+        boxs=ex5.children;
+        const selectedHandler=function (){
+            this.classList.toggle("selected");
+        }
+
+        for(let b of boxs){
+            b.addEventListener("click",selectedHandler);
+        }
+    </script>
+
+
+
+
+</body>
+</html>
