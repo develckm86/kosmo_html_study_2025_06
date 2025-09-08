@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="js">
+<head>
+    <meta charset="UTF-8">
+    <title>자바스크립트의 이벤트</title>
+    <link rel="stylesheet" href="/src/css/study.css">
+</head>
+<body>
+    <h1>자바스크립트의 이벤트</h1>
+    <section>
+        <h2>이벤트(Event)란?</h2>
+        <ul>
+            <li>웹 페이지에서 사용자나 시스템이 발생시키는 사건을 의미한다.</li>
+            <li>예: 마우스 클릭, 키보드 입력, 페이지 로드 완료, 네트워크 응답 등</li>
+            <li>자바스크립트는 이벤트가 발생했을 때 특정 동작(콜백 함수)을 실행하여 인터랙티브한 웹을 구현한다.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>자바스크립트 엔진과 이벤트 루프(Event Loop)</h2>
+        <ul>
+            <li>자바스크립트 엔진은 <strong>싱글 스레드</strong>로 동작한다.</li>
+            <li>동기 코드는 Call Stack(호출 스택)에서 바로 처리된다.</li>
+            <li>이벤트(비동기 작업: 클릭, setTimeout, 네트워크 응답 등)는 Web API 영역에서 대기한다.</li>
+            <li>작업이 끝나면 이벤트 콜백은 <strong>Task Queue(Callback Queue)</strong>에 들어간다.</li>
+            <li><strong>이벤트 루프(Event Loop)</strong>는 Call Stack이 비었는지 확인하고, 비어 있으면 Queue에서 콜백을 가져와 실행한다.</li>
+            <li>이 과정 덕분에 비동기 이벤트도 순차적으로 처리된다.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>이벤트 종류</h2>
+        <ul>
+            <li><strong>마우스 이벤트</strong>: click, dblclick, mousedown, mouseup, mousemove, mouseover, mouseout</li>
+            <li><strong>키보드 이벤트</strong>: keydown, keyup, keypress</li>
+            <li><strong>폼 이벤트</strong>: submit, change, input, focus, blur</li>
+            <li><strong>윈도우 이벤트</strong>: load, resize, scroll, unload</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>이벤트 정의 방법</h2>
+        <ul>
+            <li><strong>HTML 속성 방식</strong>
+                <pre><code>&lt;button onclick="alert('클릭됨')"&gt;클릭&lt;/button&gt;</code></pre>
+                요소 태그 속성에 직접 이벤트를 지정한다. (간단하지만 코드 분리 어려움)
+            </li>
+            <li><strong>자바스크립트 프로퍼티 방식</strong>
+                <pre><code>const btn = document.querySelector("button");
+btn.onclick = function() {
+  alert("클릭됨");
+};</code></pre>
+                요소의 이벤트 프로퍼티(onclick 등)에 콜백 함수를 할당한다. (단점: 여러 개 핸들러 불가)
+            </li>
+            <li><strong>addEventListener 방식</strong>
+                <pre><code>const btn = document.querySelector("button");
+btn.addEventListener("click", () =&gt; {
+  alert("클릭됨");
+});</code></pre>
+                하나의 이벤트에 여러 핸들러를 등록할 수 있고, 제거(removeEventListener)도 가능하다.
+            </li>
+        </ul>
+    </section>
+    <section>
+        <h2>마우스 이벤트</h2>
+        <ul>
+            <li><code>onclick</code> : 요소를 클릭했을 때</li>
+            <li><code>ondblclick</code> : 더블클릭했을 때</li>
+            <li><code>onmousedown</code> : 마우스 버튼을 누를 때</li>
+            <li><code>onmouseup</code> : 마우스 버튼을 뗄 때</li>
+            <li><code>onmousemove</code> : 마우스를 움직일 때</li>
+            <li><code>onmouseover</code> : 요소 위에 마우스가 올라올 때</li>
+            <li><code>onmouseout</code> : 요소 밖으로 마우스가 나갈 때</li>
+            <li><code>onmouseenter</code> : 요소에 처음 진입했을 때 (버블링 없음)</li>
+            <li><code>onmouseleave</code> : 요소에서 벗어날 때 (버블링 없음)</li>
+            <li><code>oncontextmenu</code> : 마우스 오른쪽 버튼(컨텍스트 메뉴) 클릭 시</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>키보드 이벤트</h2>
+        <ul>
+            <li><code>onkeydown</code> : 키가 눌렸을 때</li>
+            <li><code>onkeyup</code> : 키에서 손을 뗄 때</li>
+            <li><code>onkeypress</code> : 키가 눌려 문자 입력될 때 (현재는 비추천)</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>폼(Form) 이벤트</h2>
+        <ul>
+            <li><code>onsubmit</code> : 폼이 제출될 때</li>
+            <li><code>onreset</code> : 폼이 리셋될 때</li>
+            <li><code>oninput</code> : 입력값이 바뀔 때 (실시간)</li>
+            <li><code>onchange</code> : 입력 요소의 값이 바뀌고 포커스가 이동했을 때</li>
+            <li><code>onfocus</code> : 요소에 포커스가 올 때</li>
+            <li><code>onblur</code> : 요소에서 포커스가 사라질 때</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>윈도우(Window) 이벤트</h2>
+        <ul>
+            <li><code>onload</code> : 문서/리소스가 모두 로드될 때</li>
+            <li><code>onunload</code> : 문서가 언로드될 때</li>
+            <li><code>onresize</code> : 브라우저 창 크기가 변경될 때</li>
+            <li><code>onscroll</code> : 스크롤이 발생할 때</li>
+            <li><code>onerror</code> : 오류 발생 시</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>클립보드/드래그 이벤트</h2>
+        <ul>
+            <li><code>oncopy</code> : 복사할 때</li>
+            <li><code>oncut</code> : 잘라낼 때</li>
+            <li><code>onpaste</code> : 붙여넣기 할 때</li>
+            <li><code>ondrag</code> : 요소를 드래그할 때</li>
+            <li><code>ondrop</code> : 드롭했을 때</li>
+        </ul>
+    </section>
+    <section>
+        <h2>이벤트 객체(Event Object)</h2>
+        <ul>
+            <li>이벤트가 발생하면 브라우저는 자동으로 <code>Event 객체</code>를 생성하여 핸들러 함수의 첫 번째 인자로 전달한다.</li>
+            <li>이 객체에는 이벤트에 대한 다양한 정보와 속성이 들어 있다.</li>
+            <li>공통 속성:
+                <ul>
+                    <li><code>type</code>: 이벤트 종류 (예: "click")</li>
+                    <li><code>target</code>: 이벤트가 발생한 실제 요소</li>
+                    <li><code>currentTarget</code>: 이벤트 핸들러가 등록된 요소</li>
+                    <li><code>bubbles</code>: 이벤트 버블링 여부 (true/false)</li>
+                    <li><code>defaultPrevented</code>: 기본 동작 취소 여부</li>
+                    <li><code>preventDefault()</code>: 기본 동작 취소</li>
+                    <li><code>stopPropagation()</code>: 이벤트 전파 중단</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>마우스 이벤트 속성</h2>
+        <ul>
+            <li><code>clientX, clientY</code>: 브라우저 창 기준 좌표</li>
+            <li><code>pageX, pageY</code>: 문서 전체 기준 좌표</li>
+            <li><code>screenX, screenY</code>: 모니터 화면 기준 좌표</li>
+            <li><code>button</code>: 누른 마우스 버튼 (0:왼쪽, 1:휠, 2:오른쪽)</li>
+            <li><code>buttons</code>: 동시에 눌린 버튼 비트값</li>
+            <li><code>altKey, ctrlKey, shiftKey, metaKey</code>: 조합 키 상태</li>
+            <li><code>relatedTarget</code>: mouseover/mouseout 시 진입·이탈한 요소</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>키보드 이벤트 속성</h2>
+        <ul>
+            <li><code>key</code>: 실제 눌린 키 값 (예: "a", "Enter")</li>
+            <li><code>code</code>: 키보드 물리적 위치 코드 (예: "KeyA")</li>
+            <li><code>keyCode</code>: 과거 방식 (숫자 코드, 현재는 비추천)</li>
+            <li><code>altKey, ctrlKey, shiftKey, metaKey</code>: 조합 키 상태</li>
+            <li><code>repeat</code>: 키가 길게 눌려 반복 입력 중인지 여부</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>폼 이벤트 속성</h2>
+        <ul>
+            <li><code>target.value</code>: 입력 요소의 현재 값</li>
+            <li><code>target.checked</code>: 체크박스/라디오 버튼 선택 상태</li>
+            <li><code>target.selectedIndex</code>: 선택된 옵션의 인덱스</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>윈도우/문서 이벤트 속성</h2>
+        <ul>
+            <li><code>scrollX, scrollY</code>: 현재 스크롤 위치</li>
+            <li><code>innerWidth, innerHeight</code>: 브라우저 뷰포트 크기</li>
+            <li><code>event.timeStamp</code>: 이벤트 발생 시각(ms)</li>
+        </ul>
+    </section>
+</body>
+</html>
