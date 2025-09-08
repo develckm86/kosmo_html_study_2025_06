@@ -303,21 +303,15 @@ console.log(box.classList.contains("active"));
         </ul>
 
     </section>
-    <!DOCTYPE html>
-    <html lang="ko">
-    <head>
-        <meta charset="UTF-8" />
-        <title>DOM 탐색 실습 문제 20 (구체 지시문)</title>
-        <style>
-            /* 시각 확인용 보조 스타일 */
-            .red { color: red; }
-            .active { font-weight: bold; }
-            .selected { outline: 2px solid #3a86ff; }
-            .open { text-decoration: underline; }
-            .hidden { opacity: .4; }
-        </style>
-    </head>
-    <body>
+
+<style>
+        /* 시각 확인용 보조 스타일 */
+    .red { color: red; }
+    .active { font-weight: bold; }
+    .selected { outline: 2px solid #3a86ff; }
+    .open { text-decoration: underline; }
+    .hidden { opacity: .4; }
+</style>
     <h1>DOM 탐색 실습 문제 20</h1>
     <p>규칙: 전역 선택으로 직접 찾지 말고(예: <code>document.getElementById</code>), 컨테이너에서 시작해 <code>children</code>, <code>first/lastElementChild</code>, <code>next/previousElementSibling</code>, <code>closest</code>, <code>querySelector(All)</code> 등을 활용해 “관계 기반”으로 탐색·수정하세요.</p>
 
@@ -330,6 +324,10 @@ console.log(box.classList.contains("active"));
             <p>내용 B</p>
         </div>
     </section>
+    <script>
+        let cardChildLi=document.querySelector("#card>:first-child");
+        cardChildLi.innerText="내용내용C"
+    </script>
 
     <section id="q2">
         <h3>문제 2. 마지막 자식 클래스 추가</h3>
@@ -340,15 +338,29 @@ console.log(box.classList.contains("active"));
             <li>문의</li>
         </ul>
     </section>
+    <script>
+        let menu=document.querySelector("#menu");
+        // menu.children[0].className="red";
+        menu.children[0].classList.add("red");
+        console.log(menu.children[0].classList)
+        //DOMTokenList :유사 배열
+    </script>
 
     <section id="q3">
         <h3>문제 3. 형제 이전/다음 표시</h3>
         <p class="task">지시: <code>.focus</code>에서 이전 형제엔 “<strong>(prev)</strong>”, 다음 형제엔 “<strong>(next)</strong>”를 텍스트 뒤에 추가하라.</p>
         <div id="list">
-            <span class="item">A</span>
+            <span class="item">A </span>
             <span class="item focus">B</span>
             <span class="item">C</span>
         </div>
+        <script>
+            let focusSpan=document.querySelector("#list>.focus");
+            focusSpan.previousElementSibling.innerText+=" prev ";
+            focusSpan.nextElementSibling.innerText+=" next ";
+        </script>
+
+
     </section>
 
     <section id="q4">
@@ -360,6 +372,12 @@ console.log(box.classList.contains("active"));
             <button>탭3</button>
         </div>
     </section>
+    <script>
+        // document.querySelector("#tabs").children[1].classList.add("selected");
+        document.querySelector("#tabs>:nth-child(2)").classList.add("selected");
+    </script>
+
+
 
     <section id="q5">
         <h3>문제 5. closest로 카드 제목 변경</h3>
@@ -370,17 +388,57 @@ console.log(box.classList.contains("active"));
                 <button class="edit">편집</button>
             </div>
         </article>
+        <article class="card">
+            <header class="card-title">프로필</header>
+            <div class="card-body">
+                <button class="edit">편집</button>
+            </div>
+        </article>
     </section>
+    <script>
+         let editBtns=document.querySelectorAll(".card .edit");
+         console.log(editBtns)
+         for(let btn of editBtns){
+             btn.onclick=()=>{
+                 btn.closest(".card").querySelector(".card-title")
+                     .innerText+="(편집모드)"
+             }
+         }
 
+    </script>
     <section id="q6">
         <h3>문제 6. contains 확인 후 텍스트 변경</h3>
-        <p class="task">지시: <code>#panel</code>이 <code>.msg</code>를 포함하면 <code>.msg</code>의 텍스트를 <strong>“안내(확인됨)”</strong>으로 바꿔라.</p>
+        <p class="task">지시: <code>#panel</code>의 <code>.info</code>가 <code>.msg</code>를 포함하면 <code>.msg</code>의 텍스트를 <strong>“안내(확인됨)”</strong>으로 바꿔라.</p>
         <section id="panel">
             <div class="wrap">
-                <p class="msg">안내</p>
+                <p class="info">안내</p>
+                <p class="info msg">안내</p>
+                <p class="info">안내</p>
+                <p class="info msg">안내</p>
+                <p class="info">안내</p>
+                <p class="info">안내</p>
+                <p class="info msg">안내</p>
             </div>
         </section>
     </section>
+    <script>
+        //?. : 필드가 있으면
+        // && : 있을때 까지 실행 (필드검사)
+
+       //부모요소.contains(자식요소) => boolean
+       //let msgP=document.querySelector("#panel .msg");
+       // if(msgP) msgP.innerText+=(" (확인됨)");
+       ///msgP && ( msgP.innerText+=(" (확인됨)") );
+       //let p=document.querySelector("#panel");
+        let infos=document.querySelectorAll("#panel .info");
+
+        for(let info of infos){
+            if(info.classList.contains("msg")){
+                info.innerText+="(확인됨)";
+            }
+        }
+
+    </script>
 
     <section id="q7">
         <h3>문제 7. matches로 조건부 클래스</h3>
