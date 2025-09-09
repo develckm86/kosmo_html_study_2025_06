@@ -126,7 +126,7 @@
         <script>
             ex1.addEventListener("click", (e) =>{
                 e.target.classList.toggle("active");
-            });
+            },true);
             for(let p of ex1.querySelectorAll("p")) {
                 p.addEventListener("click", (e) => {
                     e.target.classList.toggle("active");
