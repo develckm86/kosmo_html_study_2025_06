@@ -262,19 +262,96 @@ document.querySelector(".grid").classList.toggle("theme-large");
         <h3>문제 1. 클릭 시 배경색 변경, 호버 시 테두리 두께 변경</h3>
         <p>구현 팁: <code>click</code>, <code>mouseenter</code>, <code>mouseleave</code> 이벤트를 활용하세요.</p>
         <div class="box">P1</div>
+        <div class="box">P1</div>
     </section>
-
+    <script>
+        //#q1>div.box
+        let boxs=document.querySelectorAll("#p1>div.box");
+        for(let b of boxs){
+            // b.onclick=()=>{}
+            b.addEventListener("click", ()=>{
+               b.style.backgroundColor="pink";
+            });
+            b.addEventListener("mouseenter",(e)=>{
+                e.target.style.border="2px solid gray";
+            })
+            b.addEventListener("mouseleave",(e)=>{
+                e.currentTarget.style.border="1px solid black";
+            })
+        }
+    </script>
+    <style>
+        .on{
+            box-shadow: 2px 2px 4px #000;
+        }
+    </style>
     <section id="p2">
         <h3>문제 2. 더블클릭 시 스타일 토글, 우클릭 시 글자색 변경</h3>
         <p>구현 팁: <code>dblclick</code>, <code>contextmenu</code> 이벤트를 활용하세요.</p>
         <div class="box">P2</div>
     </section>
+    <script>
 
+        const onHandler= (e)=>{
+            e.preventDefault(); //기본동작막기!
+            //form.submit() : 제출기본동작!!
+            e.currentTarget.classList.toggle("on");
+            // boxs[0].classList.toggle("on");
+        }
+        let p2Box=document.querySelector("#p2>.box");
+        p2Box.addEventListener("dblclick", onHandler);
+        p2Box.addEventListener("contextmenu", onHandler);
+        //contextmenu 의 기본동작으로 메뉴가 뜬다.
+    </script>
     <section id="p3">
         <h3>문제 3. 마우스를 누르고 있는 동안 크기 확대, 떼면 원래 크기</h3>
         <p>구현 팁: <code>mousedown</code>, <code>mouseup</code> 이벤트를 활용하세요.</p>
-        <div class="box">P3</div>
+        <div class="box">
+            <span>P3</span>
+        </div>
     </section>
+    <script>
+        let p3Box=document.querySelector("#p3>.box");
+        // p3Box.addEventListener("mousedown", (e)=>{
+        //     // //js element.style : 요소 스타일
+        //     // let w=e.currentTarget.style.width;
+        //     // let h=e.currentTarget.style.height;
+        //     // let computedStyle=window.getComputedStyle(e.currentTarget);
+        //     // let w=computedStyle.width;
+        //     // let h=computedStyle.height;
+        //     let {width:w,height:h}=window.getComputedStyle(e.currentTarget);
+        //     w=Number.parseFloat(w);
+        //     h=Number.parseFloat(h);
+        //     console.log(w*1.5,h*1.5);
+        //     // e.currentTarget.style.width=w*1.5+"px";
+        //     // e.currentTarget.style.height=h*1.5+"px";
+        //     Object.assign(e.currentTarget.style,{
+        //         width:w*2+"px",
+        //         height:h*2+"px",
+        //     });
+        // });
+        const sizeHandler= (e,n)=>{
+            let {width,height} = window.getComputedStyle(e.currentTarget);
+            width=Number.parseFloat(width)*n;
+            height=Number.parseFloat(height)*n;
+            console.log(width,height);
+            Object.assign(e.currentTarget.style,{
+                width:width+"px",
+                height:height+"px"
+            });
+        }
+        p3Box.addEventListener("mousedown",(e)=>{
+            sizeHandler(e,1.5);
+        })
+        p3Box.addEventListener("mouseup",(e)=>{
+            sizeHandler(e,0.7);
+        })
+
+
+
+
+    </script>
+
 
     <section id="p4">
         <h3>문제 4. 마우스 올리면 그림자 추가, 벗어나면 그림자 제거</h3>
@@ -305,19 +382,54 @@ document.querySelector(".grid").classList.toggle("theme-large");
             <div class="box">3</div>
         </div>
     </section>
+    <script>
+        let wrap=document.querySelector("#p7>.wrap");
+        console.log(wrap);
+        wrap.addEventListener("click", function (e){
+            //this, e.target, e.currentTarget, wrap
+            // this.classList.toggle("on"); //==e.currentTarget
+            //e.currentTarget.classList.toggle("on");
+            e.target.classList.toggle("on");
+        });
+
+    </script>
+
 
     <section id="p8">
         <h3>문제 8. 현재 테두리 두께를 확인해 1px이면 1em, 아니면 1px로 전환</h3>
         <p>구현 팁: <code>getComputedStyle</code>을 사용하세요.</p>
         <div class="box">P8</div>
     </section>
-
+    <style>
+        .red{
+            background-color:#f00;
+        }
+    </style>
     <section id="p9">
         <h3>문제 9. 클릭 시 두 가지 동작 모두 실행</h3>
         <p>구현 팁: 같은 요소에 <code>addEventListener</code>를 두 번 써보세요.</p>
         <div class="box">P9</div>
     </section>
+    <script>
+        let p9Box=document.querySelector("#p9>.box");
+        console.log(p9Box);
+        // p9Box.onclick=(e)=>{
+        //     e.currentTarget.classList.toggle("on");
+        // }
 
+        p9Box.addEventListener("click", function (e){
+            e.currentTarget.classList.toggle("on");
+        })
+    </script>
+
+    <script>
+        // p9Box.onclick=(e)=>{
+        //     e.currentTarget.classList.toggle("red");
+        // }
+        p9Box.addEventListener("click", function (e){
+            e.currentTarget.classList.toggle("red");
+        })
+    </script>
     <section id="p10">
         <h3>문제 10. 마우스를 올리면 테두리 색 빨강, 벗어나면 검정으로</h3>
         <p>구현 팁: <code>mouseover</code>, <code>mouseout</code>을 활용하세요.</p>
@@ -341,16 +453,43 @@ document.querySelector(".grid").classList.toggle("theme-large");
         <p>구현 팁: <code>mouseenter</code>, <code>mouseleave</code>에서 <code>backgroundColor</code>를 변경하세요.</p>
         <div class="box">P13</div>
     </section>
-
+    <style>
+        .radius{
+            border-radius: 50%;
+        }
+    </style>
     <section id="p14">
         <h3>문제 14. 부모 영역에 마우스를 올리면 모든 자식 둥글게, 클릭 시 개별 토글</h3>
         <p>구현 팁: 부모에 <code>mouseenter</code>/<code>mouseleave</code>로 자식 전체에 스타일 적용, <code>click</code>으로 개별 토글하세요.</p>
-        <div class="wrap">
+        <div class="wrap" style="border: 1px solid black; padding: 1em;">
             <div class="box">X</div>
             <div class="box">Y</div>
             <div class="box">Z</div>
         </div>
     </section>
+    <script>
+        wrap=document.querySelector("#p14>.wrap");
+        wrap.addEventListener("mouseenter", function (e){
+            // console.log(e.target.children
+            for(let b of e.target.querySelectorAll(".box")){
+                b.classList.add("radius");
+            }
+        }); //mouseenter mouseover
+        wrap.addEventListener("mouseleave", function (e){
+            for(let b of e.target.querySelectorAll(".box")){
+                b.classList.remove("radius");
+            }
+        })
+        for(let b of wrap.querySelectorAll(".box")){
+            b.addEventListener("click", function (e){
+                e.currentTarget.classList.toggle("radius");
+            })
+        }
+
+
+
+    </script>
+
 
     <section id="p15">
         <h3>문제 15. 클릭 시 현재 스타일을 콘솔에 출력하고, 선택/둥글기/그림자 중 하나를 토글</h3>
