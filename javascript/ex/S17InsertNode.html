@@ -206,20 +206,36 @@
         <h1>일정 앱 과제 (노드 추가/삽입 중심)</h1>
 
         <!-- 입력 폼 -->
-        <form id="scheduleForm" class="toolbar" onsubmit="return false;">
-            <input id="titleInput" type="text" placeholder="제목" />
-            <input id="dateInput" type="datetime-local" />
-            <input id="placeInput" type="text" placeholder="장소(옵션)" />
+        <form id="scheduleForm" class="toolbar">
+            <input name="titleInput" type="text" placeholder="제목" />
+            <input name="dateInput" type="datetime-local" />
+            <input name="placeInput" type="text" placeholder="장소(옵션)" />
             <p>
-                <button id="addAppend">1.append로 추가</button>
-                <button id="addPrepend">2.prepend로 추가</button>
-                <button id="addBefore">3.before로 추가</button>
-                <button id="addAfter">4.after로 추가</button>
+                <button id="addAppend" type="submit">1.append로 추가</button>
+                <button id="addPrepend" type="button">2.prepend로 추가</button>
+                <button id="addBefore" type="button">3.before로 추가</button>
+                <button id="addAfter" type="button">4.after로 추가</button>
             </p>
         </form>
 
         <!-- 안내 -->
         <p class="muted">아래 문제 지시에 따라 스크립트를 작성하세요. innerHTML 남용 금지(문제에서 허용하는 경우만 사용).</p>
+        <style>
+            .d-none{
+                display: none;
+            }
+        </style>
+
+        <div class="item d-none" id="itemEx" >
+            <div>
+                <strong class="title"></strong>
+                <div class="meta">
+                    <span class="time"></span> ·
+                    <span class="place"></span>
+                </div>
+            </div>
+            <button class="btnRemove">삭제</button>
+        </div>
 
         <!-- 일정 리스트 -->
         <section class="list" id="scheduleList">
@@ -239,7 +255,111 @@
                 <button class="btnRemove">삭제</button>
             </div>
         </section>
+        <script>
+            const scheduleForm = document.querySelector('#scheduleForm');//스케줄등록폼
+            // const addAppend=document.querySelector('#addAppend');//스케줄을 마지막에 등록버튼
+            const addPrepend=document.querySelector('#addPrepend');//맨앞 등록버튼
+            const addBefore=document.querySelector('#addBefore');//특정 일정 앞 등록버튼
+            const addAfter=document.querySelector('#addAfter');//특정 일정 뒤 등록버튼
+            const scheduleList=document.querySelector('#scheduleList'); //일정 리스트
 
+            scheduleForm.addEventListener('submit',function (e){
+                e.preventDefault();
+                //scheduleForm==e.target(currentTarget)==this
+                let title=this.titleInput.value;
+                let date=this.dateInput.value.replace("T"," ");
+                let place=this.placeInput.value;
+                console.log(title,date,place);
+                //null , "" ,NaN,0 => false
+                if(!(title && date && place )){ //요효성검사
+                    alert("일정, 날짜, 장소 모두 입력해야합니다.");
+                    return; //함수종료
+                }
+                //1.html 문자열 => insertAdjacentHTML
+                let html=`
+            <div class="item">
+                <div>
+                    <strong>${title}</strong>
+                    <div class="meta">${date} · ${place}</div>
+                </div>
+                <button class="btnRemove">삭제</button>
+            </div>
+`;
+                scheduleList.insertAdjacentHTML("beforeend", html);
+            });
+            addPrepend.addEventListener('click',function (e){
+                //button click : e.target====this===addPrepend
+                //(e.target.form) : button을 포함하는 폼
+                let title=e.target.form.titleInput.value;
+                let date=e.target.form.dateInput.value.replace("T"," ");
+                let place=e.target.form.placeInput.value;
+                let divItem=createItemNode(title,date,place);
+                scheduleList.prepend(divItem);
+            });
+            addBefore.addEventListener('click',function (e){
+                let anchorItem=document.querySelector('#anchorItem');
+                let title=this.form.titleInput.value;
+                let date=this.form.dateInput.value.replace("T"," ");
+                let place=this.form.placeInput.value;
+                console.log(title,date,place);
+                let divItem=createItemNode(title,date,place);
+                anchorItem.before(divItem);
+
+            })
+
+
+            /*<div class="item">
+            <div>
+                <strong>${title}</strong>
+                <div class="meta">${date} · ${place}</div>
+            </div>
+            <button class="btnRemove">삭제</button>
+        </div> 해당 노드개체를 만들어서 반환하는 함수 */
+            function createItemNode(title,date,place){
+                let divItem=document.createElement("div");
+                divItem.className= "item";
+                let div=document.createElement("div");
+                let buttonRemove=document.createElement("button");
+                buttonRemove.className= "btnRemove";
+                buttonRemove.append("삭제");
+                divItem.append(div,buttonRemove);
+                let strong=document.createElement("strong");
+                let divMeta=document.createElement("div");
+                divMeta.className= "meta";
+                strong.append(title);
+                divMeta.append(`${date} · ${place}`);
+                div.append(strong,divMeta);
+                return divItem;
+            }
+            const itemEx=document.querySelector('#itemEx');
+
+            const itemCopy=function (title,time,place){
+                const item=itemEx.cloneNode(true);
+                item.removeAttribute("id");
+                item.classList.remove("d-none")
+                const titleNode=item.querySelector('.title');
+                const timeNode=item.querySelector('.time');
+                const placeNode=item.querySelector('.place');
+                titleNode.append(title);
+                timeNode.append(time);
+                placeNode.append(place);
+                return item;
+            }
+
+            addAfter.addEventListener('click',function (e){
+                const anchorItem=document.querySelector('#anchorItem');
+                let title=this.form.titleInput.value;
+                let time=this.form.dateInput.value.replace("T"," ");
+                let place=this.form.placeInput.value;
+                anchorItem.after(itemCopy(title,time,place));
+            });
+
+
+
+
+
+
+        </script>
         <hr />
 
         <section>
