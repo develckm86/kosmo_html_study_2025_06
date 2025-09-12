@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JSON</title>
+</head>
+<body>
+    <h1>JSON</h1>
+    <script>
+        //자료
+        //배열자료 : 인덱스+길이
+        let list=[1,2,3];
+        list=new Array(1,2,3);
+        list=Array.of(1,2,3);
+        console.log(list);
+        //Object 자료형(참조형,인스턴스)
+        let obj={a:10,b:20};
+        //객체를 리터럴하게표기?? => 통신???
+        //객체의 리털럴표기법을 통신에 사용하도록 문자열로 변경 => JSON
+        let json='{"a":10,"b":true,"c":"경민"}';
+        //객체선언 X => 통신데이터선언
+        //자바,파이썬,c,c++,c# 어떤 언어든 객체가 있고 기본형으로 수,논리,문자열
+        obj=JSON.parse(json);
+        //파싱 : 문자열를 형변환
+        ++obj.a;
+        obj.c+="아!";
+        obj.b=!obj.b
+        console.log(obj)
+        // let user={name:"두지형",age:20,isMarried:false};
+        let user=new Object();
+        user["name"]="두지형";
+        user.age=22;
+        user.isMarried=false;
+        user.score=NaN;
+        user.city=undefined; //undefined
+        //undefined : 없는 상태, js 기본형 타입으로 만듦...
+        user.country=null;
+        //데이터가 비어있다는 상태 (공용)
+        user.children=[1,2,3];
+        console.log(user);
+        user.say=()=>{
+            console.log("안녕!!");
+        }
+        let userStr=JSON.stringify(user);
+        console.log(userStr);
+
+
+
+
+
+
+
+
+    </script>
+</body>
+</html>
