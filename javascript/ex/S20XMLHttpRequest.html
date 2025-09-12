@@ -409,5 +409,100 @@ xhr.send();
         </script>
 
     </section>
+    <section>
+        <h1>Posts (상위 10개)</h1>
+        <ul id="posts"></ul>
+
+        <script>
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "https://jsonplaceholder.typicode.com/posts", true);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    const posts = JSON.parse(xhr.responseText);
+                    const list = document.getElementById("posts");
+                    posts.slice(0, 10).forEach(p => {
+                        const li = document.createElement("li");
+                        li.textContent = `${p.id}. ${p.title}`;
+                        list.appendChild(li);
+                    });
+                } else {
+                    console.error("에러:", xhr.status);
+                }
+            };
+            xhr.onerror = () => console.error("네트워크 에러");
+            xhr.send();
+        </script>
+
+    </section>
+    <section>
+        <h1>과제: 게시글 & 댓글 불러오기</h1>
+
+        <!-- 과제 1 -->
+        <h2>과제 1. 게시글 불러오기</h2>
+        <button id="loadPosts">게시글 불러오기</button>
+        <ul id="postList"></ul>
+
+        <!-- 과제 2 -->
+        <h2>과제 2. 선택한 게시글 댓글 불러오기</h2>
+        <button id="loadComments">댓글 불러오기</button>
+        <ul id="commentList"></ul>
+
+        <script>
+            const $postList = document.getElementById("postList");
+            const $commentList = document.getElementById("commentList");
+            let selectedPostId = null; // 현재 선택된 게시글 id 저장
+
+            // 과제 1: 게시글 불러오기
+            document.getElementById("loadPosts").addEventListener("click", function () {
+                const xhr = new XMLHttpRequest();
+                xhr.open("GET", "https://jsonplaceholder.typicode.com/posts", true);
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        const posts = JSON.parse(xhr.responseText).slice(0, 10); // 10개만
+                        $postList.innerHTML = "";
+                        posts.forEach(p => {
+                            const li = document.createElement("li");
+                            li.textContent = `${p.id}. ${p.title}`;
+                            li.dataset.id = p.id;
+                            li.addEventListener("click", () => {
+                                selectedPostId = p.id;
+                                alert(`게시글 #${p.id} 선택됨`);
+                            });
+                            $postList.appendChild(li);
+                        });
+                    } else {
+                        console.error("에러:", xhr.status);
+                    }
+                };
+                xhr.onerror = () => console.error("네트워크 에러");
+                xhr.send();
+            });
+
+            // 과제 2: 댓글 불러오기
+            document.getElementById("loadComments").addEventListener("click", function () {
+                if (!selectedPostId) {
+                    alert("먼저 게시글을 선택하세요!");
+                    return;
+                }
+                const xhr = new XMLHttpRequest();
+                xhr.open("GET", `https://jsonplaceholder.typicode.com/posts/${selectedPostId}/comments`, true);
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        const comments = JSON.parse(xhr.responseText);
+                        $commentList.innerHTML = "";
+                        comments.forEach(c => {
+                            const li = document.createElement("li");
+                            li.textContent = `${c.id}. ${c.name} (${c.email})`;
+                            $commentList.appendChild(li);
+                        });
+                    } else {
+                        console.error("에러:", xhr.status);
+                    }
+                };
+                xhr.onerror = () => console.error("네트워크 에러");
+                xhr.send();
+            });
+        </script>
+    </section>
 </body>
 </html>
