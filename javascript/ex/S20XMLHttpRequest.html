@@ -270,6 +270,14 @@ JSON.stringify(obj);
                 - 요청 중단.</li>
         </ul>
     </section>
+    <section>
+        <h2>XMLHttpRequest 이벤트 함수</h2>
+        <ul>
+            <li><code>onload</code>: 요청이 성공적으로 완료되면 실행.</li>
+            <li><code>onerror</code>: 네트워크 오류 발생 시 실행.</li>
+            <li><code>onreadystatechange</code>: <code>readyState</code> 값이 바뀔 때마다 실행.</li>
+        </ul>
+    </section>
 
     <section>
         <h2>XMLHttpRequest 주요 속성</h2>
@@ -299,14 +307,6 @@ JSON.stringify(obj);
             <li><strong>300번대 (리다이렉션)</strong> : 요청 자원이 다른 위치로 이동 (예: 301 Moved Permanently, 302 Found, 304 Not Modified)</li>
             <li><strong>400번대 (클라이언트 오류)</strong> : 요청에 오류가 있거나 권한 부족 (예: 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found)</li>
             <li><strong>500번대 (서버 오류)</strong> : 서버 내부 문제로 처리 실패 (예: 500 Internal Server Error, 502 Bad Gateway, 503 Service Unavailable)</li>
-        </ul>
-    </section>
-    <section>
-        <h2>XMLHttpRequest 이벤트</h2>
-        <ul>
-            <li><code>onload</code>: 요청이 성공적으로 완료되면 실행.</li>
-            <li><code>onerror</code>: 네트워크 오류 발생 시 실행.</li>
-            <li><code>onreadystatechange</code>: <code>readyState</code> 값이 바뀔 때마다 실행.</li>
         </ul>
     </section>
 

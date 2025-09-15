@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>과제 : 비동기로 게시글 불러오기</title>
+</head>
+<body>
+    <h1>과제 : 비동기로 게시글 불러오기</h1>
+    <p>
+        <button id="loadPostsBtn">불러오기</button>
+    </p>
+    <hr>
+    <ul id="posts"></ul>
+
+    <script>
+        const postsUl=document.querySelector("#posts");
+        const loadPostsBtn = document.getElementById("loadPostsBtn");
+        const loadComments=(e,postId)=>{
+            const commentsUl=document.querySelector("#comments-"+postId);
+            let url=`https://jsonplaceholder.typicode.com/posts/${postId}/comments`;
+            const req=new XMLHttpRequest();
+            req.open("GET",url,true);
+            req.send();
+            req.onload=()=>{
+                if(req.status===200){ //"200"==200, 200===200
+                    const comments=JSON.parse(req.responseText);
+                    let html="";
+                    for(let comment of comments){
+                        html+=`
+<li>
+    ${comment.id} /
+    ${comment.name} /
+    ${comment.email} /
+    <hr>
+    ${comment.body}
+</li>`;
+                    }
+                    commentsUl.innerHTML=html;
+                }
+            }
+        }
+        const loadPosts=()=>{
+            let url="https://jsonplaceholder.typicode.com/posts";
+            const req=new XMLHttpRequest()
+            req.open("GET",url,true);
+            req.send();
+            req.onload=()=>{
+                let status=req.status; //성공:200 실패:400,500
+                if(status===200){
+                    let postsJson=req.responseText;
+                    let posts=JSON.parse(postsJson);
+                    //JSON
+                    //stringify({a:20}) : 객체=>문자열  "{\"a\":20}"
+                    //parse("{\"a\":20}" ) 문자열=>객체 (파싱) {a:20}
+                    // console.log(posts);
+                    let html="";
+                    for(let post of posts){
+                        html+=`
+<li>
+    <h4>
+        <b>${post.id}. </b>
+        ${post.title}
+        <span>(${post.userId})</span>
+    </h4>
+    <hr>
+    <pre>${post.body}</pre>
+    <hr>
+    <div>
+        <p>
+            <button onclick="loadComments(event,${post.id})">댓글불러오기</button>
+        </p>
+        <ul id="comments-${post.id}"></ul>
+    </div>
+</li>`
+
+                    }
+                    postsUl.innerHTML=html;
+                }
+            }
+        }
+        loadPosts();
+        loadPostsBtn.addEventListener("click", loadPosts);
+
+
+        (function a(){})();
+        //만들고 실행
+
+    </script>
+</body>
+</html>
