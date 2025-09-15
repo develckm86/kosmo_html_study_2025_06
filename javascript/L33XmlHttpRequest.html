@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ajax XMLHttpRequest</title>
+</head>
+<body>
+    <h1>ajax XMLHttpRequest</h1>
+
+    <hr>
+    <h2>유저 정보 AJAX로 불러오기
+        <button id="loadUsersBtn">로드</button>
+    </h2>
+    <table id="users" border="1">
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>name</th>
+            <th>score</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <script>
+        const usersBody=document.querySelector("#users>tbody")
+        const loadUsersBtn=document.querySelector("#loadUsersBtn");
+
+        const loadUsers=()=>{
+            //http://localhost:63342/html_study/javascript/L33XmlHttpRequest.html
+            //http://localhost:63342/html_study/javascript/L33Users.json
+            let url="./L33Users.json"
+            const request=new XMLHttpRequest(); //비동기식통신 객체생성
+            request.open( "GET", url );
+            request.send();
+            request.onload=function(){
+                //데이터 통신이 완료되는 시점에 동작하는 콜백함수 재정의
+                let status=request.status; //100,200,300,400,500
+                if(status===200){
+                    // console.log(request.responseText);
+                    const users=JSON.parse(request.responseText);
+                    console.log(users);
+                    let html="";
+                    for(let user of users){
+                        html+=`<tr>
+                                    <td>${user.id}</td>
+                                    <td>${user.name}</td>
+                                    <td>${user.score}</td>
+                                </tr>`
+                    }
+                    console.log(html);
+                    usersBody.innerHTML=html;
+
+                }
+            }
+        }
+        loadUsersBtn.addEventListener("click", loadUsers);
+
+        // let json=request.responseText;
+        // //response :요청한 내역을 서버가 전달한것 (resource)
+        // console.log(json);
+        // setTimeout(()=>{
+        //     console.log(request.responseText);
+        // },1000)
+        //비동기함수가 통신이 완료되는 시점을 재공해야함
+        //onload , onreadystatechange
+
+    </script>
+</body>
+</html>
