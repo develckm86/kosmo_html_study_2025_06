@@ -10,13 +10,69 @@
         <button id="loadPostsBtn">불러오기</button>
     </p>
     <hr>
+    <style>
+        .d-none{
+            display: none;
+        }
+    </style>
+    <li id="postEx" class="post d-none">
+        <h4>
+            <b class="id"></b><b>. </b>
+            <span class="title"></span>
+            (<span class="userId"></span>)
+        </h4>
+        <hr>
+        <pre class="body"></pre>
+        <hr>
+        <div>
+            <p>
+                <button class="loadCommentBtn">댓글불러오기</button>
+            </p>
+            <ul class="comments"></ul>
+        </div>
+    </li>
     <ul id="posts"></ul>
 
     <script>
         const postsUl=document.querySelector("#posts");
         const loadPostsBtn = document.getElementById("loadPostsBtn");
-        const loadComments=(e,postId)=>{
-            const commentsUl=document.querySelector("#comments-"+postId);
+        const postEx = document.getElementById("postEx");
+
+        const commentNode=(comment)=>{
+            const li=document.createElement("li");
+            let text=`${comment.id} / ${comment.name} / ${comment.email}`;
+            const hr=document.createElement("hr");
+            let body=comment.body;
+            li.append(text);
+            li.append(hr);
+            li.append(body);
+            return li;
+        }
+        const clonePostNode=(post)=>{
+            const postNode=postEx.cloneNode(true);
+            postNode.removeAttribute("id");
+            postNode.classList.remove("d-none");
+            let id=postNode.querySelector(".id");
+            let title=postNode.querySelector(".title");
+            let userId=postNode.querySelector(".userId");
+            let body=postNode.querySelector(".body");
+            let loadCommentBtn=postNode.querySelector(".loadCommentBtn");
+            let comments=postNode.querySelector(".comments");
+            id.append(post.id);
+            title.append(post.title);
+            userId.append(post.userId);
+            body.append(post.body);
+            //loadComments(event,postId)
+            // loadCommentBtn.addEventListener("click", loadComments()) //완전히 잘못된 코드 x
+            // loadCommentBtn.addEventListener("click", loadComments) //postId가 매개변수로 있어서x
+            loadCommentBtn.addEventListener("click", (e)=>{
+                loadComments(e,post.id,comments)
+            });
+            return postNode;
+        }
+
+        const loadComments=(e,postId,commentsUl)=>{
+            // const commentsUl=document.querySelector("#comments-"+postId);
             let url=`https://jsonplaceholder.typicode.com/posts/${postId}/comments`;
             const req=new XMLHttpRequest();
             req.open("GET",url,true);
@@ -26,16 +82,9 @@
                     const comments=JSON.parse(req.responseText);
                     let html="";
                     for(let comment of comments){
-                        html+=`
-<li>
-    ${comment.id} /
-    ${comment.name} /
-    ${comment.email} /
-    <hr>
-    ${comment.body}
-</li>`;
+                        const li=commentNode(comment);
+                        commentsUl.append(li);
                     }
-                    commentsUl.innerHTML=html;
                 }
             }
         }
@@ -55,26 +104,10 @@
                     // console.log(posts);
                     let html="";
                     for(let post of posts){
-                        html+=`
-<li>
-    <h4>
-        <b>${post.id}. </b>
-        ${post.title}
-        <span>(${post.userId})</span>
-    </h4>
-    <hr>
-    <pre>${post.body}</pre>
-    <hr>
-    <div>
-        <p>
-            <button onclick="loadComments(event,${post.id})">댓글불러오기</button>
-        </p>
-        <ul id="comments-${post.id}"></ul>
-    </div>
-</li>`
-
+                        const postNode=clonePostNode(post);
+                        console.log(postNode);
+                        postsUl.append(postNode);
                     }
-                    postsUl.innerHTML=html;
                 }
             }
         }
