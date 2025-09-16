@@ -20,7 +20,7 @@
                     <a class="nav-link" href="#">Link</a>
                 </li>
             </ul>
-            <ul class="navbar-nav mb-2 mb-lg-0">
+            <ul class="navbar-nav mb-2 mb-lg-0" id="logoutMenu">
                 <li class="nav-item">
                     <a href="#"  class="nav-link" id="loginBtn">로그인</a>
                 </li>
@@ -28,10 +28,19 @@
                     <a href="#"  class="nav-link" id="signupBtn">회원가입</a>
                 </li>
             </ul>
+            <ul class="navbar-nav mb-2 mb-lg-0 d-none" id="loginMenu">
+                <li class="nav-item">
+                    <a href="#"  class="nav-link" id="userDetailBtn">유저상세</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#"  class="nav-link" id="logoutBtn">로그아웃</a>
+                </li>
+            </ul>
+
         </div>
     </div>
 </nav>
-<div id="loginContainer" class="d-flex justify-content-center align-items-center" style="height: 90vh;">
+<div id="loginContainer" class="d-none d-flex justify-content-center align-items-center" style="height: 90vh;">
     <form name="loginForm" method="post" action="https://dummyjson.com/user/login" style="min-width: 420px;">
         <h2>로그인폼</h2>
         <p>https://dummyjson.com/user/login</p>
@@ -50,6 +59,20 @@
     </form>
 </div>
 <script>
+    const loginContainer = document.getElementById('loginContainer');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const loginMenu = document.getElementById('loginMenu');
+    const logoutMenu = document.getElementById('logoutMenu');
+    const userDetailBtn = document.getElementById('userDetailBtn');
+
+    let loginUserId=null;
+
+    loginBtn.addEventListener('click', (e) => {
+        loginContainer.classList.remove('d-none');
+    })
+
+
     const loginForm=document.forms["loginForm"];
     loginForm.addEventListener('submit',(e)=>{
         e.preventDefault();
@@ -75,13 +98,45 @@
                 let accessToken=loginObj.accessToken;
                 localStorage.setItem("accessToken",accessToken);
                 // localStorage.getItem("accessToken")
-                alert("로그인 성공")
+                //alert("로그인 성공");
+                loginSetting(loginObj)
             }
         }
     });
+    logoutBtn.addEventListener('click',(e)=>{
+        localStorage.removeItem("accessToken");
+        alert("로그아웃!")
+        window.location.reload();
+    })
 
-
-
+    //처음 로그인시 엑세스 토큰이 있으면 자동로그인
+    //토큰이 있어도 만료시간(30)이 다되어서 로그인이 안될수도 있음
+    //https://dummyjson.com/user/me
+    const autoLogin=()=>{
+        let url="https://dummyjson.com/user/me"
+        let accessToken=localStorage.getItem("accessToken");
+        if(!accessToken) return;
+        const req=new XMLHttpRequest();
+        req.open("GET",url,true);
+        req.setRequestHeader("Authorization","Bearer "+accessToken);
+        req.send();
+        //서버가 토큰(로그인한 유저 아이디+만료기간)으로 로그인
+        req.onload=()=>{
+            if(req.status===200){ //300 redirect
+                //alert("자동로그인 성공")
+                const loginObj=JSON.parse(req.responseText);
+                loginSetting(loginObj)
+            }
+        }
+    }
+    autoLogin();
+    const loginSetting=(loginObj)=>{
+        logoutMenu.classList.add('d-none');
+        loginContainer.classList.add('d-none');
+        loginMenu.classList.remove('d-none');
+        userDetailBtn.innerText=`${loginObj.username} (${loginObj.email})`;
+        loginUserId=loginObj.id;
+    }
 </script>
 
 
