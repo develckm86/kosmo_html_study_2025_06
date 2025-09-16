@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>DummyJSON으로 AJAX 쇼핑몰 구현</title>
+    <link rel="stylesheet" href="/src/bootstrap-5.3.7/dist/css/bootstrap.css">
+    <script defer src="/src/bootstrap-5.3.7/dist/js/bootstrap.bundle.js"></script>
+<!-- defer : 도큐먼트가 모두 로드되고 script 다운   -->
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/javascript/L37ShopAJAX.html">SHOP-HOME</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a href="#"  class="nav-link" id="loginBtn">로그인</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#"  class="nav-link" id="signupBtn">회원가입</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div id="loginContainer" class="d-flex justify-content-center align-items-center" style="height: 90vh;">
+    <form name="loginForm" method="post" action="https://dummyjson.com/user/login" style="min-width: 420px;">
+        <h2>로그인폼</h2>
+        <p>https://dummyjson.com/user/login</p>
+        <div class="form-floating mb-3">
+            <input value="stellah" name="username"  type="text" class="form-control" id="floatingInput" placeholder="Username">
+            <label for="floatingInput">Username</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input value="stellahpass" name="password" type="password" class="form-control" id="floatingPassword" placeholder="Password">
+            <label for="floatingPassword">Password</label>
+        </div>
+        <div class="text-end">
+            <button class="btn btn-outline-primary">로그인</button>
+            <button class="btn btn-outline-danger">회원가입</button>
+        </div>
+    </form>
+</div>
+<script>
+    const loginForm=document.forms["loginForm"];
+    loginForm.addEventListener('submit',(e)=>{
+        e.preventDefault();
+        let url="https://dummyjson.com/user/login";
+        const username=loginForm.username;
+        const password=loginForm.password;
+        let data={
+            username:username.value,
+            password:password.value,
+            expiresInMins:30
+        }
+        console.log(data)
+        const req=new XMLHttpRequest();
+        req.open("POST",url,true);
+        //json {"username":stellah} or querystring(기본값) ?username=stellah&password=stellahpass
+        req.setRequestHeader("Content-type","application/json;charset=UTF-8");
+
+        req.send(JSON.stringify(data)); //파라미터는 객체(X)->문자열 JSON
+        req.onload=()=>{
+            if(req.status===200){
+                const loginObj=JSON.parse(req.responseText);
+                console.log(loginObj)
+                let accessToken=loginObj.accessToken;
+                localStorage.setItem("accessToken",accessToken);
+                // localStorage.getItem("accessToken")
+                alert("로그인 성공")
+            }
+        }
+    });
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+</body>
+</html>

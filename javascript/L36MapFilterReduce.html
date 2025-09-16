@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>내부 반복문의 다양한 종류</title>
+</head>
+<body>
+    <h1>내부 반복문의 다양한 종류 Map, Filter, Reduce</h1>
+    <ul id="numsUl"></ul>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>이름</th>
+            <th>과목</th>
+            <th>score</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>경민</td><td>수학</td><td class="score">88</td>
+        </tr>
+        <tr>
+            <td>김지형</td><td>수학</td><td class="score">98</td>
+        </tr>
+        <tr>
+            <td>이지형</td><td>수학</td><td class="score">100</td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="2">과목의 총합</td>
+            <td id="scoresSumTd"></td>
+        </tr>
+        <tr>
+            <td colspan="2">과목의 평균</td>
+            <td id="scoreAvgTd"></td>
+        </tr>
+        </tfoot>
+    </table>
+    <script>
+        let tdScores=document.querySelectorAll("td:nth-child(3)");
+        tdScores=document.querySelectorAll(".score");//NodeList
+        console.log(tdScores)
+        //내부반복문 : Array forEach,map,...
+        //String,NodeList,HTMLCollections... map, reduce같은 내부반복문이 없다.
+        //Array.from(유사배열) => Array
+        //[...유사배열] => Array (배열복제 얕은)
+
+        // let scoresSum=0;
+        // for(let td of tdScores){
+        //     scoresSum+=Number(td.innerText);
+        // }
+        // console.log(scoresSum);//08898100
+        // scoresSumTd.innerHTML=scoresSum;
+        let scoresAvg=([...tdScores].reduce((init,td)=>{
+            return init+Number(td.innerText);
+        },0))/tdScores.length;
+        //scoreAvgTd.innerText=Math.round(scoresAvg); //소수점 반올림 못함
+        scoreAvgTd.innerText=scoresAvg.toFixed(2);
+        //몇번째 자리까지 문자열 출력할건데 반올림 결과
+
+
+        let scoresSum=[...tdScores].reduce((init,td)=>{
+            let score=Number(td.innerText);
+            return init+score;
+        },0);
+        console.log(scoresSum);
+        scoresSumTd.innerText=scoresSum;
+
+        //Array.filter((item,i,arr)=>{return Boolean()})
+        let arr=[1,2,3,"9",4,5,6];
+        let nums=[];
+        arr.forEach((v,i)=>{
+        //    console.log(v,i, typeof v)
+            //typeof : 기본형(number,string,symbol) or 자료형object(null)
+            if(typeof v==='number'){
+                nums.push(v);
+            }
+        });
+
+        //특정 아이템을 제거한 새로운 배열 생성
+        console.log(nums);
+
+        let nums2=arr.filter((v,i)=>{
+            return typeof v==='number';
+        })
+        console.log(nums2);
+        console.log(arr)
+
+        //map((v,i)=>??) == map(()=>{return ??})
+        let arr2=arr.map((v,i)=>v*2)
+        console.log(arr2)
+        let lis=arr.map((v,i)=>{
+            let li=document.createElement("li");
+            li.append(v)
+            return li;
+        })
+        console.log(lis)
+        numsUl.append(...lis);
+        // lis.forEach((v)=>{
+        //     numsUl.append(v)
+        // })
+        //배열이 아닌 단일 요소를 반환
+        //reduce =>number,string, some,every=>boolean ,
+        // find=>item,findIndex=>index
+
+        nums=[10,20,30,40,50];
+        //reduce((초기값,item2,i,arr)=>연산,초기값)
+        let sum=nums.reduce((a,b)=> a+b,0);
+        console.log(sum)
+
+
+
+        //every  : 모두 조건이 같냐?
+        //some : 하나라도 조건이 같은 것 있는가?
+        //find findIndex
+
+        nums=[1,2,3,4,5,"6",7,8];
+        //1. some : 한개라도 수야?
+        //2. every : 모두 수야?
+        const isNum=(num)=>typeof num==='number';
+        console.log(isNum(""));
+        let result=nums.some(isNum);
+        console.log(result);
+        result=nums.every(isNum);
+        console.log(result);
+
+        //find : 조건의 맞으면 그값을 반환
+        //findIndex :조건의 맞는 인덱를 반환
+        const isString=(str)=>typeof str==='string';
+        result=nums.find(isString);
+        console.log(result);
+        result=nums.findIndex(isString);
+        console.log(result);
+
+
+        //sort : 기존배열을 변경하면서 정렬(사용시 주의)
+        nums=[11,22,-22,0,100,3];
+        nums.sort(); //문자열의 인코딩번호로 정렬
+        console.log(nums)
+        nums.sort((a,b)=> a-b); //오름차순
+        console.log(nums);
+        nums.sort((a,b)=> b-a); //내림차순
+        console.log(nums);
+        nums.reverse();
+        console.log(nums);
+        nums.reverse();
+        console.log(nums);
+
+    </script>
+
+
+</body>
+</html>

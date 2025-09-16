@@ -80,11 +80,20 @@
             req.onload=()=>{
                 if(req.status===200){ //"200"==200, 200===200
                     const comments=JSON.parse(req.responseText);
-                    let html="";
-                    for(let comment of comments){
-                        const li=commentNode(comment);
-                        commentsUl.append(li);
-                    }
+                    // let html="";
+                    // for(let comment of comments){
+                    //     const li=commentNode(comment);
+                    //     commentsUl.append(li);
+                    // }
+                    const cloneCommentArr=comments.map(comment=>{
+                        return commentNode(comment);
+                    });
+                    // cloneCommentArr.forEach((comment)=>{
+                    //     commentsUl.append(comment);
+                    // })
+                    commentsUl.append(...cloneCommentArr);
+                    //...는 매개변수로 arguments(...args)를 지원하는 함수만 가능
+
                 }
             }
         }
@@ -102,12 +111,19 @@
                     //stringify({a:20}) : 객체=>문자열  "{\"a\":20}"
                     //parse("{\"a\":20}" ) 문자열=>객체 (파싱) {a:20}
                     // console.log(posts);
-                    let html="";
-                    for(let post of posts){
-                        const postNode=clonePostNode(post);
-                        console.log(postNode);
-                        postsUl.append(postNode);
-                    }
+                    //let html="";
+                    // for(let post of posts){
+                    //     const postNode=clonePostNode(post);
+                    //     console.log(postNode);
+                    //     postsUl.append(postNode);
+                    // }
+                    const clonePostArr=posts.map((post)=>{
+                        return clonePostNode(post);
+                    })
+                    // console.log(posts);
+                    // console.log(clonePostArr)
+                    postsUl.append(...clonePostArr);
+
                 }
             }
         }
