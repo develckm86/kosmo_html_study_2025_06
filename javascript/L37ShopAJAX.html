@@ -33,23 +33,104 @@
                     <a href="#"  class="nav-link" id="userDetailBtn">유저상세</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#"  class="nav-link" id="logoutBtn">로그아웃</a>
+                    <a href="#"  class="nav-link" id="userBasketsBtn">장바구니 🛒</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#"  class="nav-link" id="logoutBtn">로그아웃 🚪</a>
                 </li>
             </ul>
 
         </div>
     </div>
 </nav>
+<style>
+    .img-wrap>img{
+        width: 6em; height: 6em; object-fit: cover;
+    }
+    .info-wrap{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .product-wrap{
+        display: flex;
+        justify-content: start;
+    }
+    .price-wrap{
+        display: flex;
+        justify-content: start;
+    }
+    .price-wrap>div{
+        margin-right: 1em;
+    }
+</style>
+<div id="basketsContainer">
+    <h2>장바구니</h2>
+    <div id="cartsDiv">
+        <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="product-wrap">
+                    <div class="img-wrap">
+                        <img src="https://cdn.dummyjson.com/products/images/womens-jewellery/Green%20Oval%20Earring/thumbnail.png" alt="상품이미지">
+                    </div>
+                    <div class="info-wrap">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold"> 183 Apple MacBook Pro 14 Inch Space Grey</div>
+                            <div class="price-wrap">
+                                <div>
+                                    상품가격 : <span class="price">1999.99</span>
+                                </div>
+                                <div>
+                                    전체가격 : <span class="total">3999.98</span>
+                                </div>
+                            </div>
+                            <div class="price-wrap">
+                                <div>
+                                    할인가격 : <span class="discountedTotal">3259.18</span>
+                                </div>
+                                <div>
+                                    할인퍼센트 : <span class="discountPercentage">18.52</span>%
+                                </div>
+                            </div>
+                            <div>
+                                <label>
+                                    수량 :
+                                    <select name="quantity">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5" selected>5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                    </select>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <span class="badge bg-primary rounded-pill">14</span>
+            </li>
+        </ul>
+    </div>
+
+
+</div>
+
+
 <div id="loginContainer" class="d-none d-flex justify-content-center align-items-center" style="height: 90vh;">
     <form name="loginForm" method="post" action="https://dummyjson.com/user/login" style="min-width: 420px;">
         <h2>로그인폼</h2>
         <p>https://dummyjson.com/user/login</p>
         <div class="form-floating mb-3">
-            <input value="stellah" name="username"  type="text" class="form-control" id="floatingInput" placeholder="Username">
+            <input value="carterb" name="username"  type="text" class="form-control" id="floatingInput" placeholder="Username">
             <label for="floatingInput">Username</label>
         </div>
         <div class="form-floating mb-3">
-            <input value="stellahpass" name="password" type="password" class="form-control" id="floatingPassword" placeholder="Password">
+            <input value="carterbpass" name="password" type="password" class="form-control" id="floatingPassword" placeholder="Password">
             <label for="floatingPassword">Password</label>
         </div>
         <div class="text-end">
@@ -65,8 +146,34 @@
     const loginMenu = document.getElementById('loginMenu');
     const logoutMenu = document.getElementById('logoutMenu');
     const userDetailBtn = document.getElementById('userDetailBtn');
-
+    const userBasketsBtn= document.getElementById('userBasketsBtn');
     let loginUserId=null;
+
+    userBasketsBtn.addEventListener('click', ()=>{
+        loadUserBaskets();
+    });
+    const loadUserBaskets=()=>{
+        //"",0,null,undefined,NaN
+        if(loginUserId===null){
+            alert("로그인하고 호출!");
+            window.location.reload();
+            return;
+        }
+        let url="https://dummyjson.com/carts/user/"+loginUserId;
+        //carts/user/33
+        const req=new XMLHttpRequest();
+        req.open("GET",url,true);
+        req.send();
+        req.onload=()=>{
+            if(req.status===200){
+                let carts=JSON.parse(req.responseText)["carts"];
+                //{a:10} => "{\"a\":10}" =>  {a:10}
+                console.log(carts);
+            }
+        }
+    }
+
+
 
     loginBtn.addEventListener('click', (e) => {
         loginContainer.classList.remove('d-none');
@@ -84,10 +191,13 @@
             password:password.value,
             expiresInMins:30
         }
-        console.log(data)
+       // console.log(data)
         const req=new XMLHttpRequest();
         req.open("POST",url,true);
-        //json {"username":stellah} or querystring(기본값) ?username=stellah&password=stellahpass
+        // naver/login.do?user=develckm&pw=1234 : GET
+        // naver/login.do :post 파라미터는 요청해더에 보냄
+
+        // json {"username":stellah} or querystring(기본값) ?username=stellah&password=stellahpass
         req.setRequestHeader("Content-type","application/json;charset=UTF-8");
 
         req.send(JSON.stringify(data)); //파라미터는 객체(X)->문자열 JSON
@@ -126,6 +236,10 @@
                 //alert("자동로그인 성공")
                 const loginObj=JSON.parse(req.responseText);
                 loginSetting(loginObj)
+            }else if(req.status===401){
+                //토큰 만료시간 다됨
+                alert("자동로그인 만료시간(30분)이 다되었습니다.\n 다시 로그인하세요!")
+                localStorage.removeItem("accessToken");
             }
         }
     }
@@ -133,6 +247,7 @@
     const loginSetting=(loginObj)=>{
         logoutMenu.classList.add('d-none');
         loginContainer.classList.add('d-none');
+
         loginMenu.classList.remove('d-none');
         userDetailBtn.innerText=`${loginObj.username} (${loginObj.email})`;
         loginUserId=loginObj.id;
