@@ -55,6 +55,8 @@
     .product-wrap{
         display: flex;
         justify-content: start;
+        align-items: center;
+
     }
     .price-wrap{
         display: flex;
@@ -63,61 +65,97 @@
     .price-wrap>div{
         margin-right: 1em;
     }
+    .pay-wrap{
+        padding: 1em;
+    }
+    .pay-wrap>div{
+        display: flex;
+        justify-content: space-between;
+    }
 </style>
 <div id="basketsContainer">
     <h2>장바구니</h2>
-    <div id="cartsDiv">
-        <ul class="list-group">
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <div class="product-wrap">
-                    <div class="img-wrap">
-                        <img src="https://cdn.dummyjson.com/products/images/womens-jewellery/Green%20Oval%20Earring/thumbnail.png" alt="상품이미지">
-                    </div>
-                    <div class="info-wrap">
-                        <div class="ms-2 me-auto">
-                            <div class="fw-bold"> 183 Apple MacBook Pro 14 Inch Space Grey</div>
-                            <div class="price-wrap">
-                                <div>
-                                    상품가격 : <span class="price">1999.99</span>
-                                </div>
-                                <div>
-                                    전체가격 : <span class="total">3999.98</span>
-                                </div>
-                            </div>
-                            <div class="price-wrap">
-                                <div>
-                                    할인가격 : <span class="discountedTotal">3259.18</span>
-                                </div>
-                                <div>
-                                    할인퍼센트 : <span class="discountPercentage">18.52</span>%
-                                </div>
+    <div id="exWrap" class="d-none">
+        <li id="cartLiEx" class="list-group-item d-flex justify-content-between align-items-center">
+            <div class="product-wrap">
+                <div class="check-wrap">
+                    <input class="form-check-input" type="checkbox" name="del-cart" value="">
+                </div>
+                <div class="img-wrap">
+                    <img class="thumbnail" src="https://cdn.dummyjson.com/products/images/womens-jewellery/Green%20Oval%20Earring/thumbnail.png" alt="상품이미지">
+                </div>
+                <div class="info-wrap">
+                    <div class="ms-2 me-auto">
+                        <div class="fw-bold">
+                            <span class="id"></span>
+                            <span class="title"></span>
+                        </div>
+                        <div class="price-wrap">
+                            <div>
+                                상품가격 : <span class="price">1999.99</span>
                             </div>
                             <div>
-                                <label>
-                                    수량 :
-                                    <select name="quantity">
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5" selected>5</option>
-                                        <option value="6">6</option>
-                                        <option value="7">7</option>
-                                        <option value="8">8</option>
-                                        <option value="9">9</option>
-                                        <option value="10">10</option>
-                                    </select>
-                                </label>
+                                전체가격 : <span class="total">3999.98</span>
                             </div>
+                        </div>
+                        <div class="price-wrap">
+                            <div>
+                                할인가격 : <span class="discountedTotal">3259.18</span>
+                            </div>
+                            <div>
+                                할인퍼센트 : <span class="discountPercentage">18.52</span>%
+                            </div>
+                        </div>
+                        <div>
+                            <label>
+                                수량 :
+                                <select class="" name="quantity">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                </select>
+                            </label>
                         </div>
                     </div>
                 </div>
-                <span class="badge bg-primary rounded-pill">14</span>
-            </li>
-        </ul>
+            </div>
+            <button class="btn btn-outline-danger">삭제</button>
+        </li>
+        <div id="selectDelWrapEx" class="d-flex justify-content-start align-items-center my-2">
+            <div class="all-check-wrap me-3">
+                전체선택 : <input type="checkbox" name="" id="">
+                <span>(3/5)</span>
+            </div>
+            <button class="select-del-btn btn btn-danger">선택삭제</button>
+        </div>
+        <div id="payWrapEx" class="pay-wrap border rounded">
+            <div><span>상품수량</span><span class="totalProducts">2</span></div>
+            <div><span>전체수량</span><span class="totalQuantity">4</span></div>
+            <div><span>전체가격</span><span class="total">10007.96</span></div>
+            <div><span>할인가격</span><span class="discountedTotal">8773.59</span></div>
+            <hr>
+            <div>
+                <span></span>
+                <button class="btn btn-primary">전체 결제</button>
+            </div>
+        </div>
+
+        <div id="cartWrapEx" class="cart-wrap">
+            <ul class="list-group">
+            </ul>
+        </div>
+
     </div>
 
-
+    <div id="cartsDiv">
+    </div>
 </div>
 
 
@@ -147,7 +185,13 @@
     const logoutMenu = document.getElementById('logoutMenu');
     const userDetailBtn = document.getElementById('userDetailBtn');
     const userBasketsBtn= document.getElementById('userBasketsBtn');
+    const cartsDiv = document.getElementById('cartsDiv');
     let loginUserId=null;
+
+    const cartLiEx = document.getElementById('cartLiEx');
+    const selectDelWrapEx = document.getElementById('selectDelWrapEx');
+    const payWrapEx = document.getElementById('payWrapEx');
+    const cartWrapEx = document.getElementById('cartWrapEx');
 
     userBasketsBtn.addEventListener('click', ()=>{
         loadUserBaskets();
@@ -166,9 +210,48 @@
         req.send();
         req.onload=()=>{
             if(req.status===200){
+                let totalCarts=JSON.parse(req.responseText);
                 let carts=JSON.parse(req.responseText)["carts"];
+                for(let cart of carts){
+                    const selectDelWrap=selectDelWrapEx.cloneNode(true);
+                    const payWrap=payWrapEx.cloneNode(true);
+                    const payWrapTotal=payWrap.querySelector('.total');
+                    const payWrapDiscountedTotal=payWrap.querySelector('.discountedTotal');
+                    const payWrapTotalQuantity=payWrap.querySelector('.totalQuantity');
+                    const payWrapTotalProducts=payWrap.querySelector('.totalProducts');
+                    payWrapTotal.innerText=cart["total"]
+                    payWrapDiscountedTotal.innerText=cart["discountedTotal"]
+                    payWrapTotalQuantity.innerText=cart["totalQuantity"];
+                    payWrapTotalProducts.innerText=cart["totalProducts"];
+
+                    const cartWrap=cartWrapEx.cloneNode(true);
+                    const cartWrapListGroup=cartWrap.querySelector('.list-group');
+                    for(let product of cart["products"]){
+                        const cartLi=cartLiEx.cloneNode(true);
+                        const cartLiId=cartLi.querySelector('.id');
+                        const cartLiTitle=cartLi.querySelector('.title');
+                        const cartLiPrice=cartLi.querySelector('.price');
+                        const cartLiQuantity=cartLi.querySelector('.quantity');
+                        const cartLiTotal=cartLi.querySelector('.total');
+                        const cartLiThumbnail=cartLi.querySelector('.thumbnail');
+                        cartLiId.innerText=product["id"];
+                        cartLiPrice.innerText=product["price"];
+                        // cartLiQuantity.innerText=product["quantity"];
+                        cartLiTitle.innerText=product["title"];
+                        cartLiTotal.innerText=product["total"];
+                        cartLiThumbnail.src=product["thumbnail"];
+                        cartWrapListGroup.append(cartLi)
+                    }
+
+                    cartsDiv.append(cartWrap,selectDelWrap,payWrap);
+                }
                 //{a:10} => "{\"a\":10}" =>  {a:10}
+
+
                 console.log(carts);
+
+
+
             }
         }
     }
