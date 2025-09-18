@@ -7,18 +7,174 @@
 <body>
     <h1>비동기 통신 XMLHttpRequest을 Promise로 동기화 하자</h1>
     <p>로그인한 유저의 장보구니를 호출</p>
+    <p>
+        <button id="loadCartsBtn">carterb 장바구니 호출</button>
+    </p>
+    <div id="cartsWrap"></div>
+
     <script>
+        const username="carterb";
+        const password="carterbpass";
+        const loadCartsBtn = document.getElementById('loadCartsBtn');
+        const cartsWrap = document.getElementById('cartsWrap');
+
+        const loadCarts = () => {
+            //로그인으로 id 조회 => 장바구니 조회
+            let userId=null;
+            let url="https://dummyjson.com/user/login";
+            const userObj={
+                "username":username,
+                "password":password
+            }
+            const req=new XMLHttpRequest();
+            req.open("POST",url,true);
+            req.setRequestHeader("Content-Type","application/json");
+            // req.send("?username="+username+"&password="+password);
+            req.send(JSON.stringify(userObj));
+            req.onload=()=>{ //통신이 완료되면 실행하는 함수
+                if(req.status!==200)return;
+                const loginObj=JSON.parse(req.responseText)
+                userId=loginObj.id;
+                const cartsReq=new XMLHttpRequest();
+                let cartsUrl='https://dummyjson.com/carts/user/'+userId;
+                cartsReq.open("GET",cartsUrl,true);
+                cartsReq.send();
+                cartsReq.onload=()=>{
+                    if(cartsReq.status!==200)return;
+                    cartsWrap.innerText=cartsReq.responseText;
+                }
+            }
+        }
+        loadCartsBtn.addEventListener('click', loadCarts);
+
         //유저의 username 과 password만 알고 있다.
         //=> 유저의 cart를 조회하고 싶음.. 하지만 유저의 아이디를 모름
         //carterb / carterbpass  =>'https://dummyjson.com/user/login'
         //1. username 과 password로 userId조회
         //2. userId조회가 완료되면 장바구니 조회
         //https://dummyjson.com/carts/user/+id
+    </script>
+    <hr>
+    <h2>프라미스로 user.id 조회후 장바구니 조회</h2>
+
+    <p>
+        <button id="loadStellahCartsBtn">stellah 장바구니 호출</button>
+    </p>
+    <hr>
+    <div id="stellahCartsWrap"></div>
+    <script>
+        const loadStellahCartsBtn = document.getElementById('loadStellahCartsBtn');
+        const stellahCartsWrap = document.getElementById('stellahCartsWrap');
+        // stellah / stellahpass
+        const loadStellahCarts = () => {
+            //Promise로 id로 조회하고 => carts 조회
+            new Promise((resolve)=>{
+                const req=new XMLHttpRequest();
+                let url="https://dummyjson.com/user/login";
+                const userObj={
+                    "username" : "stellah",
+                    "password" : "stellahpass"
+                }
+                req.open("POST",url,true);
+                req.setRequestHeader("Content-Type","application/json");
+                req.send(JSON.stringify(userObj));
+                req.onload=()=>{
+                    if(req.status!==200)return;
+                    const loginObj=JSON.parse(req.responseText);
+                    //console.log("loginObj.id",loginObj.id);
+                    resolve(loginObj.id); //50
+                }
+            }).then((id)=>{
+                console.log("then(id)",id)
+                // "" , '' , `${}`
+                let url=`https://dummyjson.com/carts/user/${id}`;
+                const req=new XMLHttpRequest();
+                req.open("GET",url,true);
+                req.send();
+                req.onload=()=>{
+                    if(req.status!==200)return;
+                    stellahCartsWrap.innerText=req.responseText;
+                }
+            })
+        }
+        loadStellahCartsBtn.addEventListener("click", loadStellahCarts);
+        //XMLHttpRequest => 프라미스화한 fetch API
+
+        //fetch(url) == req=new XMLHttpRequest() req.open(url,)  req.send()
+        //fetch(url).then()  //==onload()
+
+
+        fetch("https://dummyjson.com/users/33")
+            .then((response)=>response.json())//json() == Promise화
+            .then((data)=>{
+                console.log(data);
+            })
+    </script>
+    <h2>liamg의 카트 불러오기</h2>
+    <p>
+        <button id="loadLiamgCartsBtn">liamg 카트 불러오기</button>
+    </p>
+    <hr>
+    <div id="liamgCartsWrap"></div>
+    <script>
+        //$carts carts=[]??
+        const $loadLiamgCartsBtn = document.getElementById('loadLiamgCartsBtn');
+        const $liamgCartsWrap = document.getElementById('liamgCartsWrap');
+        const loadLiamgCarts = () => {
+            let url="https://dummyjson.com/user/login";
+            let userObj={
+                "username" : "liamg",
+                "password" : "liamgpass"
+            }
+            fetch(url,{
+                method:"POST",
+                headers:{"Content-Type":"application/json"},
+                body:JSON.stringify(userObj)})
+                .then(res=>res.json())
+                .then((data)=>{
+                    console.log(data.id);
+                    let url=`https://dummyjson.com/carts/user/${data.id}`;
+                    return fetch(url);
+                }).then(res=>res.json())
+                .then((carts)=>{
+                    console.log(carts);
+                    $liamgCartsWrap.innerText=JSON.stringify(carts);
+                })
+        }
+        $loadLiamgCartsBtn.addEventListener("click", loadLiamgCarts);
+    </script>
+    <h2>chloem 장바구니 호출</h2>
+    <p>
+        <button id="loadChloemCartsBtn">chloem 장바구니 호출</button>
+    </p>
+    <div id="chloemCartsWrap"></div>
+    <script>
+        const $chloemCartsWrap = document.getElementById('chloemCartsWrap');
+        const $loadChloemCartsBtn = document.getElementById('loadChloemCartsBtn');
+        const loadChloemCarts =async ()=>{
+            let url="https://dummyjson.com/user/login";
+            let userObj={
+                "username" : "chloem",
+                "password" : "chloempass"
+            }
+            let res=await fetch(url,{
+                method:"POST",
+                headers:{"Content-Type":"application/json"},
+                body:JSON.stringify(userObj)
+            })//.then(res=>res.json()).then(data=>)
+            let data=await res.json()
+
+            //조회한 id로 카트호출
+            url=`https://dummyjson.com/carts/user/${data.id}`;
+            res=await fetch(url);
+            data=await res.json();
+            $chloemCartsWrap.innerText=JSON.stringify(data);
+        };
+        $loadChloemCartsBtn.addEventListener("click", loadChloemCarts);
 
 
 
     </script>
-
 
 </body>
 </html>
