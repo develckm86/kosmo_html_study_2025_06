@@ -79,9 +79,9 @@
                             <li>
                                 <strong>Windows 가상화 관련 기능 활성화 (PowerShell 관리자)</strong><br>
                                 PowerShell을 “관리자 권한”으로 실행 후 아래 명령을 입력하고 재부팅한다.
-                                <pre><code>dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+                                <pre><code>
 dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-dism.exe /online /enable-feature /featurename:Microsoft-Hyper-V-All /all /norestart</code></pre>
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart</code></pre>
                             </li>
                             <li>
                                 <strong> WSL2 기본 버전 설정 및 커널 업데이트</strong><br>
@@ -118,10 +118,6 @@ wsl --install -d Ubuntu</code></pre>
     <section>
         <h3>Oracle 21c XE 이미지 내려받기</h3>
         <ul>
-            <li>Oracle Container Registry 로그인</li>
-        </ul>
-        <pre><code>docker login container-registry.oracle.com</code></pre>
-        <ul>
             <li>이미지 Pull</li>
         </ul>
         <pre><code>docker pull container-registry.oracle.com/database/express:21.3.0-xe</code></pre>
@@ -137,12 +133,12 @@ wsl --install -d Ubuntu</code></pre>
             <li>포트: 1521(DB), 5500(EM Express)</li>
             <li>환경변수: <code>ORACLE_PWD</code> = 초기 관리자 비밀번호</li>
         </ul>
-        <pre><code>docker run -d --name oracle21c-xe ^
-  -p 1521:1521 -p 5500:5500 ^
-  -e ORACLE_PWD=MyStrongPassw0rd ^
+        <pre><code>docker run -d --name oracle21c-xe
+  -p 1521:1521
+  -e ORACLE_PWD=oracle
   container-registry.oracle.com/database/express:21.3.0-xe</code></pre>
         <ul>
-            <li>상태 확인</li>
+            <li>컨테이너 상태 확인</li>
         </ul>
         <pre><code>docker ps
 docker logs -f oracle21c-xe</code></pre>
