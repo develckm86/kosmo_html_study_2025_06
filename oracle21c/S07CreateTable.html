@@ -103,14 +103,78 @@ DELETE FROM member WHERE id = 1;</code></pre>
     </section>
 
     <section>
-        <h2>실습 아이디어</h2>
-        <ul>
-            <li>member 테이블 생성 → 시퀀스로 데이터 입력</li>
-            <li>이메일에 UNIQUE 제약조건 추가 후 중복 데이터 입력 시도</li>
-            <li>ALTER TABLE로 컬럼 수정/삭제 → <code>DESC member;</code>로 확인</li>
-            <li>DELETE vs TRUNCATE vs DROP 차이 실습</li>
-        </ul>
-    </section>
+        <h3>오라클의 모든 데이터 타입</h3>
+        <ol>
+            <li>
+                <strong>문자형 (Character Types)</strong>
+                <ul>
+                    <li>CHAR(n): 고정 길이 문자열 (1~2000바이트, 부족한 길이는 공백으로 채움)<br>
+                        예: <code>CHAR(5)</code> → 'A    '</li>
+                    <li>VARCHAR2(n): 가변 길이 문자열 (1~4000바이트, EXTENDED 모드 시 32767까지)<br>
+                        예: <code>VARCHAR2(20)</code> → 'Seoul'</li>
+                    <li>NCHAR(n): 고정 길이 유니코드 문자열 (1~2000자)</li>
+                    <li>NVARCHAR2(n): 가변 길이 유니코드 문자열 (1~4000자, EXTENDED 모드 시 32767까지)</li>
+                    <li>CLOB: 대용량 텍스트 (최대 4GB), 기사/문서 저장</li>
+                </ul>
+            </li>
+            <li>
+                <strong>숫자형 (Numeric Types)</strong>
+                <ul>
+                    <li>NUMBER(p,s): 정수/실수 저장 (최대 38자리)로 bigint 처럼 길이가 있는 10진수 데이터<br>
+                        p=전체 자리수, s=소수 자리수<br>
+                        예: <code>NUMBER(5,2)</code> → 999.99</li>
+                    <li>BINARY_FLOAT: 단정도 부동소수점, 근사치를 저장하고 연산속도가 빠름 (32비트, 약 7자리 정밀도)</li>
+                    <li>BINARY_DOUBLE: 배정도 부동소수점 (64비트, 약 16자리 정밀도)</li>
+                </ul>
+            </li>
+            <li>
+                <strong>날짜/시간형 (Date & Time Types) : 내부적으로 년/월/일/시/분/초를 각각 정수로 나눠 저장하는 구조로 BC 4712년 ~ AD 9999년 까지 저장가능(UNIX처럼 누적초가 아님,)</strong>
+                <ul>
+                    <li>DATE: 날짜와 시간 (초 단위까지, 내부는 숫자 구조)<br>
+                        예: '2025-09-23 10:30:00'</li>
+                    <li>TIMESTAMP: 날짜와 시간 (나노초 단위 정밀도)<br>
+                        예: '2025-09-23 10:30:00.123456789'</li>
+                    <li>TIMESTAMP WITH TIME ZONE: 시간대 정보 포함</li>
+                    <li>TIMESTAMP WITH LOCAL TIME ZONE: 세션 로컬 시간대 변환</li>
+                    <li>INTERVAL YEAR TO MONTH: 연/월 단위 기간<br>
+                        예: <code>INTERVAL '2-6' YEAR TO MONTH</code> (2년 6개월)</li>
+                    <li>INTERVAL DAY TO SECOND: 일/시/분/초 단위 기간<br>
+                        예: <code>INTERVAL '7 12:30:45' DAY TO SECOND</code> (7일 12시간 30분 45초)</li>
+                </ul>
+            </li>
+            <li>
+                <strong>이진형 (Binary Types)</strong>
+                <ul>
+                    <li>RAW(n): 고정 길이 이진 데이터 (1~2000바이트)</li>
+                    <li>LONG RAW: 최대 2GB 이진 데이터 (구버전, 현재는 BLOB 권장)</li>
+                    <li>BLOB: 대용량 이진 데이터 (최대 4GB), 이미지/동영상/파일 저장</li>
+                </ul>
+            </li>
+            <li>
+                <strong>특수 타입 (Special Types)</strong>
+                <ul>
+                    <li>ROWID: 테이블의 행을 식별하는 고유 주소</li>
+                    <li>UROWID: 범용 ROWID, 인덱스 조직 테이블 등도 지원</li>
+                </ul>
+            </li>
+            <li>
+                <strong>날짜 저장 구조 & UNIX TIME 변환</strong>
+                <ul>
+                    <li>DATE/TIMESTAMP는 내부적으로 숫자 구조로 저장됨 (문자열 아님)</li>
+                    <li>UNIX TIME은 1970-01-01 00:00:00 UTC부터의 초(정수)</li>
+                    <li>변환 예시:
+                        <pre><code>-- 현재 시간을 UNIX TIME(초)로
+SELECT (CAST(SYSTIMESTAMP AS DATE) - DATE '1970-01-01')*(60*60*24*1000) AS unix_time
+FROM dual;
 
+--1758612485852 UNIX TIME(정수)을 DATE로
+SELECT TO_DATE('1970-01-01','YYYY-MM-DD') + (1758612485852/86400000) AS result_date
+FROM dual;  -- 2025-09-23 07:28:06
+</code></pre>
+                    </li>
+                </ul>
+            </li>
+        </ol>
+    </section>
 </body>
 </html>
