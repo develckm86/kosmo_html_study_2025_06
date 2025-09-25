@@ -224,20 +224,11 @@ GROUP BY job;</code></pre>
             </li>
 
             <li>
-      <pre><code>WITH cnt AS (
-  SELECT deptno, job, COUNT(*) AS cnt
-  FROM emp
-  GROUP BY deptno, job
-),
-rk AS (
-  SELECT deptno, job, cnt,
-         DENSE_RANK() OVER (PARTITION BY deptno ORDER BY cnt DESC) AS rk
-  FROM cnt
-)
-SELECT deptno, job, cnt
-FROM rk
-WHERE rk = 1
-ORDER BY deptno, job;</code></pre>
+      <pre><code>SELECT * FROM(SELECT deptno, job,
+       COUNT(*) AS cnt,
+       MAX(COUNT(*)) OVER (PARTITION BY deptno) AS max_cnt
+FROM emp
+GROUP BY deptno, job) WHERE cnt=max_cnt;</code></pre>
             </li>
 
             <li>
