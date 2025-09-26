@@ -156,10 +156,11 @@ CROSS JOIN dept d;</code></pre>
             <li>EMP와 DEPT를 FULL OUTER JOIN하여 사원 또는 부서가 없어도 모두 조회하라.</li>
             <li>EMP 테이블에서 사원 이름과 같은 부서에 속한 다른 사원의 이름을 SELF JOIN으로 조회하라.</li>
             <li>EMP와 DEPT를 CROSS JOIN하여 모든 가능한 조합을 조회하라.</li>
-            <li>EMPNO와 DEPTNO가 일치하는 데이터만 INNER JOIN으로 조회하고, DEPTNO 순으로 정렬하라.</li>
+            <li>사번의 DEPTNO와 부서의 DEPTNO가 일치하는 데이터만 INNER JOIN으로 조회하고, DEPTNO 순으로 정렬하라.</li>
             <li>사원의 이름, 부서명을 출력하되, 부서명이 없는 경우 "NO DEPT"로 표시하라. (LEFT JOIN + NVL/COALESCE 활용)</li>
             <li>EMP에서 ENAME, DEPT에서 DNAME을 INNER JOIN으로 조회하되, 부서명이 'SALES'인 사원만 출력하라.</li>
-            <li>EMP 테이블에서 관리자를 표현하려고 SELF JOIN을 사용해 사원의 이름과 같은 부서의 다른 사원을 "관리자"로 표시하라.</li>
+            <li>관리자는 job이 Manager인 사람입니다. 사원이 속한 부서의 관리자를 SELF JOIN을 사용해 출력하세요.
+                매니저가 아닌 사원만 표시하고 매니저는 "관리자"로 표시하세요.</li>
         </ol>
     </section>
 
@@ -232,97 +233,97 @@ LEFT JOIN emp m
             </li>
         </ol>
     </section>
-    <section>
-        <h2>조인 문제</h2>
-        <ul>
-            <li>문제 1. 사원 이름(ENAME)과 해당 사원의 부서 이름(DNAME)을 조회하시오.</li>
-            <li>문제 2. 부서 위치(LOC)가 'DALLAS'인 사원의 이름과 직무(JOB)를 조회하시오.</li>
-            <li>문제 3. 급여(SAL)가 2000 이상인 사원의 이름과 부서 이름을 조회하시오.</li>
-            <li>문제 4. 각 사원의 이름과 급여, 그리고 급여 등급(GRADE)을 함께 조회하시오.</li>
-            <li>문제 5. 'ACCOUNTING' 부서에 소속된 모든 사원의 이름과 입사일(HIREDATE)을 조회하시오.</li>
-            <li>문제 6. 관리자가 존재하는 사원의 이름과 해당 관리자의 이름을 조회하시오.</li>
-            <li>문제 7. 부서별로 사원이 한 명도 없는 부서의 부서 이름을 조회하시오.</li>
-            <li>문제 8. 'RESEARCH' 부서에 소속된 사원의 이름과 급여 등급을 조회하시오.</li>
-            <li>문제 9. 모든 사원의 이름과, 해당 사원이 속하지 않은 부서 이름까지 포함하여 출력하시오.</li>
-            <li>문제 10. 모든 사원의 이름과 부서 이름을 조회하되, 부서가 지정되지 않은 사원도 함께 출력하시오.</li>
-        </ul>
-    </section>
-    <section>
-        <h2>조인 정답</h2>
-        <ul>
-            <li>
-                문제 1 정답
-                <pre><code>SELECT e.ename, d.dname
-FROM emp e
-JOIN dept d ON e.deptno = d.deptno;</code></pre>
-            </li>
-            <li>
-                문제 2 정답
-                <pre><code>SELECT e.ename, e.job
-FROM emp e
-JOIN dept d ON e.deptno = d.deptno
-WHERE d.loc = 'DALLAS';</code></pre>
-            </li>
-            <li>
-                문제 3 정답
-                <pre><code>SELECT e.ename, d.dname
-FROM emp e
-JOIN dept d ON e.deptno = d.deptno
-WHERE e.sal &gt;= 2000;</code></pre>
-            </li>
-            <li>
-                문제 4 정답
-                <pre><code>SELECT e.ename, e.sal, s.grade
-FROM emp e
-JOIN salgrade s ON e.sal BETWEEN s.losal AND s.hisal;</code></pre>
-            </li>
-            <li>
-                문제 5 정답
-                <pre><code>SELECT e.ename, e.hiredate
-FROM emp e
-JOIN dept d ON e.deptno = d.deptno
-WHERE d.dname = 'ACCOUNTING';</code></pre>
-            </li>
-            <li>
-                문제 6 정답
-                <pre><code>SELECT e.ename AS emp_name, m.ename AS mgr_name
-FROM emp e
-JOIN emp m ON e.mgr = m.empno;</code></pre>
-            </li>
-            <li>
-                문제 7 정답
-                <pre><code>SELECT d.dname
-FROM dept d
-LEFT JOIN emp e ON d.deptno = e.deptno
-WHERE e.empno IS NULL;</code></pre>
-            </li>
-            <li>
-                문제 8 정답
-                <pre><code>SELECT e.ename, s.grade
-FROM emp e
-JOIN dept d ON e.deptno = d.deptno
-JOIN salgrade s ON e.sal BETWEEN s.losal AND s.hisal
-WHERE d.dname = 'RESEARCH';</code></pre>
-            </li>
-            <li>
-                문제 9 정답
-                <pre><code>-- 각 사원에 대해 ‘소속하지 않은’ 모든 부서를 함께 표시
-SELECT e.ename, d.dname
-FROM emp e
-CROSS JOIN dept d
-WHERE d.deptno &lt;&gt; e.deptno
-ORDER BY e.ename, d.dname;</code></pre>
-            </li>
-            <li>
-                문제 10 정답
-                <pre><code>-- 부서가 지정되지 않은 사원(null deptno)도 함께 출력
-SELECT e.ename, d.dname
-FROM emp e
-LEFT JOIN dept d ON e.deptno = d.deptno
-ORDER BY e.ename;</code></pre>
-            </li>
-        </ul>
-    </section>
+<!--    <section>-->
+<!--        <h2>조인 문제</h2>-->
+<!--        <ul>-->
+<!--            <li>문제 1. 사원 이름(ENAME)과 해당 사원의 부서 이름(DNAME)을 조회하시오.</li>-->
+<!--            <li>문제 2. 부서 위치(LOC)가 'DALLAS'인 사원의 이름과 직무(JOB)를 조회하시오.</li>-->
+<!--            <li>문제 3. 급여(SAL)가 2000 이상인 사원의 이름과 부서 이름을 조회하시오.</li>-->
+<!--            <li>문제 4. 각 사원의 이름과 급여, 그리고 급여 등급(GRADE)을 함께 조회하시오.</li>-->
+<!--            <li>문제 5. 'ACCOUNTING' 부서에 소속된 모든 사원의 이름과 입사일(HIREDATE)을 조회하시오.</li>-->
+<!--            <li>문제 6. 관리자가 존재하는 사원의 이름과 해당 관리자의 이름을 조회하시오.</li>-->
+<!--            <li>문제 7. 부서별로 사원이 한 명도 없는 부서의 부서 이름을 조회하시오.</li>-->
+<!--            <li>문제 8. 'RESEARCH' 부서에 소속된 사원의 이름과 급여 등급을 조회하시오.</li>-->
+<!--            <li>문제 9. 모든 사원의 이름과, 해당 사원이 속하지 않은 부서 이름까지 포함하여 출력하시오.</li>-->
+<!--            <li>문제 10. 모든 사원의 이름과 부서 이름을 조회하되, 부서가 지정되지 않은 사원도 함께 출력하시오.</li>-->
+<!--        </ul>-->
+<!--    </section>-->
+<!--    <section>-->
+<!--        <h2>조인 정답</h2>-->
+<!--        <ul>-->
+<!--            <li>-->
+<!--                문제 1 정답-->
+<!--                <pre><code>SELECT e.ename, d.dname-->
+<!--FROM emp e-->
+<!--JOIN dept d ON e.deptno = d.deptno;</code></pre>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                문제 2 정답-->
+<!--                <pre><code>SELECT e.ename, e.job-->
+<!--FROM emp e-->
+<!--JOIN dept d ON e.deptno = d.deptno-->
+<!--WHERE d.loc = 'DALLAS';</code></pre>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                문제 3 정답-->
+<!--                <pre><code>SELECT e.ename, d.dname-->
+<!--FROM emp e-->
+<!--JOIN dept d ON e.deptno = d.deptno-->
+<!--WHERE e.sal &gt;= 2000;</code></pre>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                문제 4 정답-->
+<!--                <pre><code>SELECT e.ename, e.sal, s.grade-->
+<!--FROM emp e-->
+<!--JOIN salgrade s ON e.sal BETWEEN s.losal AND s.hisal;</code></pre>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                문제 5 정답-->
+<!--                <pre><code>SELECT e.ename, e.hiredate-->
+<!--FROM emp e-->
+<!--JOIN dept d ON e.deptno = d.deptno-->
+<!--WHERE d.dname = 'ACCOUNTING';</code></pre>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                문제 6 정답-->
+<!--                <pre><code>SELECT e.ename AS emp_name, m.ename AS mgr_name-->
+<!--FROM emp e-->
+<!--JOIN emp m ON e.mgr = m.empno;</code></pre>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                문제 7 정답-->
+<!--                <pre><code>SELECT d.dname-->
+<!--FROM dept d-->
+<!--LEFT JOIN emp e ON d.deptno = e.deptno-->
+<!--WHERE e.empno IS NULL;</code></pre>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                문제 8 정답-->
+<!--                <pre><code>SELECT e.ename, s.grade-->
+<!--FROM emp e-->
+<!--JOIN dept d ON e.deptno = d.deptno-->
+<!--JOIN salgrade s ON e.sal BETWEEN s.losal AND s.hisal-->
+<!--WHERE d.dname = 'RESEARCH';</code></pre>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                문제 9 정답-->
+<!--                <pre><code>&#45;&#45; 각 사원에 대해 ‘소속하지 않은’ 모든 부서를 함께 표시-->
+<!--SELECT e.ename, d.dname-->
+<!--FROM emp e-->
+<!--CROSS JOIN dept d-->
+<!--WHERE d.deptno &lt;&gt; e.deptno-->
+<!--ORDER BY e.ename, d.dname;</code></pre>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                문제 10 정답-->
+<!--                <pre><code>&#45;&#45; 부서가 지정되지 않은 사원(null deptno)도 함께 출력-->
+<!--SELECT e.ename, d.dname-->
+<!--FROM emp e-->
+<!--LEFT JOIN dept d ON e.deptno = d.deptno-->
+<!--ORDER BY e.ename;</code></pre>-->
+<!--            </li>-->
+<!--        </ul>-->
+<!--    </section>-->
 
 </body>
 </html>
