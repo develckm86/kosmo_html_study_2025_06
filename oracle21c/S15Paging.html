@@ -168,31 +168,31 @@ LIMIT 5 OFFSET 5;
     <section>
         <h3>① ROWNUM 방식</h3>
         <ol>
-            <li>정렬 없이 1페이지(1~5행)를 조회하라. (페이지당 5건)
-                <small>힌트: 안쪽에서 <code>ROWNUM &lt;= 5</code>, 바깥에서 <code>rnum BETWEEN 1 AND 5</code></small></li>
+            <li><code>pay_history</code> 를 정렬 없이 1페이지(1~5행)를 조회하라. (페이지당 5건)
+                <small>힌트: 안쪽에서 <code>ROWNUM &lt;= 5</code>, 바깥에서 <code>rnum &gt;= 1 </code></small></li>
             <li>정렬 없이 2페이지(6~10행)를 조회하라. (페이지당 5건)</li>
-            <li>EMPNO=1001 사원의 데이터만 대상으로 1페이지(1~5행)를 조회하라.</li>
+            <li>10번 부서의 <code>pay_history</code>를 1페이지(1~5행) 조회하라.</li>
         </ol>
     </section>
 
     <section>
         <h3>② ROW_NUMBER() 함수 방식</h3>
         <ol start="4">
-            <li>급여일(<code>PAY_DATE</code>) 내림차순으로 정렬 후, 1페이지(1~5행)를 조회하라.
+            <li><code>pay_history</code>에서 급여일(<code>PAY_DATE</code>) 내림차순으로 정렬 후, 1페이지(1~5행)를 조회하라.
                 <small>힌트: <code>ROW_NUMBER() OVER (ORDER BY PAY_DATE DESC)</code></small></li>
-            <li>금액(<code>AMOUNT</code>) 높은 순으로 2페이지(6~10행)를 조회하라.</li>
-            <li>보너스(<code>BONUS</code>)가 있는 건만 대상으로 <code>PAY_DATE DESC</code> 정렬 후 1페이지(1~5행)를 조회하라.</li>
+            <li><code>pay_history</code>에서 금액(<code>AMOUNT</code>) 높은 순으로 2페이지(6~10행)를 조회하라.</li>
+            <li><code>pay_history</code>에서 보너스(<code>BONUS</code>)가 있는 건만 대상으로 <code>PAY_DATE DESC</code> 정렬 후 1페이지(1~5행)를 조회하라.</li>
         </ol>
     </section>
 
     <section>
         <h3>③ OFFSET / FETCH 방식 (Oracle 12c+ 또는 MySQL)</h3>
         <ol start="7">
-            <li><code>PAY_DATE DESC</code> 기준으로 1페이지(1~5행)를 조회하라.
+            <li><code>pay_history</code>에서 <code>PAY_DATE DESC</code> 기준으로 1페이지(1~5행)를 조회하라.
                 <small>힌트: <code>OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY</code></small></li>
-            <li><code>AMOUNT DESC</code> 기준으로 2페이지(6~10행)를 조회하라.</li>
-            <li>EMPNO=2000 사원의 데이터를 <code>PAY_DATE DESC</code> 정렬 후 3페이지(11~15행)를 조회하라.</li>
-            <li>최근 30일 이내 데이터만 대상으로 <code>PAY_DATE DESC</code> 정렬 후 1페이지(1~5행)를 조회하라.</li>
+            <li><code>pay_history</code>에서 <code>AMOUNT DESC</code> 기준으로 2페이지(6~10행)를 조회하라.</li>
+            <li><code>pay_history</code>에서 직책(JOB)이 <code>sales</code>인 사원의 데이터를 <code>PAY_DATE DESC</code> 정렬 후 3페이지(11~15행)를 조회하라.</li>
+            <li><code>pay_history</code>최근 30일 이내 데이터만 대상으로 <code>PAY_DATE DESC</code> 정렬 후 1페이지(1~5행)를 조회하라.</li>
         </ol>
     </section>
 
