@@ -133,10 +133,7 @@ wsl --install -d Ubuntu</code></pre>
             <li>포트: 1521(DB), 5500(EM Express)</li>
             <li>환경변수: <code>ORACLE_PWD</code> = 초기 관리자 비밀번호</li>
         </ul>
-        <pre><code>docker run -d --name oracle21c-xe ^
-  -p 1521:1521 ^
-  -e ORACLE_PWD=oracle ^
-  container-registry.oracle.com/database/express:21.3.0-xe
+        <pre><code>docker run -d --name oracle21c-xe -p 1521:1521 -e ORACLE_PWD=oracle container-registry.oracle.com/database/express:21.3.0-xe
 </code></pre>
         <ul>
             <li>컨테이너 상태 확인</li>
