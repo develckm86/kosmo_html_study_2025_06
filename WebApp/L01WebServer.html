@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>웹 개발 기초 개념 정리</title>
+    <link rel="stylesheet" href="/src/css/study.css">
+
+</head>
+<body>
+<h1>웹 개발 기초 개념</h1>
+
+<section>
+    <h2>1. 인터넷(Internet)</h2>
+    <ul>
+        <li>전 세계의 컴퓨터와 네트워크가 연결된 거대한 정보 통신망</li>
+        <li>TCP/IP 프로토콜을 기반으로 데이터가 패킷 단위로 전송됨</li>
+        <li>인터넷 위에서 다양한 서비스(웹, 이메일, FTP 등)가 동작함</li>
+    </ul>
+</section>
+
+<section>
+    <h2>2. 웹(Web)</h2>
+    <ul>
+        <li>인터넷에서 정보를 주고받는 대표적인 서비스</li>
+        <li>HTTP(또는 HTTPS) 프로토콜을 이용해 문서(HTML)를 주고받음</li>
+        <li>브라우저는 HTML, CSS, JavaScript를 해석하여 사용자에게 시각적으로 보여줌</li>
+    </ul>
+</section>
+
+<section>
+    <h2>3. 웹서버(Web Server)</h2>
+    <ul>
+        <li>클라이언트(브라우저)의 요청을 받아 정적인 콘텐츠를 제공하는 서버</li>
+        <li>예: HTML, CSS, JS, 이미지 파일 등</li>
+        <li>대표 소프트웨어: Apache, Nginx, IIS</li>
+        <li>주요 역할:
+            <ul>
+                <li>HTTP 요청 처리</li>
+                <li>정적 파일 제공</li>
+                <li>요청을 웹 애플리케이션 서버(WAS)로 전달</li>
+            </ul>
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h2>4. 웹 애플리케이션 서버(WAS, Web Application Server)</h2>
+    <ul>
+        <li>동적인 콘텐츠(프로그램 실행 결과)를 생성하는 서버</li>
+        <li>웹서버와 달리 비즈니스 로직을 실행하고 DB와 연동 가능</li>
+        <li>대표 예시: Tomcat, JBoss, WebLogic, Jetty</li>
+        <li>주요 역할:
+            <ul>
+                <li>JSP, Servlet, Spring 등의 실행 환경 제공</li>
+                <li>DB 연동 및 트랜잭션 처리</li>
+                <li>세션 관리 및 보안 처리</li>
+            </ul>
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h2>5. 웹 애플리케이션(Web Application)</h2>
+    <ul>
+        <li>웹서버와 WAS 위에서 동작하는 실제 서비스 프로그램</li>
+        <li>사용자 요청에 따라 DB에서 데이터를 조회하고, HTML로 응답을 생성</li>
+        <li>예시: 쇼핑몰, 블로그, 일정 관리 시스템, 온라인 은행 등</li>
+        <li>구성 요소:
+            <ul>
+                <li>프론트엔드: HTML, CSS, JavaScript로 구성</li>
+                <li>백엔드: 서버 언어(Java, Python, Node.js 등)와 DB 연동</li>
+            </ul>
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h2>6. 웹 구조의 흐름</h2>
+    <pre><code>
+[브라우저] → [웹서버] → [WAS] → [DB]
+   요청         전달        로직처리    데이터조회
+   ← 응답       ← 결과       ← 결과HTML
+  </code></pre>
+</section>
+
+</body>
+</html>
