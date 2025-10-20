@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>Builder 패턴 수업</title>
+    <link rel="stylesheet" href="/src/css/study.css">
+
+</head>
+<body>
+
+<h1> Builder 패턴</h1>
+
+<section>
+    <h2>수업 목표</h2>
+    <ul>
+        <li>생성자 기반 초기화의 한계를 이해한다.</li>
+        <li>캡슐화(setter) 방식의 장단점을 파악한다.</li>
+        <li>Builder 패턴으로 불변성, 가독성, 안전성을 동시에 달성하는 방법을 익힌다.</li>
+    </ul>
+</section>
+
+<section>
+    <h2>배경: 생성자 초기화와 문제점</h2>
+    <p>필드가 2~3개일 때는 생성자로 초기화해도 문제가 적다. 그러나 필드가 늘어나면 생성자 오버로딩이 급증하고, 매개변수 순서 실수 및 가독성 저하가 발생한다.</p>
+    <h3>예시: 필드가 적을 때</h3>
+    <pre><code class="language-java">public class Dept {
+    private int deptno;
+    private String dname;
+    private String loc;
+
+    public Dept(int deptno, String dname, String loc) {
+        this.deptno = deptno;
+        this.dname = dname;
+        this.loc = loc;
+    }
+}
+
+// 사용
+Dept d1 = new Dept(10, "ACCOUNTING", "NEW YORK");
+</code></pre>
+
+    <h3>예시: 필드가 많아질 때(텔레스코핑 생성자 문제)</h3>
+    <pre><code class="language-java">public class Dept {
+    private int deptno;
+    private String dname;
+    private String loc;
+    private String phone;
+    private Integer managerEmpno;
+    private java.time.LocalDateTime createdAt;
+
+    public Dept(int deptno, String dname, String loc) { /* ... */ }
+    public Dept(int deptno, String dname, String loc, String phone) { /* ... */ }
+    public Dept(int deptno, String dname, String loc, String phone, Integer managerEmpno) { /* ... */ }
+    public Dept(int deptno, String dname, String loc, String phone, Integer managerEmpno, java.time.LocalDateTime createdAt) { /* ... */ }
+
+// 호출 측에서 순서 헷갈림, 가독성 저하
+Dept d2 = new Dept(20, "RESEARCH", "DALLAS", "02-1111-2222", 7788, java.time.LocalDateTime.now());
+</code></pre>
+
+    <ul>
+        <li>생성자 오버로딩 폭증</li>
+        <li>매개변수 순서 실수 위험 증가</li>
+        <li>가독성 저하로 유지보수 어려움</li>
+    </ul>
+</section>
+
+<section>
+    <h2>캡슐화(setter)로 전환: 장단점</h2>
+    <p>생성자 대신 빈 객체를 만들고 setter로 채우면 오버로딩 문제는 줄지만, 필수 필드 누락과 불변성 훼손 문제가 생긴다.</p>
+
+    <h3>예시</h3>
+    <pre><code class="language-java">public class Dept {
+    private int deptno;
+    private String dname;
+    private String loc;
+    private java.time.LocalDateTime createdAt;
+
+    public Dept() {}
+
+    public void setDeptno(int deptno) { this.deptno = deptno; }
+    public void setDname(String dname) { this.dname = dname; }
+    public void setLoc(String loc) { this.loc = loc; }
+    public void setCreatedAt(java.time.LocalDateTime createdAt) { this.createdAt = createdAt; }
+}
+
+// 사용
+Dept d = new Dept();
+d.setDname("SALES");
+d.setLoc("CHICAGO");
+// deptno 누락 발생 가능
+</code></pre>
+
+    <ul>
+        <li>장점: 유연한 설정, 가독성 개선</li>
+        <li>단점: 불변성 보장 어려움, 필수 필드 누락 위험, 어떤 필드가 정의되어야 하는지 한눈에 파악하기 어려움</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Builder 패턴 도입</h2>
+    <p>Builder는 단계적 설정과 최종 build를 통해 일관된 불변 객체를 생성한다. 필수/옵션 필드를 명확히 구분하고, 체이닝으로 가독성을 높인다.</p>
+
+    <h3>DEPT Builder 구현</h3>
+    <pre><code class="language-java">public class Dept {
+    private final int deptno;                // 필수
+    private final String dname;              // 필수
+    private final String loc;                // 옵션
+    private final java.time.LocalDateTime createdAt; // 옵션
+
+    private Dept(Builder builder) {
+        this.deptno = builder.deptno;
+        this.dname = builder.dname;
+        this.loc = builder.loc;
+        this.createdAt = builder.createdAt;
+    }
+
+    public static class Builder {
+        // 필수
+        private final int deptno;
+        private final String dname;
+        // 옵션
+        private String loc;
+        //(기본값 가능)
+        private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
+
+        public Builder(int deptno, String dname) {
+            this.deptno = deptno;
+            this.dname = dname;
+        }
+
+        public Builder loc(String loc) {
+            this.loc = loc;
+            return this;
+        }
+
+        public Builder phone(String phone) {
+            this.phone = phone;
+            return this;
+        }
+
+        public Builder managerEmpno(Integer managerEmpno) {
+            this.managerEmpno = managerEmpno;
+            return this;
+        }
+
+        public Builder createdAt(java.time.LocalDateTime createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Dept build() {
+            return new Dept(this);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Dept{" +
+                "deptno=" + deptno +
+                ", dname='" + dname + '\'' +
+                ", loc='" + loc + '\'' +
+                ", phone='" + phone + '\'' +
+                ", managerEmpno=" + managerEmpno +
+                ", createdAt=" + createdAt +
+                '}';
+    }
+}
+</code></pre>
+
+    <h3>사용 예</h3>
+    <pre><code class="language-java">// 필수만 지정
+Dept d1 = new Dept.Builder(10, "ACCOUNTING").build();
+
+// 필수 + 일부 옵션
+Dept d2 = new Dept.Builder(20, "RESEARCH")
+        .loc("DALLAS")
+        .build();
+
+// 모든 필드 지정
+Dept d3 = new Dept.Builder(30, "SALES")
+        .loc("CHICAGO")
+        .createdAt(java.time.LocalDateTime.of(2025, 10, 20, 9, 0))
+        .build();
+</code></pre>
+
+    <ul>
+        <li>장점: 불변성, 필수/옵션 분리, 가독성, 순서 독립, 디폴트 값 지정 용이</li>
+        <li>비용: Builder 클래스 작성 필요(코드량 증가). 그러나 유지보수성과 안전성이 높아 실무에서 널리 사용</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Builder 패턴</h2>
+    <ul>
+        <li><strong>정의:</strong> 복잡한 객체를 단계별로 생성하도록 설계한 생성(Creational) 패턴으로, 객체 생성 과정과 표현을 분리한다.</li>
+        <li><strong>의도:</strong> 동일한 생성 절차로 서로 다른 객체를 만들 수 있게 하며, 생성자 오버로딩 문제를 해결한다.</li>
+        <li><strong>구조:</strong> Builder(구성 단계 정의), ConcreteBuilder(구체적 구현), Product(생성 결과), Director(생성 순서 제어, 선택적).</li>
+        <li><strong>장점:</strong> 가독성 향상, 불변 객체 생성, 필수/옵션 필드 구분 가능, 단계적 구성으로 유지보수 용이.</li>
+        <li><strong>단점:</strong> 클래스 수 증가, 단순 객체에는 과도한 구조.</li>
+        <li><strong>적용 예:</strong> Java의 StringBuilder, Lombok의 @Builder, Spring의 BeanDefinitionBuilder 등.</li>
+    </ul>
+</section>
+
+<section>
+    <h2>실습 과제</h2>
+    <ol>
+        <li>EmpDto에 Builder를 추가로 구현하세요.</li>
+        <li>필수 필드 누락 시 <code>IllegalArgumentException</code>을 던지도록 <code>build()</code>에 검증 로직을 추가하라. 예: <code>ename</code>이 공백이면 예외.</li>
+    </ol>
+    <h3>검증 예시 힌트</h3>
+    <pre><code class="language-java">public Dept build() {
+    if (dname == null || dname.isBlank()) {
+        throw new IllegalArgumentException("dname은 필수입니다.");
+    }
+    return new Dept(this);
+}
+</code></pre>
+</section>
+
+<section>
+    <h2>추가: Lombok @Builder 사용</h2>
+    <p>Lombok은 자바 개발 시 반복적으로 작성해야 하는 코드를 줄여주는 라이브러리로, 컴파일 시점에 애노테이션을 분석하여 자동으로 메서드(getter, setter, builder, constructor, toString 등)를 생성한다. IDE와 컴파일러가 협력하여 실제 바이트코드에 코드를 추가하므로, 개발자는 코드 가독성과 생산성을 높이면서도 깔끔한 소스 구조를 유지할 수 있다.</p>
+    <p>Lombok을 사용할 수 있다면 반복 코드를 줄일 수 있다. 단, Lombok 의존성 및 애노테이션 프로세서 설정이 필요하다.</p>
+    <pre><code class="language-java">@lombok.Builder
+@lombok.ToString
+public class Dept {
+    private final int deptno;
+    private final String dname;
+    private final String loc;
+    private final String phone;
+    private final Integer managerEmpno;
+    private final java.time.LocalDateTime createdAt;
+}
+
+// 사용
+Dept d = Dept.builder()
+        .deptno(40)
+        .dname("OPERATIONS")
+        .loc("BOSTON")
+        .build();
+</code></pre>
+</section>
+
+<section>
+    <h2>요약</h2>
+    <ul>
+        <li>생성자: 간단하지만 필드가 늘면 오버로딩과 가독성 문제가 커진다.</li>
+        <li>get set: 유연하지만 불변성, 필수 필드 누락 위험이 있다.</li>
+        <li>Builder: 필수/옵션 분리, 디폴트 값, 체이닝, 불변성으로 실무 적합성이 높다.</li>
+    </ul>
+</section>
+
+</body>
+</html>
