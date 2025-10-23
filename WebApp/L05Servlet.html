@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>서블릿(Servlet) 기초 정리</title>
+    <link rel="stylesheet" href="/src/css/study.css">
+</head>
+<body>
+
+<h1>서블릿(Servlet) 기초</h1>
+
+<section>
+    <h2>서블릿이란?</h2>
+    <ul>
+        <li>자바로 작성된 서버 측 프로그램으로, 클라이언트의 요청을 받아 동적으로 응답을 생성하는 클래스</li>
+        <li>정적 리소스(HTML, CSS, 이미지)와 달리 동적으로 데이터 처리 및 HTML, JSON 등을 생성</li>
+        <li>톰캣(Tomcat)과 같은 서블릿 컨테이너에 의해 관리되며, 컨테이너가 생성·호출·소멸 과정을 담당</li>
+    </ul>
+</section>
+
+<section>
+    <h2>톰캣과 동적 리소스</h2>
+    <ul>
+        <li>정적 리소스: 파일 내용을 그대로 응답 (예: HTML, CSS, JS, 이미지)</li>
+        <li>동적 리소스: 요청에 따라 자바 코드로 실행 결과를 만들어 응답 (예: 서블릿, JSP)</li>
+        <li>서블릿은 톰캣이 요청을 분석해 <code>service()</code> 메서드를 호출하고, 내부적으로 <code>doGet()</code>이나 <code>doPost()</code>로 분기하여 처리</li>
+    </ul>
+</section>
+
+<section>
+    <h2>서블릿 생명주기(Lifecycle)</h2>
+    <ul>
+        <li><code>init()</code> : 서블릿 최초 1회 초기화</li>
+        <li><code>service()</code> : 요청마다 호출되어, 요청 방식(GET, POST 등)에 따라 해당 메서드 실행</li>
+        <li><code>destroy()</code> : 서버 종료 시 또는 서블릿 언로드 시 1회 호출</li>
+    </ul>
+</section>
+
+<section>
+    <h2>요청과 응답 처리</h2>
+    <ul>
+        <li>요청 객체(<code>HttpServletRequest</code>): 클라이언트가 보낸 데이터, URL, 파라미터, 헤더 등을 관리</li>
+        <li>응답 객체(<code>HttpServletResponse</code>): 서버가 클라이언트에게 보낼 데이터, 상태코드, 헤더, 콘텐츠 타입 등을 설정</li>
+        <li>응답 작성 시 <code>response.setContentType()</code>으로 MIME 타입과 인코딩 지정</li>
+        <li><code>response.getWriter()</code> 또는 <code>response.getOutputStream()</code>을 이용해 응답 내용 출력</li>
+    </ul>
+</section>
+
+<section>
+    <h2>HTTP 요청 방식: GET과 POST</h2>
+    <ul>
+        <li><strong>GET 방식</strong>
+            <br>요청 데이터를 URL의 쿼리스트링으로 전달하는 방식
+            <br>예: <code>/hello?name=kim</code>
+            <br>특징:
+            <ul>
+                <li>데이터가 URL에 노출됨</li>
+                <li>길이 제한이 있음</li>
+                <li>조회용(Select)에 주로 사용</li>
+            </ul>
+        </li>
+        <li><strong>POST 방식</strong>
+            <br>요청 데이터를 HTTP 메시지 본문(body)에 담아 전송
+            <br>특징:
+            <ul>
+                <li>URL에 데이터가 노출되지 않음</li>
+                <li>대용량 데이터 전송 가능 (폼, JSON, 파일 업로드 등)</li>
+                <li>생성/수정/삭제 요청 시 사용</li>
+                <li>파라미터를 읽기 전에 <code>request.setCharacterEncoding("UTF-8")</code> 지정 필요</li>
+            </ul>
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h2>doGet()과 doPost() 메서드</h2>
+    <ul>
+        <li><code>doGet()</code>
+            <br>GET 방식 요청을 처리하는 메서드
+            <br>쿼리스트링을 통해 전달된 파라미터를 처리하고, 주로 페이지 조회용 응답을 작성
+            <pre><code>protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    response.setContentType("text/html;charset=UTF-8");
+    PrintWriter out = response.getWriter();
+    String name = request.getParameter("name");
+    out.println("&lt;h1&gt;Hello, " + name + " (GET)&lt;/h1&gt;");
+}</code></pre>
+        </li>
+
+        <li><code>doPost()</code>
+            <br>POST 방식 요청을 처리하는 메서드
+            <br>폼 데이터나 JSON 데이터를 처리하며, 주로 데이터 등록/수정/삭제 시 사용
+            <pre><code>protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    request.setCharacterEncoding("UTF-8"); // 한글 깨짐 방지
+    String name = request.getParameter("name");
+    response.setContentType("application/json;charset=UTF-8");
+    PrintWriter out = response.getWriter();
+    out.printf("{\"message\":\"Hello, %s (POST)\"}", name);
+}</code></pre>
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h2>web.xml (Deployment Descriptor, DD)</h2>
+    <ul>
+        <li>서블릿과 URL 매핑 정보를 선언하는 배치 설정 파일</li>
+        <li>웹 애플리케이션의 동작 방식을 정의하며, <code>WEB-INF/web.xml</code> 위치에 존재</li>
+        <pre><code>&lt;web-app xmlns="https://jakarta.ee/xml/ns/jakartaee" version="6.0"&gt;
+  &lt;servlet&gt;
+    &lt;servlet-name&gt;helloServlet&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;com.example.HelloServlet&lt;/servlet-class&gt;
+  &lt;/servlet&gt;
+
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;helloServlet&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/hello&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+&lt;/web-app&gt;
+</code></pre>
+    </ul>
+</section>
+
+<section>
+    <h2>@WebServlet 어노테이션 등록</h2>
+    <ul>
+        <li>web.xml 대신 코드 상단에 <code>@WebServlet</code>으로 URL 매핑 가능</li>
+        <pre><code>@WebServlet("/hello")
+public class HelloServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        response.getWriter().println("&lt;h1&gt;Hello Servlet (GET)&lt;/h1&gt;");
+    }
+}</code></pre>
+    </ul>
+</section>
+
+</body>
+</html>
