@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>JSP(JavaServer Pages)</title>
+    <link rel="stylesheet" href="/src/css/study.css">
+
+</head>
+<body>
+
+<h1>JSP(JavaServer Pages)</h1>
+
+<section>
+    <h2>JSP란?</h2>
+    <ul>
+        <li>JavaServer Pages의 약자로, HTML 문서 안에 자바 코드를 포함하여 동적 웹 페이지를 생성하기 위한 기술</li>
+        <li>서블릿(Servlet)과 동일한 기능을 하지만, HTML과 자바 코드를 함께 작성할 수 있어 화면 개발이 편리함</li>
+        <li>자바로 직접 서블릿 클래스를 작성해야 하는 불편함을 해결하기 위해 등장</li>
+    </ul>
+</section>
+
+<section>
+    <h2>JSP와 서블릿의 관계</h2>
+    <ul>
+        <li>JSP는 서블릿의 일종이며, 결국 서블릿 클래스로 변환되어 실행됨</li>
+        <li>톰캣(Tomcat)과 같은 JSP 엔진이 JSP 파일을 서블릿으로 변환하고 컴파일 후 실행</li>
+        <li>즉, JSP는 <strong>“스크립트 엔진 기반으로 작성된 서블릿”</strong>이라 할 수 있음</li>
+        <li>JSP 최초 실행 시 → 자바 코드로 변환(.java) → 컴파일(.class) → 메모리에 로드 → 실행</li>
+        <li>이후 같은 JSP 요청 시에는 이미 컴파일된 서블릿 클래스가 바로 실행됨</li>
+    </ul>
+</section>
+
+<section>
+    <h2>JSP의 필요성</h2>
+    <ul>
+        <li>서블릿은 모든 HTML 태그를 <code>out.println()</code>으로 작성해야 하므로 유지보수와 디자인이 불편함</li>
+        <li>JSP는 HTML을 기본으로 작성하면서 필요한 부분만 자바 코드로 동적 처리할 수 있음</li>
+        <li>디자이너와 개발자의 작업 분리가 용이해짐</li>
+        <li>배포 시 서블릿 코드를 매번 컴파일하지 않아도 JSP 파일만 배포하면 톰캣이 자동으로 컴파일해 실행</li>
+    </ul>
+</section>
+
+<section>
+    <h2>JSP의 동작 과정</h2>
+    <ol>
+        <li>클라이언트가 JSP 페이지 요청</li>
+        <li>톰캣의 JSP 엔진이 JSP를 서블릿 자바 코드(.java)로 변환</li>
+        <li>변환된 자바 파일이 컴파일되어 .class 파일(서블릿 클래스)로 생성</li>
+        <li>JSP가 서블릿처럼 실행되어 HTML 응답 생성</li>
+    </ol>
+    <p>이 모든 과정은 최초 요청 시 자동으로 이루어지며, 수정 시 다시 컴파일됩니다.</p>
+</section>
+
+<section>
+    <h2>JSP 기본 작성 방법</h2>
+    <ul>
+        <li>파일 확장자: <code>.jsp</code></li>
+        <li>HTML 문서 구조 안에 자바 코드를 삽입할 수 있음</li>
+        <li>스크립트 요소를 통해 동적 처리</li>
+    </ul>
+    <pre><code>&lt;%@ page contentType="text/html; charset=UTF-8" language="java" %&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;JSP 예제&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;JSP 기본 예제&lt;/h1&gt;
+  &lt;%
+    // 자바 코드
+    String name = "경민";
+    int age = 30;
+  %&gt;
+
+  &lt;p&gt;이름: &lt;%= name %&gt;&lt;/p&gt;
+  &lt;p&gt;나이: &lt;%= age %&gt;세&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+</section>
+
+<section>
+    <h2>JSP 스크립트 요소</h2>
+    <ul>
+        <li><code>&lt;% ... %&gt;</code> : 자바 코드 블록 (변수 선언, 제어문 등)</li>
+        <li><code>&lt;%= ... %&gt;</code> : 표현식(Expression), 값을 HTML로 바로 출력</li>
+        <li><code>&lt;%@ ... %&gt;</code> : 지시자(Directive), 페이지 설정 (예: 인코딩, 임포트)</li>
+        <li><code>&lt;%! ... %&gt;</code> : 선언부(Declaration), 멤버 변수나 메서드 선언 시 사용</li>
+    </ul>
+</section>
+
+<section>
+    <h2>JSP의 장점</h2>
+    <ul>
+        <li>HTML 기반 작성으로 시각적 UI 개발이 용이</li>
+        <li>배포 시 JSP 파일만 업로드해도 서버가 자동 컴파일</li>
+        <li>서블릿과 동일한 기능 구현 가능 (요청/응답 처리, DB 연동 등)</li>
+    </ul>
+</section>
+
+<section>
+    <h2>JSP와 서블릿 비교</h2>
+    <ul>
+        <li>서블릿: 자바 코드 중심, HTML 생성 불편 → 로직 중심 개발</li>
+        <li>JSP: HTML 중심, 자바 코드 삽입 가능 → 화면 중심 개발</li>
+        <li>결국 JSP도 서블릿으로 변환되어 실행됨</li>
+    </ul>
+</section>
+
+<section>
+    <h2>요약</h2>
+    <ul>
+        <li>JSP는 “서블릿의 HTML 버전”으로 생각하면 됨</li>
+        <li>서블릿과 동일한 기능을 제공하지만, 화면 작성이 훨씬 단순함</li>
+        <li>실행 시 자동 컴파일되어 별도의 빌드 과정 없이 배포가 용이</li>
+    </ul>
+</section>
+
+</body>
+</html>
