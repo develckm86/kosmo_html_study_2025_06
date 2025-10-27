@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>세션, 쿠키, 로컬스토리지 개념과 구현</title>
+    <link rel="stylesheet" href="/src/css/study.css">
+
+</head>
+<body>
+<h1>세션(Session), 쿠키(Cookie), 로컬스토리지(LocalStorage)</h1>
+
+<section>
+    <h2>1. 쿠키 (Cookie)</h2>
+    <ul>
+        <li><strong>저장 위치</strong>: 브라우저(클라이언트)에 저장</li>
+        <li><strong>저장 방식</strong>:
+            서버가 <code>Set-Cookie</code> 헤더로 전달하면 브라우저가 저장하고,
+            이후 같은 도메인 요청 시 자동으로 <code>Cookie</code> 헤더로 전송
+        </li>
+        <li><strong>지속 시간</strong>:
+            <ul>
+                <li>세션 쿠키: 브라우저 종료 시 삭제</li>
+                <li>영구 쿠키: <code>Expires</code> 또는 <code>Max-Age</code> 설정 시 유지</li>
+            </ul>
+        </li>
+        <li><strong>왜 사용하는가?</strong>
+            <ul>
+                <li>사용자 로그인 상태 유지 (자동 로그인)</li>
+                <li>최근 본 상품, 방문 이력 등의 개인화 저장</li>
+                <li>서버 부하를 줄이기 위한 간단한 정보 저장</li>
+            </ul>
+        </li>
+        <li><strong>주의사항</strong>
+            <ul>
+                <li>민감 정보(비밀번호, 토큰 등)는 저장하지 말 것</li>
+                <li><code>HttpOnly</code> 속성으로 자바스크립트 접근 제한</li>
+                <li><code>Secure</code> 속성으로 HTTPS 통신에서만 전송</li>
+            </ul>
+        </li>
+        <li><strong>구현 방법</strong>
+            <ul>
+                <li>서버 측 설정 (Java Servlet 예시)
+                    <pre><code>
+// 쿠키 생성 및 전송
+Cookie cookie = new Cookie("userId", "hong");
+cookie.setMaxAge(60 * 60); // 1시간
+cookie.setHttpOnly(true);
+response.addCookie(cookie);
+          </code></pre>
+                </li>
+                <li>클라이언트에서 접근 (JavaScript)
+                    <pre><code>
+document.cookie; // 모든 쿠키 조회
+          </code></pre>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h2>2. 세션 (Session)</h2>
+    <ul>
+        <li><strong>저장 위치</strong>: 서버 메모리 혹은 세션 저장소 (Redis, DB 등)</li>
+        <li><strong>저장 방식</strong>:
+            <ul>
+                <li>서버가 클라이언트에 <code>Session ID</code>를 쿠키로 부여 (예: JSESSIONID)</li>
+                <li>클라이언트는 요청 시 이 ID를 함께 전송</li>
+                <li>서버는 해당 ID로 세션 데이터를 복원</li>
+            </ul>
+        </li>
+        <li><strong>지속 시간</strong>:
+            <ul>
+                <li>브라우저 종료 시 기본적으로 세션 종료</li>
+                <li>서버 설정으로 타임아웃 지정 가능 (예: 30분)</li>
+            </ul>
+        </li>
+        <li><strong>왜 사용하는가?</strong>
+            <ul>
+                <li>로그인 상태, 장바구니 등 보안이 필요한 데이터 유지</li>
+                <li>서버가 사용자를 식별하고 상태를 저장</li>
+            </ul>
+        </li>
+        <li><strong>주의사항</strong>
+            <ul>
+                <li>세션 탈취(Session Hijacking)에 대비해 HTTPS 사용</li>
+                <li>세션 고정 공격 방지: 로그인 시 새로운 세션 ID 재발급</li>
+                <li>서버 부하 관리 필요 (사용자 수가 많을수록 메모리 사용 증가)</li>
+            </ul>
+        </li>
+        <li><strong>구현 방법</strong>
+            <ul>
+                <li>Java Servlet 예시:
+                    <pre><code>
+HttpSession session = request.getSession();
+session.setAttribute("user", "hong");
+String user = (String) session.getAttribute("user");
+          </code></pre>
+                </li>
+                <li>세션 종료:
+                    <pre><code>
+session.invalidate();
+          </code></pre>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h2>3. 로컬스토리지 (LocalStorage)</h2>
+    <ul>
+        <li><strong>저장 위치</strong>: 브라우저 내부(LocalStorage API)</li>
+        <li><strong>저장 방식</strong>:
+            <ul>
+                <li>JavaScript로 key-value 쌍 저장 (<code>localStorage</code> 객체)</li>
+                <li>문자열 형태로 저장되며, 서버로 자동 전송되지 않음</li>
+            </ul>
+        </li>
+        <li><strong>지속 시간</strong>: 사용자가 직접 삭제하기 전까지 영구 보관</li>
+        <li><strong>왜 사용하는가?</strong>
+            <ul>
+                <li>클라이언트 전용 데이터 저장 (예: 테마, 폼 상태, UI 설정)</li>
+                <li>서버 요청 없이 빠른 로컬 데이터 접근 가능</li>
+            </ul>
+        </li>
+        <li><strong>주의사항</strong>
+            <ul>
+                <li>보안 민감 데이터 저장 금지 (XSS 공격에 노출 가능)</li>
+                <li>5MB 제한(브라우저별 상이)</li>
+                <li>같은 도메인에서만 접근 가능 (Same-Origin Policy)</li>
+            </ul>
+        </li>
+        <li><strong>구현 방법</strong>
+            <pre><code>
+// 데이터 저장
+localStorage.setItem("user", "hong");
+
+// 데이터 조회
+let user = localStorage.getItem("user");
+
+// 데이터 삭제
+localStorage.removeItem("user");
+
+// 전체 초기화
+localStorage.clear();
+      </code></pre>
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h2>4. 비교 요약</h2>
+    <ul>
+        <li><strong>쿠키</strong>: 서버-클라이언트 간 자동 전송, 상태 유지에 사용</li>
+        <li><strong>세션</strong>: 서버 측에서 사용자 상태 관리, 보안성 높음</li>
+        <li><strong>로컬스토리지</strong>: 클라이언트 전용 저장소, 서버와 무관</li>
+    </ul>
+</section>
+
+</body>
+</html>
