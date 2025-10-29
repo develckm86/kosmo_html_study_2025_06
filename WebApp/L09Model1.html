@@ -112,7 +112,7 @@ public class EmpListServlet extends HttpServlet {
         <li>데이터 없음: 안내 문구와 목록 링크만 출력</li>
     </ul>
     <h3>예시코드</h3>
-    <code><pre>@WebServlet("/emp/detail.do")
+    <code><xmp>@WebServlet("/emp/detail.do")
 public class EmpDetailServlet extends HttpServlet {
   @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -159,7 +159,7 @@ public class EmpDetailServlet extends HttpServlet {
         resp.sendError(500, "상세 조회 실패: " + e.getMessage());
         }
     }
-}</pre></code>
+}</xmp></code>
 </section>
 
 
