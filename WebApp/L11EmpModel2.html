@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>사원관리 웹앱(Model2) 구현 플랜 — 보정본</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="/src/css/study.css">
+
+</head>
+<body>
+<h1>사원관리 웹앱(Model2) 구현 플랜(수정 반영)</h1>
+
+<section>
+    <h2>0. 프로젝트 개요</h2>
+    <ul>
+        <li>목표: SCOTT.EMP/DEPT 기반 사원관리(목록·상세·등록·수정·삭제)</li>
+        <li>스택: Tomcat, JSP(View), Servlet(Controller), JDBC(DAO), Oracle 또는 MySQL</li>
+        <li>정책: 페이징 미도입, 에러 전용 페이지 제작하지 않음</li>
+    </ul>
+</section>
+
+<section>
+    <h2>1) 기능 기획</h2>
+    <ul>
+        <li>사원 목록: 전체 조회</li>
+        <li>사원 상세: EMPNO로 단건 조회</li>
+        <li>등록: 신규 사원 등록(존재하는 사번, [존재하는 부서번호 조회 dept 구현시], 검증 Bean 구헌)</li>
+        <li>수정: 이름/급여/보너스/부서/직무/상사/입사일 변경(존재하는 사번, [존재하는 부서번호 조회 dept 구현시], 검증 Bean 구헌)</li>
+        <li>삭제: 사원 삭제(해당 사원이 상사로 참조되는 경우, 부하직원의 MGR를 null로 만든 뒤 삭제)</li>
+    </ul>
+</section>
+
+<section>
+    <h2>2) View와 서비스 설계</h2>
+    <ul>
+        <li>화면(View)
+            <ul>
+                <li><code>/WEB-INF/views/emp/list.jsp</code> (목록 : 사원 리스트 출력)</li>
+                <li><code>/WEB-INF/views/emp/detail.jsp</code> (상세 : 시원 상세 출력)</li>
+                <li><code>/WEB-INF/views/emp/register.jsp</code> (등록 폼 : 출력 없음, [부서리스트 select 출력])</li>
+                <li><code>/WEB-INF/views/emp/modify.jsp</code>(수정 폼 :사원 상세 출력, [부서리스트 select 출력])</li>
+            </ul>
+        </li>
+        <li>서비스 동작(개요)
+            <ul>
+                <li>목록: 전체 레코드 반환</li>
+                <li>상세: empno로 단건 반환</li>
+                <li>등록/수정: 폼 데이터 검증 → 트랜잭션 처리 → 성공 시 목록으로 리다이렉트</li>
+                <li>삭제: empno 수신 → 트랜잭션(부하 MGR null → 삭제) → 목록 리다이렉트</li>
+            </ul>
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h2>3) DB 선택</h2>
+    <ul>
+        <li>Oracle(권장: SCOTT 샘플) 또는 MySQL</li>
+        <li>JDBC 드라이버를 <code>WEB-INF/lib</code>에 배치</li>
+    </ul>
+</section>
+
+<section>
+    <h2>4) DB 설계</h2>
+    <ul>
+        <li>테이블
+            <ul>
+                <li>EMP(EMPNO PK, ENAME, JOB, MGR, HIREDATE, SAL, COMM, DEPTNO FK)</li>
+                <li>DEPT(DEPTNO PK, DNAME, LOC)</li>
+            </ul>
+        </li>
+        <li>관계: <code>EMP.MGR</code>는 EMPNO를 참조할 수 있음(상사-부하 자기참조)</li>
+    </ul>
+</section>
+
+<section>
+    <h2>5) DTO, DAO 설계</h2>
+    <ul>
+        <li>DTO
+            <ul>
+                <li><code>EmpDto</code>: empno, ename, job, mgr, hiredate, sal, comm, deptno</li>
+                <li><code>DeptDto</code>: deptno, dname, loc</li>
+            </ul>
+        </li>
+        <li>EmpDao : 사원 DAO 인터페이스(페이징·검색 제외, 최소 시그니처)
+            <ul>
+                <li><code>List&lt;EmpDto&gt; findAll()</code> : 사원 전체 조회</li>
+                <li><code>EmpDto findById(int empno)</code> : 사원 상세 조회</li>
+                <li><code>int insert(EmpDto dto)</code> : 사원 등록</li>
+                <li><code>int update(EmpDto dto)</code>: 사원 수정</li>
+                <li><code>int delete(int empno)</code> : 사원 삭제</li>
+                <li><code>int updateMgrNullByMgr(int mgr)</code> : 삭제 전 부하의 상사(MGR)를 null로</li>
+            </ul>
+        </li>
+        <li>DeptDao : 부서 DAO 인터페이스(페이징·검색 제외, 최소 시그니처)
+            <ul>
+                <li><code>List&lt;DeptDto&gt; findAllDept()</code> : 부서 전체 조회 (사원 등록 수정 폼에 부서 select 출력)</li>
+                <li><code>DeptDto findById(int deptno)</code> : 부서 상세 조회 (사원 등록 수정 액션에 존재하는 부서인지 조회)</li>
+            </ul>
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h2>6) 싱글톤 Connection 구현</h2>
+    <ul>
+        <li><code>ConnectionFactory</code>: 드라이버 로드·URL·계정 관리, 커넥션 반환</li>
+        <li><code>public static Connection getConn()</code> : 접속 객체 반환 </li>
+        <li><code>Junit Test : ConnectionFactoryTest.getConn()</code> : 단위 테스트로 접속에 문제가 없는지 확인</li>
+    </ul>
+</section>
+
+<section>
+    <h2>7) DAO 구현</h2>
+    <ul>
+        <li>SQL 작성 및 결과 매핑(널/형변환 주의)</li>
+        <li>핵심 포인트
+            <ul>
+                <li><code>updateMgrNullByManager(mgrEmpno)</code>를 먼저 실행 후 <code>delete(empno)</code></li>
+                <li>예외는 래핑하여 상위(Service)로 전파</li>
+            </ul>
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h2>8) Service 및 Bean 설계/구현</h2>
+    <ul>
+        <li><strong>Service 인터페이스</strong>
+            <ul>
+                <li><code>List&lt;EmpDto&gt; readAll()</code></li>
+                <li><code>EmpDto readOne(int empno)</code></li>
+                <li><code>void register(EmpDto dto)</code></li>
+                <li><code>void modify(EmpDto dto)</code></li>
+                <li><strong><code>void remove(int empno)</code></strong> — <em>트랜잭션</em>: <code>updateMgrNullByMrg(empno)</code> → <code>delete(empno)</code></li>
+            </ul>
+        </li>
+        <li>역할: 도메인 규칙·검증·트랜잭션 경계 설정(특히 remove 시 일관성 보장)</li>
+    </ul>
+</section>
+
+<section>
+    <h2>9) Controller 구현(서비스 호출)</h2>
+    <ul>
+        <li>URL 매핑(폼 페이지와 액션 페이지 <strong>동일 URL, 메서드로 구분</strong>)</li>
+        <li>경로 설계(예시)
+            <ul>
+                <li><code>GET  /emp/list</code> → 목록</li>
+                <li><code>GET  /emp/detail</code> → 상세(파라미터: empno)</li>
+                <li><code>GET  /emp/register</code> → 등록 폼 표시(<code>form.jsp</code>)</li>
+                <li><code>POST /emp/register</code> → 등록 처리(성공 시 <code>/emp/list</code> 리다이렉트)</li>
+                <li><code>GET  /emp/modify</code> → 수정 폼 표시(파라미터: empno, <code>form.jsp</code>)</li>
+                <li><code>POST /emp/modify</code> → 수정 처리(성공 시 <code>/emp/list</code> 리다이렉트)</li>
+                <li><code>POST /emp/remove</code> → 삭제 처리(성공 시 <code>/emp/list</code> 리다이렉트)</li>
+            </ul>
+        </li>
+        <li>흐름: 파라미터 추출 → Service 호출 → request 속성 바인딩(또는 리다이렉트) → JSP</li>
+    </ul>
+</section>
+
+<section>
+    <h2>10) View 처리(JSP)</h2>
+    <ul>
+        <li><code>list.jsp</code>: 전체 목록 출력</li>
+        <li><code>detail.jsp</code>: 단건 정보 표시</li>
+        <li><code>register.jsp</code>: 등록 폼</li>
+        <li><code>modify.jsp</code>: 수정 폼</li>
+        <li>주의: 비즈니스 로직 없음(표현 전담)</li>
+    </ul>
+</section>
+
+<section>
+    <h2>폴더/패키지 구조(권장)</h2>
+    <ul>
+        <li><code>src/main/java</code>
+            <ul>
+                <li><code>com.example.emp.controller</code> (EmpController 등)</li>
+                <li><code>com.example.emp.service</code> (EmpService 인터페이스/구현)</li>
+                <li><code>com.example.emp.dao</code> (EmpDao 인터페이스/구현)</li>
+                <li><code>com.example.emp.dto</code> (EmpDto, DeptDto)</li>
+                <li><code>com.example.emp.config</code> (ConnectionFactory)</li>
+                <li><code>com.example.emp.exception</code> (필요 시)</li>
+            </ul>
+        </li>
+        <li><code>src/main/webapp</code>
+            <ul>
+                <li><code>WEB-INF/views/emp/</code> (list.jsp, detail.jsp, register.jsp, modify.jsp)</li>
+                <li><code>WEB-INF/web.xml</code> (또는 @WebServlet)</li>
+            </ul>
+        </li>
+        <li><code>WEB-INF/lib</code> (JDBC 드라이버)</li>
+    </ul>
+</section>
+
+<section>
+    <h2>요청/응답 시나리오(간단)</h2>
+    <ul>
+        <li>목록: <code>GET /emp/list</code> → <code>readAll()</code> → list.jsp</li>
+        <li>상세: <code>GET /emp/detail?empno=7369</code> → <code>readOne()</code> → detail.jsp</li>
+        <li>등록: <code>GET /emp/register</code> → 폼, <code>POST /emp/register</code> → <code>register()</code> → 리다이렉트</li>
+        <li>수정: <code>GET /emp/modify?empno=7369</code> → 폼, <code>POST /emp/modify</code> → <code>modify()</code> → 리다이렉트</li>
+        <li>삭제: <code>POST /emp/remove?empno=7369</code> → <code>remove()</code> [트랜잭션: 부하 MGR null → 삭제] → 리다이렉트</li>
+    </ul>
+</section>
+
+<section>
+    <h2>운영 체크리스트(요약)</h2>
+    <ul>
+        <li>JDBC 드라이버/커넥션 정상 확인</li>
+        <li>요청 파라미터 인코딩(UTF-8) 필터</li>
+        <li>필수 파라미터 검증(ename, deptno 등)</li>
+        <li>트랜잭션 경계: <strong>remove()</strong>는 반드시 원자적으로 수행</li>
+    </ul>
+</section>
+</body>
+</html>
