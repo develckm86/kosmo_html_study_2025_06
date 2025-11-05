@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>JPA 란</title>
+    <link rel="stylesheet" href="/src/css/study.css">
+
+</head>
+<body>
+<h1>JPA 란</h1>
+<section>
+    <h2>1. DataSource란 무엇인가</h2>
+    <ul>
+        <li><strong>DataSource 정의:</strong>
+            <br>데이터베이스와의 연결(Connection)을 관리하는 스프링의 핵심 Bean으로,
+            <strong>Connection Pool(커넥션 풀)</strong>을 통해 효율적으로 DB 접근을 수행한다.
+        </li>
+
+        <li><strong>왜 필요한가?</strong>
+            <ul>
+                <li>JDBC에서 매번 <code>DriverManager.getConnection()</code>을 호출하면 비용이 큼.</li>
+                <li>DataSource는 미리 Connection을 생성해두고 필요 시 재사용한다.</li>
+            </ul>
+        </li>
+
+        <li><strong>스프링에서 DataSource가 생성되는 시점:</strong>
+            <ul>
+                <li><code>application.properties</code>에 DB 설정이 존재하면,</li>
+                <li>스프링 부트의 <code>DataSourceAutoConfiguration</code>이 실행되어</li>
+                <li>애플리케이션 시작 시점(<code>SpringApplication.run()</code>)에 자동으로 Bean으로 등록된다.</li>
+            </ul>
+        </li>
+
+        <li><strong>설정 예시 (Oracle SCOTT 계정):</strong></li>
+    </ul>
+    <pre><code># application.properties
+
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+spring.datasource.url=jdbc:oracle:thin:@//localhost:1521/XEPDB1
+spring.datasource.username=scott
+spring.datasource.password=tiger
+
+spring.jpa.hibernate.ddl-auto=none
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.database-platform=org.hibernate.dialect.OracleDialect
+</code></pre>
+
+    <ul>
+        <li><strong>정리:</strong>
+            스프링은 이 설정을 감지해 <code>HikariDataSource</code> 객체를 생성하고 Bean으로 등록한다.
+            <br>→ JPA, JdbcTemplate 등에서 이 DataSource Bean을 자동으로 주입받아 사용한다.
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h2>2. 스프링 빈 팩토리와 의존성 주입</h2>
+    <ul>
+        <li><strong>Bean Factory:</strong>
+            <br>스프링 컨테이너의 핵심 역할을 하는 객체로,
+            Bean(= 스프링이 관리하는 객체)을 생성하고, 서로의 의존성을 주입한다.
+        </li>
+
+        <li><strong>객체 생성과 주입의 과정:</strong>
+            <ol>
+                <li>스프링이 애플리케이션을 시작할 때, <code>@Component</code>, <code>@Service</code>, <code>@Repository</code> 등의 클래스를 스캔한다.</li>
+                <li>Bean Factory가 해당 클래스의 인스턴스를 생성한다.</li>
+                <li>필요한 다른 Bean이 있다면, 생성자나 @Autowired를 통해 자동 주입한다.</li>
+                <li>이 과정을 <strong>DI(Dependency Injection, 의존성 주입)</strong>이라고 한다.</li>
+            </ol>
+        </li>
+
+        <li><strong>의존성 역전 원리(DIP, Dependency Inversion Principle):</strong>
+            <ul>
+                <li>상위 모듈(비즈니스 로직)은 하위 모듈(구체 구현)에 의존하지 않고, <strong>추상화된 인터페이스</strong>에 의존해야 한다는 원리.</li>
+                <li>즉, 객체를 직접 생성(new)하는 대신, 외부(Spring Container)가 생성해 주입함으로써 결합도를 낮춘다.</li>
+            </ul>
+        </li>
+
+        <li><strong>DI와 DIP의 관계:</strong>
+            <ul>
+                <li><strong>DIP(의존성 역전 원리)</strong>은 설계 원칙이고,</li>
+                <li><strong>DI(의존성 주입)</strong>은 그 원리를 실현하는 방법이다.</li>
+            </ul>
+        </li>
+
+        <li><strong>예시: 생성자 주입으로 DIP 실현</strong></li>
+    </ul>
+
+    <pre><code>@Service
+public class EmpService {
+
+    private final EmpRepository empRepository;
+
+    // EmpService는 EmpRepository의 구체 구현이 아닌 인터페이스에만 의존
+    @Autowired
+    public EmpService(EmpRepository empRepository) {
+        this.empRepository = empRepository;
+    }
+
+    public List&lt;Emp&gt; getAll() {
+        return empRepository.findAll();
+    }
+}</code></pre>
+
+    <ul>
+        <li>위 구조에서 EmpService는 <code>new EmpRepository()</code>를 직접 만들지 않음.</li>
+        <li>대신, 스프링이 Bean Factory를 통해 <code>EmpRepository</code> 인스턴스를 생성하고 주입한다.</li>
+        <li>즉, <strong>객체 생성(생성 책임)은 스프링 컨테이너가, 사용(비즈니스 로직)은 개발자가 담당</strong>한다.</li>
+    </ul>
+</section>
+
+<section>
+    <h2>3. 객체 생성에서 주입까지의 흐름 (IoC 관점)</h2>
+    <ul>
+        <li><strong>IoC(Inversion of Control, 제어의 역전):</strong>
+            <br>객체의 생성과 생명주기를 개발자가 아닌 프레임워크(Spring)가 제어하는 것.
+        </li>
+        <li><strong>흐름:</strong></li>
+    </ul>
+    <pre><code>1) App 실행 → SpringApplication.run(App.class)
+2) Bean Factory가 컴포넌트 스캔 → @Entity, @Repository, @Service, @Controller 탐색
+3) DataSource, JPA, Repository, Service 객체 생성
+4) 생성자 주입(@Autowired)으로 필요한 의존 관계 연결
+5) 컨테이너에 Bean 등록 및 관리 시작</code></pre>
+    <ul>
+        <li><strong>결과:</strong>
+            개발자는 직접 객체를 생성하지 않고, 컨테이너가 대신 만들어 주입하므로 유지보수성과 확장성이 높아진다.
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h2>4. Oracle JPA 예시 (EMP 테이블)</h2>
+    <pre><code>@Entity
+@Table(name = "EMP")
+public class Emp {
+
+    @Id
+    @Column(name = "EMPNO")
+    private Integer empno;
+
+    @Column(name = "ENAME", nullable = false, length = 50)
+    private String ename;
+
+    @Column(name = "JOB")
+    private String job;
+
+    @Column(name = "MGR")
+    private Integer mgr;
+
+    @Column(name = "HIREDATE")
+    private Date hiredate;
+
+    @Column(name = "SAL")
+    private Double sal;
+
+    @Column(name = "COMM")
+    private Double comm;
+
+    @Column(name = "DEPTNO")
+    private Integer deptno;
+}</code></pre>
+</section>
+
+<section>
+    <h2>5. Repository, Service, Controller 구성</h2>
+    <pre><code>public interface EmpRepository extends JpaRepository&lt;Emp, Integer&gt; {
+    List&lt;Emp&gt; findByDeptno(Integer deptno);
+}
+
+@Service
+public class EmpService {
+    private final EmpRepository empRepository;
+    public EmpService(EmpRepository empRepository) {
+        this.empRepository = empRepository;
+    }
+    public List&lt;Emp&gt; getByDeptno(Integer deptno) {
+        return empRepository.findByDeptno(deptno);
+    }
+}
+
+@Controller
+public class EmpController {
+    private final EmpService empService;
+    public EmpController(EmpService empService) {
+        this.empService = empService;
+    }
+    @GetMapping("/emp/list")
+    public String list(Model model) {
+        model.addAttribute("emps", empService.getByDeptno(10));
+        return "emp-list";
+    }
+}</code></pre>
+</section>
+
+<section>
+    <h2>6. 요약</h2>
+    <ul>
+        <li><strong>DataSource:</strong> DB 연결을 관리하는 핵심 Bean. 스프링이 시작 시 자동 생성.</li>
+        <li><strong>Bean Factory:</strong> 객체를 생성하고, 필요한 의존성을 주입하는 스프링 컨테이너의 핵심.</li>
+        <li><strong>의존성 역전 원리(DIP):</strong> 상위 모듈이 하위 모듈의 구체 클래스가 아닌 인터페이스에 의존.</li>
+        <li><strong>의존성 주입(DI):</strong> 객체의 생성이 아닌, 외부 컨테이너가 인스턴스를 주입함으로써 DIP 실현.</li>
+        <li><strong>IoC:</strong> 프로그램의 제어권이 개발자에서 프레임워크로 역전된 구조.</li>
+        <li><strong>결론:</strong> 스프링은 DataSource → Repository → Service → Controller의 Bean을 자동 생성하고 주입하여 완전한 객체 연결 구조를 제공한다.</li>
+    </ul>
+</section>
+</body>
+</html>

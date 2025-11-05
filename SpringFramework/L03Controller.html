@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Controller</title>
+    <link rel="stylesheet" href="/src/css/study.css">
+
+</head>
+<body>
+<h1>Controller</h1>
+<section>
+    <h2>1. @Controller란 무엇인가</h2>
+    <ul>
+        <li><strong>@Controller:</strong>
+            <br>클라이언트의 요청(HTTP Request)을 받아 처리하고, View(HTML, Thymeleaf 등)로 응답을 반환하는 스프링 MVC의 핵심 어노테이션이다.
+        </li>
+        <li><strong>역할:</strong>
+            <ul>
+                <li>요청을 받아 서비스(Service) 로직 호출</li>
+                <li>응답 데이터를 Model에 담아 View로 전달</li>
+                <li>요청과 응답 흐름을 제어 (Controller = 흐름 제어자)</li>
+            </ul>
+        </li>
+        <li><strong>@RestController:</strong>
+            <br>View가 아닌 JSON 형태의 데이터를 반환할 때 사용.
+            <br><code>@Controller + @ResponseBody</code>를 합친 형태.
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h2>2. 컨트롤러에서 사용할 수 있는 주요 어노테이션</h2>
+    <ul>
+        <li><strong>@GetMapping</strong>: HTTP GET 요청을 처리 (조회용)</li>
+        <li><strong>@PostMapping</strong>: HTTP POST 요청을 처리 (등록용)</li>
+        <li><strong>@PutMapping</strong>: HTTP PUT 요청을 처리 (수정용)</li>
+        <li><strong>@DeleteMapping</strong>: HTTP DELETE 요청을 처리 (삭제용)</li>
+        <li><strong>@RequestMapping</strong>: 모든 HTTP 메서드 공통 매핑 가능 (클래스/메서드 수준)</li>
+        <li><strong>@PathVariable</strong>: URL 경로 변수 매핑</li>
+        <li><strong>@RequestParam</strong>: 쿼리 파라미터(키=값) 매핑</li>
+        <li><strong>@ModelAttribute</strong>: Form 데이터(HTML 입력 폼)를 객체로 자동 매핑</li>
+        <li><strong>@RequestBody</strong>: JSON 데이터를 DTO로 받음 (주로 @RestController에서 사용)</li>
+    </ul>
+</section>
+
+<section>
+    <h2>3. 파라미터 받는 방법</h2>
+    <ul>
+        <li><strong>1) 단일 파라미터 받기 (@RequestParam):</strong></li>
+    </ul>
+    <pre><code>@Controller
+public class EmpController {
+
+    @GetMapping("/emp/detail")
+    public String detail(@RequestParam("empno") Integer empno, Model model) {
+        // empno 파라미터가 반드시 존재해야 함
+        Emp emp = empService.findById(empno);
+        model.addAttribute("emp", emp);
+        return "emp-detail";
+    }
+}</code></pre>
+
+    <ul>
+        <li><strong>옵션 파라미터 (required=false):</strong>
+            파라미터가 없어도 에러 없이 실행됨. (null 허용)
+        </li>
+    </ul>
+    <pre><code>@GetMapping("/emp/search")
+public String search(@RequestParam(value = "job", required = false) String job, Model model) {
+    List&lt;Emp&gt; result = (job != null) ? empService.findByJob(job) : empService.getAll();
+    model.addAttribute("emps", result);
+    return "emp-list";
+}</code></pre>
+</section>
+
+<section>
+    <h2>4. 경로 변수 받기 (@PathVariable)</h2>
+    <ul>
+        <li>URL 경로에 포함된 변수를 파라미터로 받는다.</li>
+        <li>예: /emp/7788 요청 시 empno=7788을 자동 주입.</li>
+    </ul>
+    <pre><code>@GetMapping("/emp/{empno}")
+public String getEmp(@PathVariable("empno") Integer empno, Model model) {
+    Emp emp = empService.findById(empno);
+    model.addAttribute("emp", emp);
+    return "emp-detail";
+}</code></pre>
+</section>
+
+<section>
+    <h2>5. DTO로 파라미터 받기 (@ModelAttribute)</h2>
+    <ul>
+        <li>Form 입력값을 DTO 객체로 자동 변환해 받을 수 있다.</li>
+        <li>입력 폼의 name 속성과 DTO의 필드명이 일치해야 한다.</li>
+    </ul>
+    <pre><code>public class EmpDto {
+    private Integer empno;
+    private String ename;
+    private String job;
+    private Integer deptno;
+    // Getter/Setter
+}
+
+@Controller
+public class EmpController {
+
+    @PostMapping("/emp/register")
+    public String register(@ModelAttribute EmpDto dto) {
+        Emp emp = new Emp(dto.getEmpno(), dto.getEname(), dto.getJob());
+        emp.setDeptno(dto.getDeptno());
+        empService.save(emp);
+        return "redirect:/emp/list";
+    }
+}</code></pre>
+
+    <ul>
+        <li><strong>@ModelAttribute</strong>는 생략해도 동작하며,
+            <br>Spring이 요청 파라미터를 DTO 객체에 자동 주입한다.
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h2>6. 파라미터를 무조건 받아야 할 때</h2>
+    <ul>
+        <li><strong>@RequestParam(required = true)</strong> (기본값)</li>
+        <li>해당 파라미터가 없으면 400 Bad Request 발생.</li>
+    </ul>
+    <pre><code>@GetMapping("/emp/delete")
+public String delete(@RequestParam("empno") Integer empno) {
+    empService.delete(empno); // empno 없으면 예외 발생
+    return "redirect:/emp/list";
+}</code></pre>
+
+    <ul>
+        <li><strong>예외 처리 방법:</strong>
+            파라미터 검증 시 <code>BindingResult</code> 또는 <code>@Valid</code>를 함께 사용할 수 있다.
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h2>7. Controller 동작 원리 정리</h2>
+    <ul>
+        <li><strong>1단계:</strong> 클라이언트가 URL 요청 (예: /emp/list)</li>
+        <li><strong>2단계:</strong> DispatcherServlet이 요청을 받아 적절한 Controller 찾음</li>
+        <li><strong>3단계:</strong> Controller 메서드 실행 → Service 호출</li>
+        <li><strong>4단계:</strong> Model에 데이터 저장</li>
+        <li><strong>5단계:</strong> ViewResolver가 템플릿 경로를 찾아 렌더링</li>
+    </ul>
+    <pre><code>요청 → DispatcherServlet → Controller(@Controller)
+      → Service(@Service)
+      → Repository(@Repository)
+      → DataSource(DB)
+      → 결과(Model) → ViewResolver(templates/*.html)</code></pre>
+</section>
+
+<section>
+    <h2>8. 요약</h2>
+    <ul>
+        <li><strong>@Controller:</strong> 요청을 처리하고 View를 반환하는 MVC 핵심 구성요소.</li>
+        <li><strong>@GetMapping, @PostMapping:</strong> HTTP 요청을 처리하는 매핑 어노테이션.</li>
+        <li><strong>@RequestParam:</strong> 쿼리 파라미터를 개별 변수로 받음.</li>
+        <li><strong>@PathVariable:</strong> URL 경로의 일부를 변수로 받음.</li>
+        <li><strong>@ModelAttribute:</strong> 입력 폼 전체를 DTO 객체로 매핑.</li>
+        <li><strong>required 속성:</strong> 파라미터 필수 여부 지정 (기본값 true).</li>
+        <li><strong>Controller 흐름:</strong> 요청 → Controller → Model → ViewResolver → HTML 렌더링.</li>
+    </ul>
+</section>
+</body>
+</html>
