@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>JPA 영속성 컨텍스트 & N+1, LAZY Trigger, Fetch Join, Proxy, 직렬화 이슈</title>
+    <link rel="stylesheet" href="/src/css/study.css">
+</head>
+<body>
+<h1>JPA 영속성 컨텍스트(Persistence Context) — N+1, Lazy Trigger, Fetch Join, Proxy, 직렬화</h1>
+
+<section>
+    <h2>1) 영속성 컨텍스트 핵심 요약</h2>
+    <ul>
+        <li><strong>정의</strong>: JPA가 엔터티를 <em>관리 상태(managed)</em>로 보관하는 1차 캐시(트랜잭션 범위). EntityManager가 관리.</li>
+        <li><strong>이점</strong>: 1차 캐시, 쓰기 지연(커밋 시 일괄 SQL), 변경 감지(Dirty Checking), 동일성 보장.</li>
+        <li><strong>범위</strong>: 보통 서비스 계층의 <code>@Transactional</code> 단위로 생성/종료.</li>
+    </ul>
+</section>
+
+<section>
+    <h2>2) 연관관계 매핑(예: EMP N : 1 DEPT)</h2>
+    <pre><code>// Dept.java
+@Entity @Table(name="DEPT")
+public class Dept {
+  @Id @Column(name="DEPTNO") private Integer deptno;
+  @Column(name="DNAME") private String dname;
+
+  @OneToMany(mappedBy="dept", fetch=FetchType.LAZY)
+  private List&lt;Emp&gt; emps = new ArrayList&lt;&gt;();
+}
+
+// Emp.java
+@Entity @Table(name="EMP")
+public class Emp {
+  @Id @Column(name="EMPNO") private Integer empno;
+  @Column(name="ENAME") private String ename;
+
+  @ManyToOne(fetch=FetchType.LAZY) // To-One도 LAZY 권장
+  @JoinColumn(name="DEPTNO")
+  private Dept dept;
+}
+</code></pre>
+    <ul>
+        <li>기본 로딩전략은 <strong>LAZY</strong> 권장. 필요 시에만 선택적으로 함께 로딩한다.</li>
+    </ul>
+</section>
+
+<section>
+    <h2>3) N+1 문제(= One + N)</h2>
+    <ul>
+        <li><strong>정의</strong>: 메인 쿼리 1번(예: Emp 리스트 N건) 이후, 각 로우의 연관 엔티티(Dept)를 접근할 때마다 N번 추가 조회.</li>
+        <li><strong>원인</strong>: 연관이 LAZY이고, 뷰/서비스에서 연관 필드를 <em>접근할 때마다</em> 지연 로딩 트리거가 발동.</li>
+    </ul>
+    <pre><code>// 컨트롤러/서비스
+List&lt;Emp&gt; list = empRepository.findAll(); // 1번
+// 템플릿/뷰에서...
+&lt;li th:each="e : ${list}" th:text="${e.dept.dname}"&gt;&lt;/li&gt; // e마다 dept 로딩 → N번
+</code></pre>
+</section>
+
+<section>
+    <h2>4) 지연로딩(LAZY) 트리거는 언제 발생하나?</h2>
+    <ul>
+        <li><strong>프록시의 메서드/필드 접근</strong>: <code>emp.getDept().getDname()</code> 같은 순간 쿼리 실행.</li>
+        <li><strong>컬렉션 접근</strong>: <code>dept.getEmps().size()</code>, for-each 반복 시작 시.</li>
+        <li><strong>뷰 템플릿 접근</strong>: Thymeleaf/JSP에서 연관 필드 프로퍼티 출력 시.</li>
+        <li><strong>toString()/equals()/hashCode()/getter</strong>가 연관 필드 참조 시(특히 Lombok 자동 생성 주의).</li>
+    </ul>
+    <p><strong>트랜잭션 밖</strong>에서 트리거되면 <code>LazyInitializationException</code> 발생(세션 닫힘).</p>
+</section>
+
+<section>
+    <h2>5) fetch join은 어떻게 N+1을 해결하나?</h2>
+    <ul>
+        <li><strong>원리</strong>: 필요한 연관 엔티티를 <em>한 번의 조인 쿼리</em>로 같이 가져와, 이후 접근 시 추가 쿼리가 발생하지 않게 함.</li>
+        <li><strong>To-One</strong>에 특히 효과적이며, 보통 페이징과 함께 사용 가능.</li>
+        <li><strong>To-Many</strong>는 중복/페이징 이슈가 있어 주의가 필요.</li>
+    </ul>
+    <pre><code>// To-One fetch join (권장)
+@Query("select e from Emp e join fetch e.dept where e.empno in :ids")
+List&lt;Emp&gt; findAllWithDept(@Param("ids") List&lt;Integer&gt; ids);
+
+// To-Many fetch join (중복/페이징 주의, distinct로 1차 정리)
+@Query("select distinct d from Dept d left join fetch d.emps where d.deptno = :deptno")
+Dept findDeptWithEmps(@Param("deptno") Integer deptno);
+</code></pre>
+</section>
+
+<section>
+    <h2>6) To-Many 결과 중복 해결 — LinkedHashSet 후처리</h2>
+    <ul>
+        <li>컬렉션 fetch join은 조인 확장으로 <em>중복 엔티티</em>가 섞일 수 있다.</li>
+        <li><code>distinct</code>로 1차 정리해도 남는 경우가 있어, 자바 컬렉션으로 <strong>중복 제거 + 순서 보존</strong>을 한다.</li>
+    </ul>
+    <pre><code>List&lt;Emp&gt; raw = empRepository.findByDeptWithFetchJoin(deptno);
+List&lt;Emp&gt; dedup = new ArrayList&lt;&gt;(new LinkedHashSet&lt;&gt;(raw)); // 중복 제거 + 순서 유지
+</code></pre>
+    <ul>
+        <li><strong>왜 LinkedHashSet?</strong> Set으로 중복 제거, Linked로 조회 순서 유지.</li>
+    </ul>
+</section>
+
+<section>
+    <h2>7) 다른 해결 옵션: EntityGraph / Batch Size / DTO</h2>
+    <ul>
+        <li><strong>@EntityGraph</strong>: 메서드 단위로 필요한 연관만 함께 로딩(코드 분산 최소화).</li>
+    </ul>
+    <pre><code>@EntityGraph(attributePaths="dept")
+List&lt;Emp&gt; findByJob(String job);
+</code></pre>
+    <ul>
+        <li><strong>Batch Size</strong>: 다건 연관을 일정 개수씩 IN 쿼리로 묶어 가져옴.</li>
+    </ul>
+    <pre><code>@BatchSize(size=50)
+@OneToMany(mappedBy="dept")
+private List&lt;Emp&gt; emps;
+</code></pre>
+    <ul>
+        <li><strong>DTO 프로젝션</strong>: 화면에 필요한 값만 선택해 근본적으로 N+1을 회피.</li>
+    </ul>
+    <pre><code>@Query("select new com.example.EmpDto(e.empno, e.ename, d.dname) " +
+       "from Emp e join e.dept d where d.deptno = :deptno")
+List&lt;EmpDto&gt; findEmpSummary(@Param("deptno") Integer deptno);
+</code></pre>
+</section>
+
+<section>
+    <h2>8) 뷰(Thymeleaf)에서의 접근 주의</h2>
+    <ul>
+        <li>템플릿에서 <code>${emp.dept.dname}</code> 접근은 <strong>지연 로딩 트리거</strong>가 된다.</li>
+        <li>트랜잭션 범위 안에서 렌더링하거나(fetch join/EntityGraph/DTO)로 <strong>뷰 진입 전 데이터 확정</strong>이 안전.</li>
+        <li>OSIV(Open Session In View)로 세션을 뷰까지 유지하는 방법은 있음(권장 X: 예측 어려움/지연쿼리 남발).</li>
+    </ul>
+</section>
+
+<section>
+    <h2>9) 프록시(Proxy) 디자인 패턴과 Hibernate 프록시</h2>
+    <ul>
+        <li><strong>프록시 패턴</strong>: 실제 객체 대신 <em>대리 객체</em>를 두어, 접근 시점에 실제 작업 수행(지연 초기화).</li>
+        <li>Hibernate는 LAZY 연관에 <strong>프록시 객체</strong>를 주입한다(클래스 서브클래싱/인터페이스 기반).</li>
+        <li>프록시의 메서드를 호출하면, 아직 초기화되지 않은 경우 DB를 조회해 실제 엔티티를 로딩(트리거).</li>
+    </ul>
+    <pre><code>Emp e = empRepo.findById(7788).get();
+Dept d = e.getDept(); // 여기서 d는 프록시
+String name = d.getDname(); // 이 순간 SELECT 발생(초기화)
+</code></pre>
+</section>
+
+<section>
+    <h2>10) toString()/getter 접근 & 직렬화(JSON) 이슈</h2>
+    <ul>
+        <li><strong>무한 순환</strong>: 양방향 연관을 그대로 JSON 직렬화 → <code>emp.dept.emps.emp...</code> 무한 반복.</li>
+        <li><strong>LazyInitializationException</strong>: 트랜잭션 밖에서 프록시 초기화 시도.</li>
+        <li><strong>프록시 직렬화 문제</strong>: Hibernate 프록시의 내부 필드(<code>handler</code>, <code>hibernateLazyInitializer</code>)로 인한 직렬화 오류.</li>
+    </ul>
+    <h3>해결책(권장순)</h3>
+    <ol>
+        <li><strong>DTO 변환</strong>으로 API 응답 구성(엔티티 직접 노출 금지).</li>
+        <li>양방향 중 한쪽에 <strong>@JsonIgnore</strong> 또는 <strong>@JsonManagedReference / @JsonBackReference</strong>.</li>
+        <li>프록시 보정: <strong>@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})</strong> 또는 <strong>Hibernate5Module</strong> 등록.</li>
+        <li><strong>@ToString.Exclude</strong>, <strong>@EqualsAndHashCode.Exclude</strong>로 순환/지연 접근 방지.</li>
+    </ol>
+    <pre><code>// 엔티티에 직렬화 보정(임시 대책: 근본은 DTO)
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+@Entity
+public class Emp { ... }
+
+// 양방향 순환 차단(한쪽 Ignore)
+public class Emp {
+  @ManyToOne(fetch=FetchType.LAZY)
+  @JoinColumn(name="DEPTNO")
+  @JsonIgnore
+  private Dept dept;
+}
+
+// Lombok 순환 대응
+@ToString.Exclude
+@EqualsAndHashCode.Exclude
+private Dept dept;
+</code></pre>
+</section>
+
+<section>
+    <h2>11) 실제 서비스 레이어 안전 패턴</h2>
+    <pre><code>@Service
+public class EmpService {
+  private final EmpRepository repo;
+  public EmpService(EmpRepository repo) { this.repo = repo; }
+
+  // 1) 뷰 진입 전 데이터 확정: fetch join / DTO로 반환
+  @Transactional(readOnly = true)
+  public List&lt;EmpDto&gt; listEmpForView(Integer deptno) {
+    return repo.findEmpSummary(deptno); // DTO로 N+1 근본 제거
+  }
+
+  // 2) To-One만 필요할 때: fetch join 또는 EntityGraph
+  @Transactional(readOnly = true)
+  public List&lt;Emp&gt; listWithDept(List&lt;Integer&gt; ids) {
+    return repo.findAllWithDept(ids);
+  }
+
+  // 3) To-Many fetch join 필요 시: distinct + LinkedHashSet 후처리
+  @Transactional(readOnly = true)
+  public List&lt;Emp&gt; listByDeptWithDedup(Integer deptno) {
+    List&lt;Emp&gt; raw = repo.findByDeptWithFetchJoin(deptno);
+    return new ArrayList&lt;&gt;(new LinkedHashSet&lt;&gt;(raw));
+  }
+}
+</code></pre>
+</section>
+
+<section>
+    <h2>12) 요약</h2>
+    <ul>
+        <li><strong>N+1</strong>: LAZY 연관 접근이 뷰/로직에서 촉발되어 발생. <strong>fetch join / EntityGraph / Batch Size / DTO</strong>로 해결.</li>
+        <li><strong>지연로딩 트리거</strong>: 연관 getter/컬렉션 접근/템플릿 렌더링/toString 등이 촉발 지점.</li>
+        <li><strong>To-Many</strong>는 중복/페이징 이슈 → <code>distinct</code> + <strong>LinkedHashSet</strong> 후처리, 또는 DTO/분할 조회.</li>
+        <li><strong>프록시</strong>: 실제 대신 대리객체. 호출 시 초기화. 트랜잭션 밖에서는 예외 위험.</li>
+        <li><strong>직렬화 이슈</strong>: 무한 순환/프록시 직렬화/지연 초기화 예외 → DTO, Jackson 애노테이션, Hibernate 모듈로 해결.</li>
+    </ul>
+</section>
+
+</body>
+</html>
