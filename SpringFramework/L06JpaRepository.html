@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>Spring Data JPA 자동 쿼리 & @Query</title>
+    <link rel="stylesheet" href="/src/css/study.css">
+
+</head>
+<body>
+<h1>Spring Data JPA 자동 쿼리 & @Query </h1>
+<section>
+    <h2>1) 전제 & 핵심 규칙</h2>
+    <ul>
+        <li><strong>메서드명은 DB 컬럼명이 아닌 “엔터티 필드명” 기준</strong>으로 작성한다.</li>
+        <li>예: <code>@Column(name="HIREDATE") private Date hiredate;</code> 라면 함수명은 <code>findByHiredateBetween(...)</code> 이다
+            (X: <code>findByHIREDATEBetween</code>).</li>
+        <li>EMP(EMPNO, ENAME, JOB, MGR, HIREDATE, SAL, COMM, DEPTNO) 매핑 예:
+            <pre><code>@Entity @Table(name = "EMP")
+public class Emp {
+  @Id @Column(name="EMPNO") private Integer empno;
+  @Column(name="ENAME") private String ename;
+  @Column(name="JOB")   private String job;
+  @Column(name="MGR")   private Integer mgr;
+  @Column(name="HIREDATE") private Date hiredate;
+  @Column(name="SAL")   private Double sal;
+  @Column(name="COMM")  private Double comm;
+  @Column(name="DEPTNO")private Integer deptno;
+}</code></pre>
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h2>2) 자동 쿼리 메서드(파생 쿼리) 작성 규칙</h2>
+    <ul>
+        <li><strong>접두사</strong>: <code>findBy</code>, <code>readBy</code>, <code>getBy</code>, <code>countBy</code>, <code>existsBy</code>, <code>deleteBy</code></li>
+        <li><strong>연산</strong>:
+            <ul>
+                <li>논리: <code>And</code>, <code>Or</code></li>
+                <li>비교/범위: <code>Between</code>, <code>LessThan</code>, <code>LessThanEqual</code>, <code>GreaterThan</code>, <code>GreaterThanEqual</code></li>
+                <li>널/불리언: <code>IsNull</code>, <code>IsNotNull</code>, <code>True</code>, <code>False</code></li>
+                <li>문자열: <code>Like</code>, <code>NotLike</code>, <code>StartingWith</code>, <code>EndingWith</code>, <code>Containing</code>, <code>IgnoreCase</code></li>
+                <li>컬렉션: <code>In</code>, <code>NotIn</code></li>
+                <li>정렬/상위: <code>OrderBy필드Asc/Desc</code>, <code>TopN</code>, <code>First</code>, <code>Distinct</code></li>
+            </ul>
+        </li>
+    </ul>
+    <pre><code>public interface EmpRepository extends JpaRepository&lt;Emp, Integer&gt; {
+
+  // 기본
+  List&lt;Emp&gt; findByDeptno(Integer deptno);
+  List&lt;Emp&gt; findByJobAndDeptno(String job, Integer deptno);
+
+  // 문자열 검색
+  List&lt;Emp&gt; findByEnameContainingIgnoreCase(String keyword);
+
+  // 범위/날짜
+  List&lt;Emp&gt; findBySalBetween(Double min, Double max);
+  List&lt;Emp&gt; findByHiredateGreaterThanEqual(Date from);
+
+  // 널/존재/개수
+  List&lt;Emp&gt; findByCommIsNull();
+  boolean existsByEname(String ename);
+  long countByDeptno(Integer deptno);
+
+  // 정렬/상위 N
+  List&lt;Emp&gt; findTop3ByDeptnoOrderBySalDesc(Integer deptno);
+
+  // 컬렉션
+  List&lt;Emp&gt; findByDeptnoIn(List&lt;Integer&gt; deptnos);
+
+  // 페이징/정렬(권장)
+  Page&lt;Emp&gt; findByJob(String job, Pageable pageable);
+}</code></pre>
+    <pre><code>// 사용 예 (페이징+정렬)
+Pageable page = PageRequest.of(0, 10, Sort.by("sal").descending());
+Page&lt;Emp&gt; result = empRepository.findByJob("SALESMAN", page);</code></pre>
+</section>
+<h2>2. JPA에서 Optional 반환 메서드</h2>
+<ul>
+    <li>Spring Data JPA의 Repository는 일부 기본 메서드에서 Optional을 반환한다.</li>
+    <li><strong>대표 예시:</strong></li>
+</ul>
+<pre><code>public interface EmpRepository extends JpaRepository&lt;Emp, Integer&gt; {
+    Optional&lt;Emp&gt; findById(Integer empno);
+    Optional&lt;Emp&gt; findByEname(String ename);
+}</code></pre>
+<ul>
+    <li>데이터가 있으면 <code>Optional.of(엔터티)</code></li>
+    <li>데이터가 없으면 <code>Optional.empty()</code> 반환.</li>
+</ul>
+</section>
+
+<section>
+    <h2>3. Optional을 사용하는 이유</h2>
+    <ul>
+        <li><strong>1) NullPointerException 방지:</strong> Optional로 null 반환을 막고, 값이 있는지 명확히 검사.</li>
+        <li><strong>2) 명시적인 의도 표현:</strong> “결과가 없을 수도 있다”는 것을 타입 수준에서 보여줌.</li>
+        <li><strong>3) 후처리 메서드 제공:</strong> if-else 문 없이 값을 처리할 수 있음.</li>
+    </ul>
+</section>
+
+<section>
+    <h2>4. Optional 주요 메서드</h2>
+    <ul>
+        <li><strong>isPresent()</strong> : 값이 존재하면 true</li>
+        <li><strong>isEmpty()</strong> : 값이 비어 있으면 true (Java 11+)</li>
+        <li><strong>get()</strong> : Optional에 값이 있을 때만 반환 (없으면 예외)</li>
+        <li><strong>orElse(T default)</strong> : 값이 없을 때 기본값 반환</li>
+        <li><strong>orElseGet(Supplier)</strong> : 값이 없을 때 지연 로딩으로 대체값 생성</li>
+        <li><strong>orElseThrow()</strong> : 값이 없으면 예외 던짐</li>
+        <li><strong>ifPresent(Consumer)</strong> : 값이 있으면 실행</li>
+    </ul>
+    <pre><code>// 예시
+Optional&lt;Emp&gt; opt = empRepository.findById(7788);
+
+if (opt.isPresent()) {
+    Emp emp = opt.get();
+    System.out.println(emp.getEname());
+}
+
+// orElse
+Emp emp = empRepository.findById(9999)
+             .orElse(new Emp(9999, "UNKNOWN", "NONE"));
+
+// orElseThrow
+Emp emp = empRepository.findById(7788)
+             .orElseThrow(() -&gt; new NoSuchElementException("사원 없음"));
+
+// ifPresent
+empRepository.findById(7788)
+             .ifPresent(e -&gt; System.out.println(e.getEname()));</code></pre>
+</section>
+
+<section>
+    <h2>3) 자동 생성이 힘든 경우: 언제 @Query 를 쓰는가</h2>
+    <ul>
+        <li>복잡한 조인, 서브쿼리, 집계/그룹, 윈도우 함수, DB 전용 문법(Oracle) 필요</li>
+        <li>동적 조건 조합이 많음(※ 수업에선 @Query 또는 Querydsl/Specification 소개 정도)</li>
+        <li><strong>@Query</strong>에는 두 가지 방식이 있다: <strong>JPQL(엔터티 기반)</strong>, <strong>네이티브 SQL(DB 문법)</strong></li>
+    </ul>
+</section>
+
+<section>
+    <h2>4) @Query — JPQL(ORM 기반) 작성법</h2>
+    <ul>
+        <li><strong>엔터티/필드</strong> 기준으로 작성(테이블/컬럼 X).</li>
+        <li>변수 바인딩: <code>:이름</code> 또는 <code>?1</code> 형태.</li>
+        <li>프로젝션: 엔터티, DTO, 인터페이스 기반 프로젝션 지원.</li>
+    </ul>
+    <pre><code>public interface EmpRepository extends JpaRepository&lt;Emp, Integer&gt; {
+
+  // 범위 + 정렬
+  @Query("SELECT e FROM Emp e " +
+         "WHERE e.deptno = :deptno AND e.sal BETWEEN :min AND :max " +
+         "ORDER BY e.sal DESC")
+  List&lt;Emp&gt; findRichInDept(@Param("deptno") Integer deptno,
+                            @Param("min") Double min,
+                            @Param("max") Double max);
+
+  // 집계 프로젝션 (인터페이스 기반)
+  @Query("SELECT e.job AS job, AVG(e.sal) AS avgSal " +
+         "FROM Emp e GROUP BY e.job HAVING AVG(e.sal) &gt;= :cut")
+  List&lt;JobAvgProjection&gt; findJobAvgSalaries(@Param("cut") Double cut);
+
+  // 대량 수정/삭제
+  @Modifying @Transactional
+  @Query("UPDATE Emp e SET e.sal = e.sal + :delta WHERE e.deptno = :deptno")
+  int bulkRaise(@Param("deptno") Integer deptno, @Param("delta") Double delta);
+
+  @Modifying @Transactional
+  @Query("DELETE FROM Emp e WHERE e.comm IS NULL")
+  int deleteNoComm();
+}
+
+public interface JobAvgProjection {
+  String getJob();
+  Double getAvgSal();
+}</code></pre>
+</section>
+
+<section>
+    <h2>5) @Query — 네이티브 SQL(Oracle) 작성법</h2>
+    <ul>
+        <li>테이블/컬럼명을 <strong>그대로</strong> 사용(예: EMP, HIREDATE).</li>
+        <li>Oracle 전용 문법(힌트, <code>FETCH FIRST n ROWS ONLY</code>, <code>ROWNUM</code> 등) 사용 가능.</li>
+        <li>Page 반환 시 <code>countQuery</code> 별도 지정 권장.</li>
+    </ul>
+    <pre><code>public interface EmpRepository extends JpaRepository&lt;Emp, Integer&gt; {
+
+  // 상위 n명 (Oracle 12c+)
+  @Query(value = "SELECT * FROM EMP WHERE DEPTNO = :deptno " +
+                 "ORDER BY SAL DESC FETCH FIRST :n ROWS ONLY",
+         nativeQuery = true)
+  List&lt;Emp&gt; topEarnersInDept(@Param("deptno") Integer deptno, @Param("n") int n);
+
+  // ROWNUM 방식
+  @Query(value = "SELECT * FROM (SELECT e.* FROM EMP e " +
+                 "WHERE e.JOB = :job ORDER BY e.SAL DESC) WHERE ROWNUM &lt;= :n",
+         nativeQuery = true)
+  List&lt;Emp&gt; topByJob(@Param("job") String job, @Param("n") int n);
+
+  // 집계(맵/DTO로 받기)
+  @Query(value = "SELECT JOB AS job, AVG(SAL) AS avgSal FROM EMP GROUP BY JOB HAVING AVG(SAL) &gt;= :cut",
+         nativeQuery = true)
+  List&lt;Map&lt;String, Object&gt;&gt; jobAvgNative(@Param("cut") Double cut);
+}</code></pre>
+</section>
+
+<section>
+    <h2>6) 메서드명은 엔터티 “필드명” 기준 (중요)</h2>
+    <ul>
+        <li><strong>올바른 예</strong>: <code>findByHiredateBetween</code>, <code>findByEnameContaining</code></li>
+        <li><strong>잘못된 예</strong>: <code>findByHIREDATEBetween</code>, <code>findByENAMEContaining</code> (DB 컬럼명 사용)</li>
+        <li>DB 컬럼과 다르면 <code>@Column(name="COL")</code>로 매핑만 맞추고, 함수명은 항상 <strong>엔터티 필드명</strong> 사용.</li>
+    </ul>
+</section>
+
+<section>
+    <h2>7) 실전 팁 (Oracle + Spring Data JPA)</h2>
+    <ul>
+        <li><strong>Like 검색</strong>: 파생쿼리 <code>Containing</code> / JPQL <code>LIKE CONCAT('%',:q,'%')</code></li>
+        <li><strong>날짜 범위</strong>: <code>findByHiredateBetween(Date s, Date e)</code> (네이티브는 바인딩 사용 권장)</li>
+        <li><strong>페이징</strong>: 파생쿼리 + <code>Pageable</code> 사용(네이티브 Page는 <code>countQuery</code> 필요)</li>
+        <li><strong>벌크 연산</strong>: <code>@Modifying @Transactional</code> 필수, 이후 영속성 컨텍스트 동기화 고려(<code>clear()</code> 등)</li>
+        <li><strong>조건이 매우 동적</strong>: 우선 @Query로 단순화, 필요 시 Querydsl/Specification 소개</li>
+    </ul>
+</section>
+
+<section>
+    <h2>8) 요약</h2>
+    <ul>
+        <li>간단 조건/정렬/페이지 → <strong>파생 메서드</strong>로 충분</li>
+        <li>집계/조인/서브쿼리 → <strong>@Query(JPQL)</strong> 권장(엔터티 중심)</li>
+        <li>Oracle 전용 문법 필요 → <strong>@Query(nativeQuery = true)</strong></li>
+        <li><strong>항상 기억</strong>: 메서드명은 <strong>엔터티 필드명</strong> 기준</li>
+    </ul>
+</section>
+</body>
+</html>

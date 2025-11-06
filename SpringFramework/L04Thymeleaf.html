@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>템플릿 엔진 타임리프</title>
+    <link rel="stylesheet" href="/src/css/study.css">
+
+</head>
+<body>
+<h1>템플릿 엔진 타임리프</h1>
+<section>
+    <h2>1. 기본 원리</h2>
+    <ul>
+        <li>Thymeleaf 템플릿은 Controller에서 전달된 <strong>Model 속성</strong>이나 <strong>요청 파라미터</strong>를 표현식으로 접근할 수 있다.</li>
+        <li>모든 데이터는 <code>${...}</code> 형태로 EL(Expression Language) 표현식을 사용한다.</li>
+    </ul>
+    <pre><code>Model model;
+model.addAttribute("empno", 7788);
+model.addAttribute("ename", "SCOTT");</code></pre>
+    <pre><code>&lt;p&gt;사번: &lt;span th:text="${empno}"&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;이름: &lt;span th:text="${ename}"&gt;&lt;/span&gt;&lt;/p&gt;</code></pre>
+    <ul>
+        <li>출력 결과:
+            <br>사번: 7788
+            <br>이름: SCOTT
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h2>2. URL 쿼리 파라미터 접근</h2>
+    <ul>
+        <li>요청 주소 예시:
+            <code>/emp/detail?empno=7788&amp;job=ANALYST</code>
+        </li>
+        <li>Thymeleaf는 <strong><code>${param.파라미터이름}</code></strong> 으로 접근 가능하다.</li>
+    </ul>
+    <pre><code>&lt;h2 th:text="'사번: ' + ${param.empno}"&gt;&lt;/h2&gt;
+&lt;p th:text="'직무: ' + ${param.job}"&gt;&lt;/p&gt;</code></pre>
+
+    <ul>
+        <li><strong>특징:</strong>
+            <ul>
+                <li>값이 여러 개인 경우 → <code>${param.deptno[0]}</code>, <code>${param.deptno[1]}</code> 처럼 배열 형태로 접근 가능.</li>
+                <li>쿼리 파라미터가 없을 경우 null 반환.</li>
+            </ul>
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h2>3. PathVariable 값 사용</h2>
+    <ul>
+        <li>Controller에서 PathVariable을 Model에 넣으면 템플릿에서 바로 사용 가능하다.</li>
+    </ul>
+    <pre><code>@GetMapping("/emp/{empno}")
+public String detail(@PathVariable("empno") Integer empno, Model model) {
+    Emp emp = empService.findById(empno);
+    model.addAttribute("emp", emp);
+    return "emp-detail";
+}</code></pre>
+    <pre><code>&lt;h2 th:text="'사번: ' + ${emp.empno}"&gt;&lt;/h2&gt;
+&lt;p th:text="'이름: ' + ${emp.ename}"&gt;&lt;/p&gt;</code></pre>
+    <ul>
+        <li>PathVariable은 URL로부터 받은 값이기 때문에 별도의 param 접근 없이 model 객체를 통해 표현한다.</li>
+    </ul>
+</section>
+
+<section>
+    <h2>4. Form 입력 값 전달 (POST 요청)</h2>
+    <ul>
+        <li>입력 폼(form)에서 사용자가 입력한 값은 <code>@ModelAttribute</code>나 <code>@RequestParam</code>으로 컨트롤러에서 받을 수 있다.</li>
+        <li>Thymeleaf에서는 <code>th:field</code> 속성을 이용하면 DTO의 필드와 자동 매핑된다.</li>
+    </ul>
+    <pre><code>&lt;form th:action="@{/emp/register}" method="post" th:object="${emp}"&gt;
+  &lt;input type="text" th:field="*{empno}" placeholder="사번"&gt;
+  &lt;input type="text" th:field="*{ename}" placeholder="이름"&gt;
+  &lt;input type="text" th:field="*{job}" placeholder="직무"&gt;
+  &lt;button type="submit"&gt;등록&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+    <ul>
+        <li><strong>th:object</strong> : Model에 담긴 객체를 참조 (예: emp)</li>
+        <li><strong>th:field="*{필드명}"</strong> : 객체의 필드와 입력값을 자동 매핑</li>
+    </ul>
+</section>
+
+<section>
+    <h2>5. URL 생성 시 파라미터 전달 (링크 작성)</h2>
+    <ul>
+        <li>Thymeleaf의 <code>@{...}</code> 문법을 이용해 동적으로 URL을 생성할 수 있다.</li>
+    </ul>
+
+    <pre><code>&lt;a th:href="@{/emp/detail(empno=${emp.empno})}"&gt;상세보기&lt;/a&gt;</code></pre>
+    <ul>
+        <li>위 코드는 <code>/emp/detail?empno=7788</code> 형식의 URL을 자동 생성한다.</li>
+        <li>PathVariable 방식도 지원된다:</li>
+    </ul>
+    <pre><code>&lt;a th:href="@{/emp/{empno}(empno=${emp.empno})}"&gt;상세보기&lt;/a&gt;</code></pre>
+</section>
+
+<section>
+    <h2>6. 기본 내장 객체 요약</h2>
+    <ul>
+        <li><code>${param}</code> : 요청 파라미터 접근 (쿼리스트링, Form 데이터)</li>
+        <li><code>${session}</code> : 세션 스코프 객체 접근</li>
+        <li><code>${application}</code> : ServletContext 스코프 객체 접근</li>
+        <li><code>${#request}</code> : HttpServletRequest 객체 직접 접근</li>
+        <li><code>${#session}</code> : HttpSession 객체 직접 접근</li>
+        <li><code>${#httpServletRequest.getParameter('key')}</code> : 저수준 파라미터 접근 방식</li>
+    </ul>
+</section>
+
+<section>
+    <h2>7. 요약</h2>
+    <ul>
+        <li><strong>Model 데이터:</strong> Controller에서 model.addAttribute로 전달된 값 → <code>${...}</code>으로 접근</li>
+        <li><strong>요청 파라미터:</strong> <code>${param.이름}</code>으로 접근</li>
+        <li><strong>PathVariable:</strong> Controller에서 Model에 담은 객체를 통해 접근</li>
+        <li><strong>Form 입력:</strong> <code>th:object</code> + <code>th:field</code>를 사용</li>
+        <li><strong>링크:</strong> <code>@{/url(파라미터명=${값})}</code>으로 URL 생성</li>
+    </ul>
+</section>
+</body>
+</html>
