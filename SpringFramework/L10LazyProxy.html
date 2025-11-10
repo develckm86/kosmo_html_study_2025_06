@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>JPA 프록시(Proxy) 디자인 패턴과 Lazy 로딩 트리거 방법</title>
+    <link rel="stylesheet" href="/src/css/study.css">
+
+</head>
+<body>
+<section>
+    <h2>1. JPA에서 프록시(Proxy) 디자인 패턴의 동작 개요</h2>
+    <ul>
+        <li>JPA 구현체(Hibernate)는 <code>EntityManager.getReference()</code> 또는 <code>getReferenceById()</code> 호출 시 실제 객체가 아닌 **대리 객체(Proxy)** 를 반환합니다.</li>
+        <li>이 프록시는 CGLIB 또는 ByteBuddy로 생성된 서브클래스이며, <strong>식별자(id) 외 필드 접근 시</strong> 인터셉터가 동작해 DB에서 지연 로딩(Lazy Loading)을 수행합니다.</li>
+        <li>프록시의 핵심 사항:
+            <ul>
+                <li>기본 생성자가 반드시 필요 (프록시 서브클래스 생성용).</li>
+                <li><code>final</code> 클래스나 메서드는 프록시가 가로채지 못함.</li>
+                <li><code>equals</code>, <code>hashCode</code>, <code>toString</code>에서 연관필드 접근 시 의도치 않은 로딩 가능 → 식별자 기반 구현 권장.</li>
+                <li>트랜잭션 밖에서 프록시 접근 시 <code>LazyInitializationException</code> 발생.</li>
+            </ul>
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h2>2. 예시 엔티티: DeptEntity ↔ EmpEntity</h2>
+    <pre><code>@Entity
+@Table(name = "dept")
+public class DeptEntity {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long deptno;
+    private String dname;
+
+    @OneToMany(mappedBy = "dept", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List&lt;EmpEntity&gt; emps = new ArrayList&lt;&gt;();
+
+    protected DeptEntity() {} // 프록시용
+    public DeptEntity(String dname) { this.dname = dname; }
+
+    public Long getDeptno() { return deptno; }
+    public String getDname() { return dname; }
+    public List&lt;EmpEntity&gt; getEmps() { return emps; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DeptEntity)) return false;
+        DeptEntity other = (DeptEntity) o;
+        return deptno != null &amp;&amp; deptno.equals(other.deptno);
+    }
+    @Override public int hashCode() { return 31; }
+}
+
+@Entity
+@Table(name = "emp")
+public class EmpEntity {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long empno;
+    private String ename;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "deptno")
+    private DeptEntity dept;
+
+    protected EmpEntity() {}
+    public EmpEntity(String ename, DeptEntity dept) {
+        this.ename = ename;
+        this.dept = dept;
+    }
+
+    public Long getEmpno() { return empno; }
+    public String getEname() { return ename; }
+    public DeptEntity getDept() { return dept; }
+}</code></pre>
+</section>
+
+<section>
+    <h2>3. 프록시 직접 받기 (getReference)</h2>
+    <pre><code>// JPA 표준
+DeptEntity proxy = em.getReference(DeptEntity.class, 10L); // 아직 SELECT 없음
+String name = proxy.getDname(); // 이 시점에 DB 조회 발생
+
+// Spring Data JPA
+DeptEntity proxy2 = deptRepository.getReferenceById(10L);
+</code></pre>
+</section>
+
+<section>
+    <h2>4. 서비스/테스트에서 Lazy 로딩을 안전하게 트리거하는 방법</h2>
+
+    <h3>① 서비스 계층에서 @Transactional로 감싸기 (권장)</h3>
+    <pre><code>@Service
+public class DeptService {
+    private final DeptRepository deptRepository;
+    public DeptService(DeptRepository deptRepository) { this.deptRepository = deptRepository; }
+
+    @Transactional(readOnly = true)
+    public DeptDto readWithEmps(Long deptno) {
+        DeptEntity dept = deptRepository.getReferenceById(deptno); // 프록시
+        List&lt;EmpEntity&gt; emps = dept.getEmps(); // Lazy 초기화
+        int size = emps.size(); // DB 로딩 발생
+        // 또는 Hibernate.initialize(dept.getEmps());
+        return DeptDto.of(dept, emps);
+    }
+}</code></pre>
+
+    <h3>② 페치 조인(fetch join)으로 즉시 로딩</h3>
+    <pre><code>public interface DeptRepository extends JpaRepository&lt;DeptEntity, Long&gt; {
+    @Query("select d from DeptEntity d left join fetch d.emps where d.deptno = :deptno")
+    Optional&lt;DeptEntity&gt; findWithEmps(@Param("deptno") Long deptno);
+}</code></pre>
+    <ul>
+        <li>N+1 방지, 이미 초기화된 그래프 사용 가능.</li>
+        <li>단, 다대일·일대다 혼합 시 페이징 문제 주의.</li>
+    </ul>
+
+    <h3>③ @EntityGraph 사용</h3>
+    <pre><code>@EntityGraph(attributePaths = "emps")
+@Query("select d from DeptEntity d where d.deptno = :deptno")
+Optional&lt;DeptEntity&gt; findGraph(@Param("deptno") Long deptno);</code></pre>
+
+    <h3>④ 테스트에서 Lazy 접근</h3>
+    <pre><code>@DataJpaTest
+class DeptRepositoryTest {
+    @Autowired DeptRepository repo;
+
+    @Test
+    void lazyLoadInTx() {
+        DeptEntity d = repo.getReferenceById(1L); // 프록시
+        assertThat(d.getEmps().size()).isGreaterThanOrEqualTo(0); // 트랜잭션 내 접근 → 안전
+    }
+}</code></pre>
+    <p>또는 명시적으로 <code>@Transactional</code> 추가.</p>
+
+    <h3>⑤ 명시적 초기화 유틸 사용</h3>
+    <pre><code>// Hibernate 전용
+Hibernate.initialize(dept.getEmps());
+
+// JPA 표준
+PersistenceUnitUtil util = em.getEntityManagerFactory().getPersistenceUnitUtil();
+boolean loaded = util.isLoaded(dept, "emps");</code></pre>
+
+    <h3>⑥ Hibernate 고급 옵션 (참고용)</h3>
+    <ul>
+        <li><code>hibernate.enable_lazy_load_no_trans=true</code>: 트랜잭션 밖 로딩 허용 (비권장).</li>
+        <li>Bytecode Enhancement + <code>@LazyToOne(LazyToOneOption.NO_PROXY)</code> / <code>@LazyGroup</code>: 프록시 대신 필드 단위 지연 로딩 (빌드체인 필요).</li>
+    </ul>
+</section>
+
+<section>
+    <h2>5. 요약: 서비스/테스트에서 Lazy 조회 트리거 방법</h2>
+    <ul>
+        <li>트랜잭션 내부에서 프록시의 지연 필드에 접근하면 안전하게 로딩됨.</li>
+        <li>조회 시점에 <strong>fetch join</strong>이나 <strong>@EntityGraph</strong>를 사용하면 뷰/서비스 어디서든 초기화된 데이터 사용 가능.</li>
+        <li>테스트에서는 <code>@DataJpaTest</code> 또는 <code>@Transactional</code>을 활용해 트랜잭션 안에서 접근.</li>
+        <li>명시적으로 <code>Hibernate.initialize()</code>로 초기화 가능.</li>
+    </ul>
+</section>
+
+<section>
+    <h2>6. 확장 학습 (원하실 경우)</h2>
+    <ul>
+        <li>N+1 문제 해결 패턴 (페치 조인 vs 배치 패치)</li>
+        <li>컬렉션 순서 보존: <code>List</code> vs <code>LinkedHashSet</code></li>
+        <li>직렬화 시 프록시 문제 회피:
+            <ul>
+                <li><code>@JsonIgnore</code>로 연관 무시</li>
+                <li>DTO 매핑으로 계층 분리</li>
+                <li>Spring Boot 환경에서는 <code>Hibernate5Module</code> 사용 가능</li>
+            </ul>
+        </li>
+    </ul>
+</section>
+</body>
+</html>
